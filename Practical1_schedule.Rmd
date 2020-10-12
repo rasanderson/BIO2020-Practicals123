@@ -1,0 +1,391 @@
+---
+title: "Practical 1: Data import Summary and display"
+author: "BIO2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, message=FALSE,warning= FALSE}
+library(dplyr)
+
+```
+
+## Setting up for practical classes
+
+We are going to start by creating a Project called BIO2020 to keep all of our work relating to the BIO2020 module together in one place.
+
+Start by opening up R Studio on your computer. 
+To create a new project go to the projects menu, either by clicking the drop-down in the top right hand side of your window (next to where it says `Project: (None)`) or by clicking `File` > `New Project`  
+
+You should now see this popup window: 
+
+```{r, echo = FALSE}
+knitr::include_graphics("http://www.rstudio.com/images/docs/projects_new.png")
+```
+
+Select `New directory`  then  `New Project`
+
+Give your project a name (eg. the name of the module) and select where on your computer you want that to live.
+Click `Create project` and you should now see the name of your project displayed in the top right hand side of your R Studio window. 
+
+**NOTE** If you are an organised person and you had already created a folder for all of the work associated with the BIO2020 module you can select `Existing Directory` navigate to your already existing folder and then select create project and the `.RProj` file will live in that folder alongside all your other files
+
+Within your BIO2020 Project folder we suggest that you create a `r emo::ji("file_folder")` Data sub-folder.
+The data files for all of the practical classes are available on Canvas, you should download the files and store them in the Data folder that you just created. 
+
+The next step is to create a new `script` to store all of the code for today's practical. 
+In the top left click `file` > `new file` > `R script`
+Click on the save icon `r emo::ji("floppy_disk")` to save this script and give it a meaningful name eg. `Practical_1.R`
+Now we are ready to write some code!
+
+### Running code
+
+You might notice that in the tutorials that you completed on your own we ran code by clicking on a big green run code button, when we are working in R Studio it's a little bit different. 
+
+You write your code in your script (because you have listened to our advice and you know that writing code in the script means you can save it and come back to it later) and there are a couple of ways to *run* the code and you can choose whichever feels best for you. 
+
+1. Highlight the code that you want to run and then press the `run` button that is available at the top of the script
+
+2. Place your cursor anywhere on the line of code that you want to run and press <kbd>Ctrl</kbd> + <kbd>Return</kbd> (<kbd>Cmd</kbd> + <kbd>Return</kbd> on mac) together
+
+Either of these actions sends your code to the console where it is executed so that R carries out the instructions that are your code.
+
+## Importing data
+
+Firstly check that you are working in the project (BIO2020) that you just created, the project icon in the top right hand side of your R studio window should be displaying the name of your project.
+
+For this practical we will be using the following data files:
+
+ + Chick_Diet.csv
+ + Chick_growth.csv
+
+To use these files we need to load them in to R and store each one in R's memory as an object. 
+Check that you have these files stored in `r emo::ji("file_folder")` Data, the sub-folder of your project.
+If they are there we can start by reading them in to R to get them into the `environment`
+
+```{r, fig.align='center', echo = FALSE}
+knitr::include_graphics("images/Rkitchen.png")
+```
+
+**Load these data files and store them as objects called `diet_dat` and `growth_dat` using the `read.csv()` function, write your code in the script so that you can save it for future use**
+
+Remember that the argument to the `read.csv()` function is the path to the file eg.
+
+```{r}
+
+diet_dat <- read.csv("Data/Chick_Diet.csv")
+
+```
+
+<!-- Note for demonstrator, if they have trouble reading in the data file check where the script file is saved, if it's in a sub-folder of the project the code specifying the file path will need to escape that sub-folder first using ../ so they need  read.csv("../Data/Chick_Diet.csv")-->
+
+**Check the data that you have loaded**
+Some suggested functions are `head()` `str()` `summary()` `nrow()` `ncol()` `names()` 
+Use these functions to answer the following questions about the data
+
+ 1. What variables are contained within each dataset?
+ 2. How many variables(columns) and how many observations (rows) are in each dataset? 
+ 3. How heavy is the heaviest chicken? And is this the same in both of the datasets?
+
+**Reminder** Make sure to comment your code, using the # write some comments (notes) to annotate the code that you have just written so that you know what all of the code in your script is, eg.
+
+```{r, eval = FALSE, echo= TRUE}
+# reading in the Chick_Diet data file 
+diet_dat <- read.csv("Data/Chick_Diet.csv")
+
+#checking the data
+head(diet_dat)
+
+#inspecting the structure of the data
+str(diet_dat) 
+
+```
+
+ 
+Now that you have explored the dataset you can see that the `diet_dat` data contains the variables weight, Time, Chick and Diet.
+The `growth_dat` contains the variables Weight (note that this one is with a capital W), Time and Diet.
+
+The data refer to weights of growing chickens being fed one of four different Diets, `diet_dat` contains the weights of 50 individual chicks after a 21 day time period whereas `growth_dat` details the mean weight (across all individuals being fed the same diet) at each time point.
+
+
+### Loading Packages
+
+Throughout the rest of this practical we are going to be using functions from two packages: 
+
+`r emo::ji("package")` mosaic
+
+`r emo::ji("package")` ggformula
+
+If this is the first time that you are using these packages you will need to download them before loading them in to the library. 
+
+**Installing packages** is only required the first time that we use the package, because of this we **don't** want this code to be in our script because that might cause us to unnecessarily install the package each time we run the code in this script.
+I know that we said to *always* write your code in a script but the `install.packages()` function is one of the very few exceptions.
+To install the packages you can type the following code directly into the **console**:
+
+```{r, eval = FALSE}
+
+install.packages("mosaic")
+install.packages("ggformula")
+```
+
+Or you can navigate to the packages tab, click the install button and type the name of the package that you want to install. 
+
+Once the package is installed we need to load it, this *does* need to be done every time that we use functions from the package so we will put this code in our script.
+It is best practice to load packages at the start of your script, so go to the top of your script and load the packages using the `library()` function.
+
+Remember the argument to the `library()` function is the name of the package that you want to load
+
+The top of your script should read something like this:
+
+```{r, message = FALSE, warning= FALSE}
+# load packages 
+library(mosaic)
+library(ggformula)
+
+# reading in the Chick_Diet data file 
+diet_dat <- read.csv("Data/Chick_Diet.csv")
+```
+
+
+## Summary statistics
+
+We will start with the `diet_dat` data.
+We can calculate some summary statistics to see if there are differences between chicks being fed different diets.
+
+Calculate the mean weights for chicks being fed different diets.
+Remember we are using the formula 
+
+$$\text{statistic(variable ~ group, data= dataset)}$$
+
+Where:
+
++ **statistic** = the statistic that we want to calculate (mean, median, sd, etc.)
++ **variable** = the name of the column containing the variable that we are interested in 
++ **group** = the name of the column containing information by which we want to group the data
+
+For each group we can calculate statistics such as the mean and median
+
+```{r}
+mean(weight~Diet, data = diet_dat)
+
+median(weight~Diet, data = diet_dat)
+
+```
+
+```{r, echo= FALSE}
+
+chick_mean <- mean(weight~Diet, data = diet_dat)
+
+chick_med <- median(weight~Diet, data = diet_dat)
+```
+
+**Store these values in objects called `chick_mean` and `chick_med`**
+
+But remember that these measures can be sensitive to outliers and to get a good understanding of our data we need to calculate some statistics that give us an idea of how our data is spread about the mean.
+If this is unfamiliar to you go back over the `Understanding measures of central tendency and variation` tutorial.
+
+Thankfully because we are doing our analysis in R we don't have to calculate measures such as variance, standard deviation and standard error by hand, we can use functions to help us.
+
+**Calculate the variance and standard deviation for each group using the functions `var()` and `sd()`**
+
+```{r}
+# calcualating variance for each group
+var(weight~Diet, data = diet_dat)
+
+#calculating standard deviation for each group
+sd(weight~Diet, data = diet_dat)
+```
+
+Now that we have this useful information lets make sure that we keep it.
+
+**Create two objects `chick_var` and `chick_sd` and assign the output of the `var()` and `sd()` functions to those objects.**
+
+```{r}
+# calcualating variance for each group
+chick_var <- var(weight~Diet, data = diet_dat)
+
+#calculating standard deviation for each group
+chick_sd <- sd(weight~Diet, data = diet_dat)
+```
+
+Remember that we also discussed Standard Error as a useful measure that can be calculated as:
+
+$$se = \frac{\sigma}{\sqrt{n}}$$
+
+We have already calculated the variance but for the calculation of se we need to know n, the number of observations in our group.
+Again there is no need to count the number of observations in each group by hand, lets use the `favstats()` function which also computes some other useful measures that we might be interested in.
+
+**Create an object and assign the output of `favstats()` to that object**
+
+```{r}
+#creating favstats table
+fav_dat <- favstats(weight~Diet, data = diet_dat)
+
+# inspect the contents of fav_dat
+fav_dat
+```
+
+Remember that we can access single columns using the `$` sign, so to calculate se we want R to use `fav_dat$n` in our calculation, we can substitute this as well as the values that we already calculated for sd `chick_sd` into the equation
+
+```{r}
+chick_se <- chick_sd/(sqrt(fav_dat$n))
+```
+
+**Add some notes about the above code as comments to demonstrate that you understand what each bit is doing**
+
+#### Creating a data frame 
+
+We learned that we can use the `c()` function to create vectors and the `data.frame()` function to joint them together ad data frames.
+Using the `data.frame()` function create a data frame that contains the objects that you have just created as well as the mean and median for each group that you created earlier
+
+ + `chick_mean`
+ + `chick_med`
+ + `chick_var`
+ + `chick_sd`
+ + `chick_se`
+
+```{r, echo = FALSE}
+diet_stats <- data.frame(chick_mean,
+                         chick_med,
+                         chick_var,
+                         chick_sd,
+                         chick_se)
+
+diet_stats
+```
+
+
+Now you have a data frame that contains summary statistics describing your dataset that might be useful in a report. 
+
+## Data visualization
+
+Lets visualize the data that we have just been investigating
+
+For visualizing a single variable:
+
+$$\text{plot type(~variable, data= dataset)}$$
+
+For visualizing two variables: 
+
+$$\text{plot type(variable y ~ variable x, data= dataset)}$$
+
+Because we are using the `ggformula` package the plotting functions that we will use will be preceded by `gf_` so for a boxplot we will use `gf_boxplot()` for a bar chart we use `gf_bar()`
+
+**Create a bar chart to show how many observations there are in each diet category**
+
+```{r, eval = FALSE}
+gf_bar(~Diet, data = diet_dat)
+```
+
+Make some changes to the plot so that it looks something like this:
+
+```{r, echo = FALSE}
+gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>% 
+  gf_labs( y = "Chicks (n)") %>% 
+  gf_theme(theme_minimal())
+
+```
+
+You will need to:
+
+ + add a `fill=` argument to the plot to colour the bars by diet
+ + use the `gf_labs()` function to change the label of the Y axis
+ + use the `gf_theme()` function to change the background
+ 
+Remember you will need to use the pipe `%>%` (`r emo::ji("package")` dplyr) to join the functions together.
+
+As an extra challenge you can modify the colours using the `gf_refine()` and `scale_fill_manual()` functions to change the colours to four of your favorites.
+
+**REMEMBER** to comment your code so that you can understand it in future (or refer back to it later on in this practical)
+
+If you get stuck the code below gives an example of how to achieve the desired plot.
+You do not have to choose the same colours as we have included here, use [colour brewer](https://colorbrewer2.org/#type=diverging&scheme=PuOr&n=4) for colour pallet suggestions which helpfully suggests colour palettes that are colourbind friendly
+
+```{r, eval = FALSE}
+# creating the bar chart 
+gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>%  # THEN
+  gf_labs( y = "Chicks (n)") %>%                 #change the labels
+  gf_theme(theme_minimal()) %>%                  #change the theme
+  gf_refine(scale_fill_manual(values = c("#e66101","#fdb863","#b2abd2","#5e3c99"))) 
+# colours can be specified by name or by hex code, you can google hex colour picker to help you choose or take them from the colour brewer website linked above
+```
+
+*modify the below boxplot*
+
+1. Alter the plot type from boxplot to violin plot
+2. Add data points that are shaped according to the diet the `gf_sina()` function will be useful
+3. Modify the labels so that the units (g) are displayed with the weight
+4. Modify the theme and colours to match the bar plot you previously made
+5. *Bonus task* fill the violins with colour and alter the transparency using `alpha()`
+
+```{r, echo = FALSE}
+gf_boxplot(weight~Diet, data = diet_dat)
+```
+
+You might notice that the arguments `fill` and `colour` do slightly different things depending on the geometry (the violin or the points) that you are dealing with, play around with them to see what the differences are.
+
+You should end up with a plot that looks like the one below
+
+```{r}
+gf_violin(weight~Diet, colour = ~Diet, fill= ~Diet, alpha = 0.3,data = diet_dat) %>%       # THEN
+  gf_sina(shape = ~Diet, colour= ~Diet) %>%      #add points THEN
+  gf_labs(y = "Weight (g)") %>%                  #change the labels THEN
+  gf_theme(theme_minimal()) %>%                  #change the theme THEN
+  gf_refine(scale_colour_manual(values = c("#e66101","#fdb863","#b2abd2","#5e3c99"))) %>%
+  gf_refine(scale_fill_manual(values = c("#e66101","#fdb863","#b2abd2","#5e3c99")))
+```
+
+
+#### Using the `growth_dat` data
+
+Using the skills that you have acquired during this practical, investigate the `gowth_dat` object that we created at the start.
+
+Plot trajectories of the mean growth of chicks being fed each diet across the experimental time period 
+
+The `gf_line()` function will be of use, remember if you get stuck consult the help files.
+
+Use the skills that you have just been practicing to modify the plot so that it has the same overall appearance (colours and theme) as the previous plots.
+
+```{r,echo= FALSE}
+growth_dat <- read.csv("Data/Chick_growth.csv")
+ gf_line(Weight~Time, colour = ~Diet, data = growth_dat) %>%       # THEN
+  gf_labs(x = "Day",y = "Weight (g)") %>%                  #change the labels THEN
+  gf_theme(theme_minimal()) %>%                  #change the theme THEN
+  gf_refine(scale_colour_manual(values = c("#e66101","#fdb863","#b2abd2","#5e3c99"))) 
+```
+
+
+
+## Export data and plots
+
+Now that you have created some summary data and plots that describe the dataset you need to export them to be able to put them in a report.
+
+Export the data frame that you created detailing the mean, median, variance, standard deviation and standard error of chick weights. 
+
+Data frames can be exported by writing a file with the `write.csv()` function.
+The arguments of the `write.csv()` function are the name of the `object` that you want to export and the `filepath` including the file name of the data file that you want to create. 
+
+```{r, eval = FALSE}
+# note that the file path specifies that the file should be created in the Data folder
+write.csv(my_data_frame, "Data/Chick_summary.csv")
+```
+
+You should now see the file that you have just created in your file explorer, you can open the file in excel  and use this to create a table that you can import into a word document. 
+
+Plots can be saved  from the plots pane.
+Use the arrows to navigate through the plots to find the ones that you want to save such as the bar chart of number of chicks in each category, the violin plot of chick weights and the plot of chick growth through time. 
+For each plot that you want to save click `Export` then `save as image` in the preview pane you can alter the size of the plot and name the file that you want to create.
+
+Finally open a word document and insert the plots and summary table giving each a descriptive caption. Write a short paragraph that describes how the different diets in the study impact the growth of chickens, referring to your figures and tables. 
+
+
+
+
+
+
+
+ 
+

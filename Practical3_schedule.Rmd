@@ -1,0 +1,194 @@
+---
+title: 'Practical 3: Multiple explanatory variables'
+author: "BIO2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+pea_dat <- read.csv("Data/Peas.csv")
+```
+
+Now that we have developed a good understanding of linear models we are going to look at some more complex cases. 
+During this tutorial we are going to recap how to deal with multiple explanatory variables in your analysis.
+
+## Pea growth
+ 
+ We will start by using some data that comes from an experiment investigating the effect of different fertilizers on the yield of peas.
+ The data are contained within the `Peas.csv` file.
+ Load the data in to R and assign it to an object called `pea_dat` that you can inspect using the functions that you have learned about in previous practical sessions.
+ 
+ From your inspections of the data what can you learn?
+ 
+```{r}
+#read in data from Peas.csv
+
+#inspect data 
+
+
+```
+ 
+### Lets talk about the data
+ 
+Often when you come to analyse some data you find that the data are stored in a format that is not quite what you want for analysis.
+In such instances you may need to manipulate your data or reshape it so that you can carry out your analyses or create your plots.
+This course is primarily focused on understanding the statistical principles that will enable you to rigorously inspect data that you come across rather than on data manipulation in R.
+That being said it's all very well knowing how to analyse your data but if you can't get your data into the correct format you aren't going to be able to carry out your analyses.
+We will walk you through the transformation here and if you want to learn more data manipulation skills you can work through an online tutorial such as [this](https://datacarpentry.org/R-ecology-lesson/03-dplyr.html).
+The data are currently in what is referred to as `wide format` 
+Use the `head()` function to look at the structure of the data as we currently have it.
+
+```{r echo = FALSE}
+head(pea_dat)
+```
+
+We have columns containing the yield values  resulting from each treatment.
+To compare the effects of the treatments on the yield values it would be more useful to have the yield values as a column alongside a column detailing the treatment.
+This is what is referred to as `long format` data where each row contains a single observation. 
+
+
+```{r echo = FALSE}
+knitr::include_graphics("images/Pivot_longer.png")
+```
+
+You may have noticed that in the previous tutorial we used the `pivot_longer()` function (`r emo::ji("package")` `tidyr`) on some similar data. 
+We are going to use that same function here to switch our data set from `wide` to `long`
+We will create a new object called `pea_dat_long` (so that we can easily compare the two data frames.)so that we retain the original format of the data which might be useful for comparison)
+
+*Remember* you can inspect the help file for the function in the help tab, this will help you to understand what arguments the function is expecting
+
+```{r}
+# remember to load the tidyr package 
+library(tidyr)
+
+# reshape the data
+pea_dat_long <- pivot_longer(
+  pea_dat,
+  cols = NitroGrow:Control,
+  names_to = "Treatment",
+  values_to = "Yield"
+)
+```
+
+Here we have specified our data to be the `pea_dat` data frame, we tell R that the columns that we want to alter are those from `NitroGrow` to (`:`) `Control`, the function then takes those column names and adds them to the new column that we have named `Treatment` and adds the values that were contained in the original data  to the new `Yeild` column.
+
+
+### Investigate using a linear model 
+
+Now that you have your data in long format you should be able to:
+
+ + Create a plot that details the differences in yield across different treatments (box plot or violin plot)
+ + Create a linear model in which Yield is your response variable
+ + Check the assumptions of your model are met
+ + Interpret the results of your model 
+ 
+ Refer back to your notes from the previous practical if you need.
+ 
+### Adding an additional explanatory variable 
+ 
+You may notice that these data have the additional variable of Block which refers to the blocked design of the study. 
+The Blocks are numbered 1-6, to include the effect of the Block in your model you will need R to recognize the variable as categorical rather than numerical.
+ 
+Use the `$` to specify the column that you want to alter along with the `as.factor()` function to overwrite the current `Block` variable so that R recognizes it as categorical rather than as numeric.
+ 
+```{r, eval = FALSE}
+#convert the values from numeric to categorical
+pea_dat_long$Block <- as.factor(name_of_your_dataset$column_you_want_to_convert)
+```
+
+```{r echo = FALSE}
+pea_dat_long$Block <- as.factor(pea_dat_long$Block)
+```
+ 
+ 
+ + Create a second linear model that includes Block as an additional explanatory variable 
+ + Compare the ANOVA tables for each model
+ + Write a short paragraph summarizing the results from your investigations of this data set, does the addition of Block as an explanatory variable improve your model?
+ 
+ 
+## Animal weights
+
+```{r echo = FALSE}
+pantheria <- read.csv("Data/Pantheria.csv")
+
+```
+
+Lets switch from pants to animals. 
+The data contained in the `Pantheria.csv` file contains information from the [Pantheria database](https://ecologicaldata.org/wiki/pantheria)
+You have data which details records of weight,head-body length, skull length, home range and density for species from across several families of the order Carnivora.
+
++ Load the data into R and investigate it
++ Generate some summary statistics and plots that describe your data
+
+You can use this data to practice another common data manipulation technique - filtering
+There may be times where we have more data than we want to investigate or plot, in these instances it can be useful to extract only a subset of our data.
+The pantheria data for example contains species from several families of carnivores but you might only be interested in one family of animals.
+In such instances we can use the `filter` function (`r emo::ji("package")` dplyr) to extract only the subset that we are interested in. 
+
+For example if we wanted to create a data frame that contained only information regarding the Canidae (dog) family we could do the following:
+
+```{r,warning= FALSE, message = FALSE}
+#load the package
+library(dplyr)
+#filter the pantheria data to keep only rows where the Family
+#has the value "Canidae"
+dog_dat <- filter(pantheria, Family == "Canidae")
+```
+
+ You will notice that the data are listed as an object in the Environment pane.
+You can inspect an object by clicking on its name, data frames such as that containing information from the `Pantheria.csv` file are displayed in a spreadsheet like manner.
+This can be useful for inspecting the data frame, you can scroll through and see what Families are included in the data frame for example.
+
++ Choose a family to investigate, create a new data frame containing only records from that family
+ + Create a plot of the data that shows the relationship between head-body length and skull length for species in your chosen Family
+ 
+Lets return to the full data set and investigate the relationship between **body size** and **weight**.
+We have measurements of body length and body weight but what is the relationship between the two?
+Do animals get heavier as their bodies get longer?
+
+ + Create a linear model to describe the relationship between body length and body weight
+ + Plot your model and evaluate the model (using summary outputs, qq plots etc.)
+ + Does the model look like a good fit of the data?
+ + How could you improve the fit of your model? 
+ 
+Remember that the relationship might not be linear and might be improved by adding a quadratic term.
+You can investigate the addition of a quadratic term or the addition of Family as a grouping variable.
+Interrogate these models and determine which you think is the most appropriate or most useful. 
+
++ Write a paragraph describing your results, include references to your model statistics and any plots that you think are useful.
+
+
+## Interactions between explanatory variables
+
+As we saw in the previous tutorial our independent variables are not always independent of each other.
+In such cases we may need to account for interactions between variables in our models. 
+
+The `Shrub.csv` file contains information on the heights of shrubs (m) growing in soils that are classified as having Low (0), Medium (1) or High (2)  levels of bacteria present in the soil. 
+The shrubs are also recorded as growing in areas classed as either partial sun (0) or full sun (1).
+
+It would be useful to add an interaction term to the model if we wanted to test the hypothesis that the relationship between the amount of bacteria in the soil on the height of the shrub was different in full sun than in partial sun.
+
+ + Import the data from the `Shrub.csv` file and familiarize yourself with it.
+ + Create some plots of your data, you may what to look for differences between Bacterial loads and sun exposure.
+ 
+ You may have noticed that the data contained in the `Bacteria` and `Sun` variables are coded numerically but are in fact categorical. 
+ 
+ + Re-code the variables so that R recognizes them as categorical rather than numerical
+ + Create a linear model in which shrub height is the response variable
+ + Create a model with the addition of an interaction term between the two explanatory variables
+ 
+ Remember that the syntax for including interaction terms is as follows 
+ 
+```{r, eval = FALSE}
+# the : denotes the interaction
+model <- lm(response~ explan1 + explan2 + explan1:explan2, data = dataset)
+```
+ 
+ + Is the impact of soil bacteria different if a plant is in full or partial sun?
+ + Write a summary of your results including references to model outputs, whether the model assumptions have been met and any figures that you have created. 
+
+
+
+
+
+
