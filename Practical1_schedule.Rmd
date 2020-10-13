@@ -119,11 +119,11 @@ Throughout the rest of this practical we are going to be using functions from tw
 
 `r emo::ji("package")` ggformula
 
-If this is the first time that you are using these packages you will need to download them before loading them in to the library. 
+**If you have already downloaded and installed the 'bio2020' package from the Canvas website then both mosaic and ggformula should already have been installed automatically**. However, if you have not installed bio2020 then you will need to download them before loading them in to the library. 
 
 **Installing packages** is only required the first time that we use the package, because of this we **don't** want this code to be in our script because that might cause us to unnecessarily install the package each time we run the code in this script.
 I know that we said to *always* write your code in a script but the `install.packages()` function is one of the very few exceptions.
-To install the packages you can type the following code directly into the **console**:
+To install the packages you can type the following code directly into the **console**; Note, you should only need to do this if you have **not** installed the 'bio2020' package:
 
 ```{r, eval = FALSE}
 
@@ -141,7 +141,10 @@ Remember the argument to the `library()` function is the name of the package tha
 The top of your script should read something like this:
 
 ```{r, message = FALSE, warning= FALSE}
-# load packages 
+# If you have installed the bio2020 package uncomment the following line
+# library(bio2020)
+
+# If you have not installed bio2020, load packages
 library(mosaic)
 library(ggformula)
 
@@ -310,7 +313,7 @@ gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>%  # THEN
   gf_labs( y = "Chicks (n)") %>%                 #change the labels
   gf_theme(theme_minimal()) %>%                  #change the theme
   gf_refine(scale_fill_manual(values = c("#e66101","#fdb863","#b2abd2","#5e3c99"))) 
-# colours can be specified by name or by hex code, you can google hex colour picker to help you choose or take them from the colour brewer website linked above
+# colours can be specified by name or by hex code (the six-character codes after the # symbols), you can google hex colour picker to help you choose or take them from the colour brewer website linked above
 ```
 
 *modify the below boxplot*
