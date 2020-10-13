@@ -38,6 +38,7 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-# Word or pdf documents
+# Word, html or pdf documents
 *.docx
 *.pdf
+*.html
