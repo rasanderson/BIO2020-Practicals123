@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo = FALSE, message=FALSE,warning= FALSE}
 library(dplyr)
-
 ```
 
 ## Setting up for practical classes
@@ -77,9 +76,7 @@ knitr::include_graphics("images/Rkitchen.png")
 Remember that the argument to the `read.csv()` function is the path to the file eg.
 
 ```{r}
-
 diet_dat <- read.csv("Data/Chick_Diet.csv")
-
 ```
 
 <!-- Note for demonstrator, if they have trouble reading in the data file check where the script file is saved, if it's in a sub-folder of the project the code specifying the file path will need to escape that sub-folder first using ../ so they need  read.csv("../Data/Chick_Diet.csv")-->
@@ -97,13 +94,10 @@ Use these functions to answer the following questions about the data
 ```{r, eval = FALSE, echo= TRUE}
 # reading in the Chick_Diet data file 
 diet_dat <- read.csv("Data/Chick_Diet.csv")
-
 #checking the data
 head(diet_dat)
-
 #inspecting the structure of the data
 str(diet_dat) 
-
 ```
 
  
@@ -128,7 +122,6 @@ I know that we said to *always* write your code in a script but the `install.pac
 To install the packages you can type the following code directly into the **console**; Note, you should only need to do this if you have **not** installed the 'bio2020' package:
 
 ```{r, eval = FALSE}
-
 install.packages("mosaic")
 install.packages("ggformula")
 ```
@@ -145,11 +138,9 @@ The top of your script should read something like this:
 ```{r, message = FALSE, warning= FALSE}
 # If you have installed the bio2020 package uncomment the following line
 # library(bio2020)
-
 # If you have not installed bio2020, load packages
 library(mosaic)
 library(ggformula)
-
 # reading in the Chick_Diet data file 
 diet_dat <- read.csv("Data/Chick_Diet.csv")
 ```
@@ -175,15 +166,11 @@ For each group we can calculate statistics such as the mean and median
 
 ```{r}
 mean(weight~Diet, data = diet_dat)
-
 median(weight~Diet, data = diet_dat)
-
 ```
 
 ```{r, echo= FALSE}
-
 chick_mean <- mean(weight~Diet, data = diet_dat)
-
 chick_med <- median(weight~Diet, data = diet_dat)
 ```
 
@@ -199,7 +186,6 @@ Thankfully because we are doing our analysis in R we don't have to calculate mea
 ```{r}
 # calcualating variance for each group
 var(weight~Diet, data = diet_dat)
-
 #calculating standard deviation for each group
 sd(weight~Diet, data = diet_dat)
 ```
@@ -211,7 +197,6 @@ Now that we have this useful information lets make sure that we keep it.
 ```{r}
 # calcualating variance for each group
 chick_var <- var(weight~Diet, data = diet_dat)
-
 #calculating standard deviation for each group
 chick_sd <- sd(weight~Diet, data = diet_dat)
 ```
@@ -228,7 +213,6 @@ Again there is no need to count the number of observations in each group by hand
 ```{r}
 #creating favstats table
 fav_dat <- favstats(weight~Diet, data = diet_dat)
-
 # inspect the contents of fav_dat
 fav_dat
 ```
@@ -258,7 +242,6 @@ diet_stats <- data.frame(chick_mean,
                          chick_var,
                          chick_sd,
                          chick_se)
-
 diet_stats
 ```
 
@@ -291,7 +274,6 @@ Make some changes to the plot so that it looks something like this:
 gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>% 
   gf_labs( y = "Chicks (n)") %>% 
   gf_theme(theme_minimal())
-
 ```
 
 You will need to:
@@ -307,15 +289,14 @@ As an extra challenge you can modify the colours using the `gf_refine()` and `sc
 **REMEMBER** to comment your code so that you can understand it in future (or refer back to it later on in this practical)
 
 If you get stuck the code below gives an example of how to achieve the desired plot.
-You do not have to choose the same colours as we have included here, use [colour brewer](https://colorbrewer2.org/#type=diverging&scheme=PuOr&n=4) for colour pallet suggestions which helpfully suggests colour palettes that are colourbind friendly
+There are many colours to choose from which can be found online: https://www.datanovia.com/en/blog/awesome-list-of-657-r-color-names/
 
 ```{r, eval = FALSE}
 # creating the bar chart 
 gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>%  # THEN
   gf_labs( y = "Chicks (n)") %>%                 #change the labels
   gf_theme(theme_minimal()) %>%                  #change the theme
-  gf_refine(scale_fill_manual(values = c("#e66101","#fdb863","#b2abd2","#5e3c99"))) 
-# colours can be specified by name or by hex code (the six-character codes after the # symbols), you can google hex colour picker to help you choose or take them from the colour brewer website linked above
+  gf_refine(scale_fill_manual(values = c("blue", "red", "yellow", "green"))) 
 ```
 
 *modify the below boxplot*
@@ -335,18 +316,18 @@ You might notice that the arguments `fill` and `colour` do slightly different th
 You should end up with a plot that looks like the one below
 
 ```{r}
-gf_violin(weight~Diet, colour = ~Diet, fill= ~Diet, alpha = 0.3,data = diet_dat) %>%       # THEN
+gf_violin(weight~Diet, colour = ~Diet, fill= ~Diet, alpha = 0.3, data = diet_dat) %>%       # THEN
   gf_sina(shape = ~Diet, colour= ~Diet) %>%      #add points THEN
   gf_labs(y = "Weight (g)") %>%                  #change the labels THEN
   gf_theme(theme_minimal()) %>%                  #change the theme THEN
-  gf_refine(scale_colour_manual(values = c("#e66101","#fdb863","#b2abd2","#5e3c99"))) %>%
-  gf_refine(scale_fill_manual(values = c("#e66101","#fdb863","#b2abd2","#5e3c99")))
+  gf_refine(scale_colour_manual(values = c("blue", "red", "yellow", "green"))) %>%
+  gf_refine(scale_fill_manual(values = c("blue", "red", "yellow", "green")))
 ```
 
 
 #### Using the `growth_dat` data
 
-Using the skills that you have acquired during this practical, investigate the `gowth_dat` object that we created at the start.
+Using the skills that you have acquired during this practical, investigate the `growth_dat` object that we created at the start.
 
 Plot trajectories of the mean growth of chicks being fed each diet across the experimental time period 
 
@@ -359,7 +340,7 @@ growth_dat <- read.csv("Data/Chick_growth.csv")
  gf_line(Weight~Time, colour = ~Diet, data = growth_dat) %>%       # THEN
   gf_labs(x = "Day",y = "Weight (g)") %>%                  #change the labels THEN
   gf_theme(theme_minimal()) %>%                  #change the theme THEN
-  gf_refine(scale_colour_manual(values = c("#e66101","#fdb863","#b2abd2","#5e3c99"))) 
+  gf_refine(scale_colour_manual(values = c("blue", "red", "yellow", "green"))) 
 ```
 
 
@@ -386,11 +367,4 @@ For each plot that you want to save click `Export` then `save as image` in the p
 
 Finally open a word document and insert the plots and summary table giving each a descriptive caption. Write a short paragraph that describes how the different diets in the study impact the growth of chickens, referring to your figures and tables. 
 
-
-
-
-
-
-
- 
 
