@@ -2,6 +2,7 @@
 title: 'Practical 1: Data import Summary and display'
 author: "BIO2020"
 output:
+  word_document: default
   html_document:
     df_print: paged
 ---
@@ -115,15 +116,15 @@ Throughout the rest of this practical we are going to be using functions from tw
 
 `r emo::ji("package")` ggformula
 
-**If you have already downloaded and installed the 'bio2020' package from the Canvas website then both mosaic and ggformula should already have been installed automatically**. However, if you have not installed bio2020 then you will need to download them before loading them in to the library. 
+**You may have already installed these packages, as well as the `bio2020` package using the instructions at [Getting Started](https://ncl.instructure.com/courses/23926/pages/the-bio2020-r-package). If so, then you can 'load' them all via `library(bio2020)` ** 
 
 **Installing packages** is only required the first time that we use the package, because of this we **don't** want this code to be in our script because that might cause us to unnecessarily install the package each time we run the code in this script.
 I know that we said to *always* write your code in a script but the `install.packages()` function is one of the very few exceptions.
-To install the packages you can type the following code directly into the **console**; Note, you should only need to do this if you have **not** installed the 'bio2020' package:
+To install the packages you can type the following code directly into the **console**. You may already have installed these via the instructions at [Getting Started](https://ncl.instructure.com/courses/23926/pages/the-bio2020-r-package) in which case there is no need to repeat them.
 
 ```{r, eval = FALSE}
 install.packages("mosaic")
-install.packages("ggformula")
+install.packages("ggformula") # ggformula should be automatically installed by mosaic
 ```
 
 Or you can navigate to the packages tab, click the install button and type the name of the package that you want to install. 
@@ -133,18 +134,20 @@ It is best practice to load packages at the start of your script, so go to the t
 
 Remember the argument to the `library()` function is the name of the package that you want to load
 
-The top of your script should read something like this:
+The top of your script should read something like this; `#` symbol indicates a comment:
 
 ```{r, message = FALSE, warning= FALSE}
-# If you have installed the bio2020 package uncomment the following line
+# If you have installed the bio2020 package uncomment the following line; bio2020 loads all needed packages
 # library(bio2020)
-# If you have not installed bio2020, load packages
+# If you have installed bio2020, comment the following 2 lines with # symbols as no need to load packages
 library(mosaic)
 library(ggformula)
+
 # reading in the Chick_Diet data file 
 diet_dat <- read.csv("Data/Chick_Diet.csv")
 ```
 
+The line shown as `diet_dat <- read.csv("Data/Chick_Diet.csv")` imports your .csv file into RStudio, into an R "object" called `diet_dat` known as a "data.frame". A data.frame is basically a table of data, and is how most raw data is held within an R session. **Note** R is case sensitive, so `diet_dat` and `Diet_dat` are not the same.
 
 ## Summary statistics
 
@@ -184,9 +187,9 @@ Thankfully because we are doing our analysis in R we don't have to calculate mea
 **Calculate the variance and standard deviation for each group using the functions `var()` and `sd()`**
 
 ```{r}
-# calcualating variance for each group
+# calculate variance for each group
 var(weight~Diet, data = diet_dat)
-#calculating standard deviation for each group
+# calculating standard deviation for each group
 sd(weight~Diet, data = diet_dat)
 ```
 
@@ -206,7 +209,7 @@ Remember that we also discussed Standard Error as a useful measure that can be c
 $$se = \frac{\sigma}{\sqrt{n}}$$
 
 We have already calculated the variance but for the calculation of se we need to know n, the number of observations in our group.
-Again there is no need to count the number of observations in each group by hand, lets use the `favstats()` function which also computes some other useful measures that we might be interested in.
+Again there is no need to count the number of observations in each group by hand, lets use the `favstats()` function which also computes some other useful measures that we might be interested in. The name `favstats()` refers to "favorite statistics"!
 
 **Create an object and assign the output of `favstats()` to that object**
 
@@ -217,17 +220,17 @@ fav_dat <- favstats(weight~Diet, data = diet_dat)
 fav_dat
 ```
 
-Remember that we can access single columns using the `$` sign, so to calculate se we want R to use `fav_dat$n` in our calculation, we can substitute this as well as the values that we already calculated for sd `chick_sd` into the equation
+The results of your `favstats()` function are stored in a data frame with several columns. We can access single columns using the `$` sign. The column headed `n` contains the number of observations, and you need this in order to convert standard deviations into standard errors. To calculate se we want R to use `fav_dat$n` in our calculation, we can substitute this as well as the values that we already calculated for sd `chick_sd` into the equation
 
 ```{r}
 chick_se <- chick_sd/(sqrt(fav_dat$n))
 ```
 
-**Add some notes about the above code as comments to demonstrate that you understand what each bit is doing**
+**Modify your R code as you build up your script. Include additional comments using `#` symbols, so that if you come back after 6 months you will still understand the R script. Add some notes about the above code as comments to demonstrate that you understand what each bit is doing. **
 
 #### Creating a data frame 
 
-We learned that we can use the `c()` function to create vectors and the `data.frame()` function to joint them together ad data frames.
+We can use the `c()` function to create a vector (a line of numbers) and the `data.frame()` function to joint them together as data frames (a data frame is a table of data).
 Using the `data.frame()` function create a data frame that contains the objects that you have just created as well as the mean and median for each group that you created earlier
 
  + `chick_mean`
@@ -337,10 +340,10 @@ Use the skills that you have just been practicing to modify the plot so that it 
 
 ```{r,echo= FALSE}
 growth_dat <- read.csv("Data/Chick_growth.csv")
- gf_line(Weight~Time, colour = ~Diet, data = growth_dat) %>%       # THEN
-  gf_labs(x = "Day",y = "Weight (g)") %>%                  #change the labels THEN
-  gf_theme(theme_minimal()) %>%                  #change the theme THEN
-  gf_refine(scale_colour_manual(values = c("blue", "red", "yellow", "green"))) 
+ gf_line(Weight~Time, colour = ~Diet, data = growth_dat) %>%  # THEN
+  gf_labs(x = "Day",y = "Weight (g)") %>%                     # change the labels THEN
+  gf_theme(theme_minimal()) %>%                               # change the theme to a simple one THEN
+  gf_refine(scale_colour_manual(values = c("blue", "red", "yellow", "green"))) # define colours
 ```
 
 
@@ -359,12 +362,12 @@ The arguments of the `write.csv()` function are the name of the `object` that yo
 write.csv(my_data_frame, "Data/Chick_summary.csv")
 ```
 
-You should now see the file that you have just created in your file explorer, you can open the file in excel  and use this to create a table that you can import into a word document. 
+You should now see the file that you have just created in your file explorer, you can open the file in Excel  and use this to create a table that you can import into a Microsoft Word document. 
 
 Plots can be saved  from the plots pane.
 Use the arrows to navigate through the plots to find the ones that you want to save such as the bar chart of number of chicks in each category, the violin plot of chick weights and the plot of chick growth through time. 
 For each plot that you want to save click `Export` then `save as image` in the preview pane you can alter the size of the plot and name the file that you want to create.
 
-Finally open a word document and insert the plots and summary table giving each a descriptive caption. Write a short paragraph that describes how the different diets in the study impact the growth of chickens, referring to your figures and tables. 
+Finally open a Word document and insert the plots and summary table giving each a descriptive caption. Write a short paragraph that describes how the different diets in the study impact the growth of chickens, referring to your figures and tables. 
 
 
