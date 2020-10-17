@@ -12,52 +12,43 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 library(dplyr)
 library(palmerpenguins)
 library(ggformula)
+library(mosaic)
+```
+
+# Continuous explanatory variables
+
+We will start by looking at the `caterpillars` data set that we were using in the interactive website for linear models with continuous explanatory variables. 
+
+The `caterpillars` data are available on Canvas and should be downloaded and saved in you BIO2020 Data folder. 
+
+We need to load the data into R and store it in an object so we can access it easily.
+
+```{r}
+
+caterpillar_dat <- read.csv("Data/caterpillars.csv")
 
 ```
 
-For this practical we will be revisiting the `penguins` data set that we were using in the introductory data visualization tutorial. 
 
-The `penguins` data are contained in a package called `r emo::ji("package")``palmerpenguins` so rather than importing the data from a `.csv` file we simply need to install and load the package.
-
-**Remember** that the first time we use a package on a computer we need to install it (and we only need to do this once) and that we usually put this code directly in to the console
-
-Once you have installed `r emo::ji("package")``palmerpenguins` you need to load it using the `library()` function
-
-Once the package has been loaded the dataset, which is called `penguins` will be available to use.
-
-Because the data are associated with the package you will notice that you can interrogate the `penguins` object but that it does not appear in your environment pane. 
-
-Using the functions that you learned in the first practical familiarise yourself with the `penguins` data. 
+Using the functions that you learned in the first practical familiarise yourself with the `caterpillars` data. 
 
 ```{r, eval= FALSE}
 # see the first 6 rows of the data frame
-head(penguins)
-
+head(caterpillar_dat)
 # check the dimensions of the data frame
-dim(penguins)
-
+dim(caterpillar_dat)
 ```
 
-For each variable within the dataset note whether it is continuous or categorical
+We can see that this data set contains 2 continuous variables; growth and tannin
 
- + Species
- + Island
- + Bill length
- + Bill depth
- + Flipper length
- + Body mass
- + Sex
- + Year
+### Linear Model
 
-## Continuous explanatory variables
+We will start with a linear model to investigate the relationship between our two variables.
 
-We will start with a linear model to investigate the relationship between Flipper length and body mass.
-
-Firstly lets plot the data for these two variables, using a scatter plot with our explanatory variable of Flipper length on the x axis.
+Firstly lets plot the data for these two variables, using a scatter plot with our explanatory variable of tannin on the x axis.
 
 ```{r echo = FALSE}
-
-gf_point(body_mass_g~flipper_length_mm, data = penguins)
+gf_point(growth~tannin, data = caterpillar_dat)
 ```
 
 From this plot can you estimate:
@@ -73,18 +64,18 @@ You will remember from the tutorial that the standard syntax for a linear model 
 
 The function that we use in R is `lm()` 
 
-**Create a linear model of flipper length and body mass**
+**Create a linear model of tannin and growth**
 
-**Store the outputs of your linear model as an object called `mass_lm` that you can interrogate**
+**Store the outputs of your linear model as an object called `growth_lm` that you can interrogate**
 
 ```{r, echo = FALSE}
-flip_lm <- lm( body_mass_g~flipper_length_mm, data = penguins)
+growth_lm <- lm(growth~tannin, data = caterpillar_dat)
 ```
 
 Use the `summary()` function to investigate the outputs of your linear model 
 
 ```{r}
-summary(flip_lm)
+summary(growth_lm)
 ```
 
 Were your expectations correct? Using the summary information from your model answer the following questions:
@@ -104,10 +95,8 @@ Add the fitted line from the linear model to your scatterplot using the `gf_lm()
 Remember that when adding a layer to your plot you will need to use the pipe ` %>% ` which can be created using the keyboard shortcut *Ctrl* + *shift* + *m* (*cmd* + *shift* + *m* on mac)
 
 ```{r, echo = TRUE, eval = FALSE}
-
 gf_point(body_mass_g~flipper_length_mm , data = penguins) %>% 
         gf_lm()
-
 ```
 
 Using the lessons learned in the last practical can you tidy this plot up by: 
@@ -119,18 +108,18 @@ Using the lessons learned in the last practical can you tidy this plot up by:
 Refer back to your script from the previous practical if you need a reminder of how to do this
 
 ```{r echo = FALSE}
-gf_point(body_mass_g~ flipper_length_mm, data = penguins) %>% 
+gf_point(growth~tannin, data = caterpillar_dat) %>% 
         gf_lm(colour = "#e66101") %>% 
-        gf_labs(x = "Flipper length (mm)", y = "Body mass (g)") %>%                
+        gf_labs(x = "Tannin", y = "Growth") %>%                
   gf_theme(theme_minimal())
 ```
 
 
 ### Calculate fitted values for new inputs 
 
-You will remember from the tutorial that the fitted or "predicted" values are those along the straight line that you have plotted using `gf_lm()` and that these values are stored in the model output under the `fitted.values` option which you can access by typing `flip_lm$fitted.values` once you have created your model object.
+You will remember from the tutorial that the fitted or "predicted" values are those along the straight line that you have plotted using `gf_lm()` and that these values are stored in the model output under the `fitted.values` option which you can access by typing `growth_lm$fitted.values` once you have created your model object.
 
-Using the model that you have created you need to determine the fitted value for a penguin that with a flipper length of **160mm**
+Using the model that you have created you need to determine the fitted value for a caterpillar with a tannin level of **3.5**
 
 Remember that you can use R as a calculator to work out the fitted value using the formula:
 
@@ -147,9 +136,9 @@ The argument to your `makeFun()` function will be the name of your model
 Check the predicted value by giving your new `predictor()` function the new input value of 160mm
 
 ```{r}
-flip_lm <- lm(body_mass_g~ flipper_length_mm , data = penguins)
-predictor <- makeFun(flip_lm)
-predictor(160)
+growth_lm <- lm(growth~tannin, data = caterpillar_dat)
+predictor <- makeFun(growth_lm)
+predictor(3.5)
 ```
 
 Are the values that you obtained the same?
@@ -166,10 +155,8 @@ You will note here that you don't need to specify the data because in this case 
 
 ```{r}
 #Extract residuals and assign them to an object
-res <- residuals(flip_lm)
-
+res <- residuals(growth_lm)
 gf_histogram(~res)
-
 ```
 
 A simpler way of checking the distribution of the residuals is to use a QQ plot, we can use the `gf_qq()` function to plot the residual data sorted from highest to lowest and we can add the theoretical expectation using `gf_qqline()` function. 
@@ -182,26 +169,38 @@ gf_qq(~res) %>%
 
 **Write a paragraph to explain the results, what does the model tell you about the relationship between the two variables, is the assumption of normal residuals met? Refer to the figures that you have generated to explain your results.**
 
-## Categorical explanatory variable
+# Categorical explanatory variable
 
 We have just run through a model where the explanatory variable was continuous, however there are often cases where we want to investigate categorical variables.
 
-From the `penguins` data there are several categorical variables, `species`, `island` and `sex` are all variables that might be interesting to investigate.
+Now let's look at the `crop growth` data set. This data is also available to download from canvas and should be stored in your Data folder. Load it in the same way as the `caterpillars` data set and investigate its variables and structure. 
 
-Lets look at `species` as an explanatory variable again using body mass as our response variable.
+```{r}
+
+crop_growth <- read.csv("Data/crop_growth.csv")
+
+head(crop_growth)
+
+dim(crop_growth)
+```
+
+This time we have one continous variable `yield`, and one categorical variable `soil`.
+
+Lets look at `soil` as an explanatory variable and use `soil` as our response variable.
 
 ### Explore the data
 
-Let's start by calculating some summary statistics for each species, remember that the easiest way to do this is to use functions from the `r emo::ji("package")` `mosaic` package. 
+Let's start by calculating some summary statistics for each type of soil, remember that the easiest way to do this is to use functions from the `r emo::ji("package")` `mosaic` package. 
 To do this you will need to load the package using the `library()` function.
 
  + Calculate the mean (and sd) weight for each species 
  + Create a boxplot or even better a violin plot that shows the distribution of the weight data for each species 
  
 ```{r, echo = FALSE}
-gf_violin(body_mass_g~species, data = penguins) %>% 
-  gf_sina(colour = ~species, alpha = 0.3) %>%
-  gf_labs(x = "Penguin species", y = "Body mass (g)") %>% 
+
+gf_violin(yield~soil, data = crop_growth) %>% 
+  gf_sina(colour = ~soil, alpha = 0.3) %>%
+  gf_labs(x = "Soil type", y = "Crop yield") %>% 
    gf_refine(scale_color_manual(values = c("darkorange", "purple", "cyan4"))) %>%
   gf_theme(theme_minimal())
 ```
@@ -213,31 +212,61 @@ Summarise the model results using the `anova()` function.
 
 ```{r, echo=FALSE}
 #create linear model
-species_lm <- lm(body_mass_g~ species, data = penguins)
+soil_lm <- lm(yield ~ soil, data = crop_growth)
 #summarise output
-anova(species_lm)
+anova(soil_lm)
 ```
 
 Interrogate the differences between species using the `summary()` function and compare the different species using the *Tukey Honest Significant Difference* test
 
 ```{r, eval = FALSE}
-
-TukeyHSD(species_lm)
-
-plot(TukeyHSD(species_lm))
+TukeyHSD(soil_lm)
+plot(TukeyHSD(soil_lm))
 ```
 
-What do the outputs tell you about the differences between species?
+What do the outputs tell you about the differences between soils?
 
-**Don't forget to check your model assumptions** using a histogram or QQ plot of your residuals. 
+**Don't forget to check your model assumptions** using a histogram or QQ plot of your residuals.
+
+# A new data set
+
+Download the `penguins` data set from Canvas and save it to your BIO202O Data folder.
+
+```{r, echo = FALSE}
+
+penguins <- read.csv("Data/penguins.csv")
+
+```
+
+Using the methods described above, investigate the relationship between `body mass` and `species`, where species is the explanatory variable and body mass is the response variable. 
+
+You need to:
+
++ Produce a box plot or violin plot
++ Create a linear model and summarise it
++ Complete a Tukey Honest Significant Difference to look at the differences in body mass between species and plot it
++ Interpret your results
+
+```{r, echo = FALSE, include = FALSE}
+
+gf_violin(body_mass_g~species, data = penguins) %>% 
+  gf_sina(colour = ~species, alpha = 0.3) %>%
+  gf_labs(x = "Soil type", y = "Crop yield") %>% 
+   gf_refine(scale_color_manual(values = c("darkorange", "purple", "cyan4"))) %>%
+  gf_theme(theme_minimal())
+
+```
+
+```{r, echo = FALSE, include = FALSE}
+penguin_lm <- lm(body_mass_g~species, data = penguins)
+anova(penguin_lm)
+```
+
+```{r, echo = FALSE, include = FALSE}
+TukeyHSD(penguin_lm)
+plot(TukeyHSD(penguin_lm))
+```
 
 **Finally compile the results from your investigations today and write a short report summarising your findings, include any figures or tables that support your results.**
-
-
-
-
-
-
-
 
 
