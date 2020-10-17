@@ -15,12 +15,26 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 ```
 
+## Aims and objectives of Practical 1
+The overall aim of this practical is to help you become more familiar with RStudio, what its main panels are for, and some basic summary statistics and visualisations. The specific objectives are to:
+
+1. explain the concept of RStudio projects to allow you to store data, files containing R commands (known as scripts), and the 4 main panels in RStudio
+2. demonstrate the value of .csv files (comma separated files) as these can be read / written by both R and Microsoft Excel
+3. learn how to import data from .csv files into R using some simple R commands, that can be saved in an R script for later re-use
+4. explain how to calculate simple summary statistics of the data you have imported into R
+5. create of some simple summary plots to aid interpretation
+6. show you how these graphs and tables of calculated statistics can be exported to Microsoft Word and Microsoft Excel
+
+We will primarily focus on two datasets: 
+* `Chick_Diet.csv` This contains the final weights of chicks after 21 days on four different diets.
+* `Chick_growth.csv` This shows the average growth rate on each day of all the chicks from day 0 (hatching) to day 21.
+
 ## Setting up for practical classes
 
 We are going to start by creating a Project called BIO2020 to keep all of our work relating to the BIO2020 module together in one place.
 
 Start by opening up R Studio on your computer. 
-To create a new project go to the projects menu, either by clicking the drop-down in the top right hand side of your window (next to where it says `Project: (None)`) or by clicking `File` > `New Project`  
+To create a new project click on the main menu on  `File` > `New Project`  
 
 You should now see this popup window: 
 
@@ -41,11 +55,21 @@ The data files for all of the practical classes are available on Canvas, you sho
 The next step is to create a new `script` to store all of the code for today's practical. 
 In the top left click `file` > `new file` > `R script`
 Click on the save icon `r emo::ji("floppy_disk")` to save this script and give it a meaningful name eg. `Practical_1.R`
-Now we are ready to write some code!
 
-### Running code
+Depending on your system, your RStudio window will roughly look like this:
 
-You might notice that in the tutorials that you completed on your own we ran code by clicking on a big green run code button, when we are working in R Studio it's a little bit different. 
+![RStudio Screen](images/RStudio_screen_practical1.png)
+
+**What are the 4 different components of the screen?**
+
+* Top left. This is the new empty 'script' file `Practical_1.R` that you have just created. You can use this to store your R commands for later re-use. You can put comments after a `#` sign to help remind you what the commands do.
+* Top right. This has several tabs, but the one shown above is the 'Environment' which will show the names of tables of data, the names of results of analyses etc. As you have not done anything yet, it is empty.
+* Bottom right. Again, several tabs. You will often use the 'Plots' and 'Help' tabs. Shown above is the 'Files' tab which shows the `BIO2020.Rproj` file which contains all your settings (colours, font size, zoom level etc.) and your `Practical_1.R` which is also displayed in the top left panel.
+* Bottom left. This is headed 'Console'. You can enter R commands directly into the Console. You can also copy R commands from your `Practical_1.R` script into the Console for re-use. It is this ability to store a set of R commands in a simple script for re-use that is so valuable. 
+
+### Running R commands
+
+You might notice that in the online interactive website tutorials that you completed on your own we ran R code by clicking on a big green run code button, when we are working in RStudio it's a little bit different. 
 
 You write your code in your script (because you have listened to our advice and you know that writing code in the script means you can save it and come back to it later) and there are a couple of ways to *run* the code and you can choose whichever feels best for you. 
 
@@ -55,7 +79,7 @@ You write your code in your script (because you have listened to our advice and 
 
 Either of these actions sends your code to the console where it is executed so that R carries out the instructions that are your code.
 
-## Importing data
+## Importing data from an external file into RStudio
 
 Firstly check that you are working in the project (BIO2020) that you just created, the project icon in the top right hand side of your R studio window should be displaying the name of your project.
 
@@ -65,20 +89,36 @@ For this practical we will be using the following data files:
  + Chick_growth.csv
 
 To use these files we need to load them in to R and store each one in R's memory as an object. 
-Check that you have these files stored in `r emo::ji("file_folder")` Data, the sub-folder of your project.
-If they are there we can start by reading them in to R to get them into the `environment`
+Check that you have these files stored in `r emo::ji("file_folder")` **Data**, the sub-folder of your project. The .csv format is very useful, as it can be imported and exported by both R and Microsoft Excel. If you are curious, try opening one of the files in Excel.
+If they are there we can start by reading them in to R to get them into the `Environment`.
+
+### Cookery with RStudio?
+Some people find a cooking analogy useful to help understand the different components of the RStudio screen!
 
 ```{r, fig.align='center', echo = FALSE}
 knitr::include_graphics("images/Rkitchen.png")
 ```
 
-**Load these data files and store them as objects called `diet_dat` and `growth_dat` using the `read.csv()` function, write your code in the script so that you can save it for future use**
+### Where to type your R commands
+We are now going to show you how to import the data from your .csv files into RStudio and temporarily store them as R "objects" called `diet_dat` and `growth_dat` using the `read.csv()` function. Please write your R comands in the script `Practical_1.R` (top left panel of RStudio). You can save and re-run the script later. You do not actually need to save the temporary R objects `diet_dat` and `growth_dat` as you can re-create them within seconds from your R script. **It is always important to save your script**.
 
-Remember that the argument to the `read.csv()` function is the path to the file eg.
+Remember that the argument to the `read.csv()` function is the path to the file e.g. as follows, assuming you made a `Data` folder. **Important** R is "case-sensitive", so if you put `chick_diet.csv`, `Chick_diet.csv` or `chick_Diet.CSV` etc. you will get an error that R cannot find the file. 
+
+Type the next three lines into the top of your `Practical_1.R` script in the top-left panel of RStudio:
 
 ```{r}
-diet_dat <- read.csv("Data/Chick_Diet.csv")
+# Introduction to R. Basic data handling
+
+diet_dat <- read.csv("Data/Chick_Diet.csv") # Read in diet data
 ```
+
+A few points about the above 4 lines of code
+
+* The first line contains the `#` sign. This tells R to ignore the rest of the line. This is a "comment" and is probably the most important single command you will ever use. I put comments throughout my R scripts, so that when I re-use them months later I understand what they are doing. I generally use the first line to remind myself what the script is going to do.
+* The second line is blank. Students tend to be poor at including blank lines. However, it is a good idea to group a set of related R commands together, and then separate them with one or two blank lines, in the same way that you use paragraphs when writing an essay to structure the text.
+* The third line contains an R function called `read.csv()` which imports the `Chick_Diet.csv` file into the R environment. It takes a single 'argument' in double-quotation marks, namely where the csv file is stored and its name.
+* The third line contains the `<-` symbol that points into `diet_dat`. This means "assign the output the `read.csv()` function into the R table of data called `diet_dat`". If you look at the top-right window of you should notice that the "Environment" tab is no longer empty, but now contains the `diet_dat` table. Tables of data in R are usually known as "data frames" and you will see this term pop up several times in this course.
+* Finally, the third line also contains a comment, but at the end of the line, after the R commands.
 
 <!-- Note for demonstrator, if they have trouble reading in the data file check where the script file is saved, if it's in a sub-folder of the project the code specifying the file path will need to escape that sub-folder first using ../ so they need  read.csv("../Data/Chick_Diet.csv")-->
 
@@ -95,10 +135,11 @@ Use these functions to answer the following questions about the data
 ```{r, eval = FALSE, echo= TRUE}
 # reading in the Chick_Diet data file 
 diet_dat <- read.csv("Data/Chick_Diet.csv")
-#checking the data
+# Display the first few lines of the data
 head(diet_dat)
-#inspecting the structure of the data
-str(diet_dat) 
+# Inspect the structure of the data
+str(diet_dat)
+# Try the nrow(), ncol() and summary() functions
 ```
 
  
