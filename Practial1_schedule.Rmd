@@ -29,7 +29,7 @@ We will primarily focus on two datasets:
 * `Chick_Diet.csv` This contains the final weights of chicks after 21 days on four different diets.
 * `Chick_growth.csv` This shows the average growth rate on each day of all the chicks from day 0 (hatching) to day 21.
 
-This practical assumes you are using RStudio rather than the older RGui interface to R. The RGui interface is, however, **much simpler** and some students prefer to use it instead. The main difference is that you typically write your R scripts in Notepad (or TextEdit on an Apple Mac) and copy-and-paste the R commands into the RGui. If you would prefer to use the RGui please ask myself or one of the demonstrators.
+This practical assumes you are using RStudio rather than the older RGui interface to R. The RGui interface is, however, **much simpler** and some students prefer to use it instead. The main difference is that you typically write your R scripts in Notepad (or TextEdit on an Apple Mac) and copy-and-paste the R commands into the RGui. If you would prefer to use the RGui please ask myself or one of the demonstrators. I have added some notes about using the simpler RGui in the Appendix at the end of the Practical 1 schedule.
 
 ## 1. RStudio projects and the RStudio screen
 ### 1.1 What is a project and how to create one
@@ -114,7 +114,7 @@ Type the next three lines into the top of your `Practical_1.R` script in the top
 diet_dat <- read.csv("Data/Chick_Diet.csv") # Read in diet data
 ```
 
-A few points about the above 4 lines of code
+A few points about the above 3 lines of code
 
 * The first line contains the `#` sign. This tells R to ignore the rest of the line. This is a "comment" and is probably the most important single command you will ever use. I put comments throughout my R scripts, so that when I re-use them months later I understand what they are doing. I generally use the first line to remind myself what the script is going to do.
 * The second line is blank. Students tend to be poor at including blank line(s). However, it is a good idea to group a set of related R commands together, and then separate them with one or two blank lines, in the same way that you use paragraphs when writing an essay to structure the text.
@@ -190,13 +190,15 @@ We can calculate some summary statistics to see if there are differences between
 
 Remember we are using the formula 
 
-$$\text{statistic(variable=group, data=dataset)}$$
+$$\text{simple statistic(variable=group, data=dataset, ...)}$$
 
 Where:
 
-+ **statistic** = the statistic that we want to calculate (mean, median, sd, etc.)
-+ **variable** = the name of the column containing the variable that we are interested in 
-+ **group** = the name of the column containing information by which we want to group the data
++ **simple statistic** = This is our "goal", the statistic that we want to calculate (mean, median, sd, etc.)
++ **variable** = the name of the column containing the response variable. (Optional, but in practice nearly always used)
++ **group** = the name of the column containing information categorical explanatory variable by which we want to group the data
++ **dataset** = the table of data (data frame) you are using
++ **...** = options. Rarely used for simple statistics
 
 For each group we can calculate statistics such as the mean and median
 
@@ -283,30 +285,46 @@ diet_stats
 Now you have a data frame that contains summary statistics describing your dataset that might be useful in a report. 
 
 ## 5. Basic summary plots
+### 5.1 Goal-oriented philosophy
+We can use exactly the same goal-oriented philsophy when developing graphs as with basic statistic described above. For example, if you want to plot one variable against another:
 
-Lets visualize the data that we have just been investigating
+$$\text{plot type(variable y ~ variable x, data= dataset, ...)}$$
 
-For visualizing a single variable:
++ **Plot type** = This is your "goal", in other words a graph.
++ **Variable y** = (optional) The value to be plotted on the vertical y-axis, usually your "response" variable
++ **Variable x** = Value plotted on horizontal axis, usually your "explanatory" variable, either categorical or continuous
++ **Dataset** = Typically a table (data frame)
++ **...** = Options to control colours, groupings etc.
 
-$$\text{plot type(~variable, data= dataset)}$$
+Here your y-variable is plotted on the vertical axis, and your x-variable on the horizontal axis. There may also be times when you only want to plot **one** variable, for example a frequency histogram, or a count of the number of observations. In this case the pattern is as follows, with the `variable` plotted on the horizontal axis, and the vertical axis (e.g. frequency or count) calculated automatically:
 
-For visualizing two variables: 
+$$\text{plot type(~variable, data=dataset)}$$
 
-$$\text{plot type(variable y ~ variable x, data= dataset)}$$
 
-Because we are using the `ggformula` package the plotting functions that we will use will be preceded by `gf_` so for a boxplot we will use `gf_boxplot()` for a bar chart we use `gf_bar()`
+Because we are using the `ggformula` package the plotting functions that we will use will be preceded by `gf_` (graphics formula) so for a boxplot we will use `gf_boxplot()` for a bar chart we use `gf_bar()`, for scatter points `gf_point()` etc. There are links to additional information about `ggformula` on the Canvas website. Plot types you are likely to find particularly useful include:
 
-**Create a bar chart to show how many observations there are in each diet category**
+* `gf_point()` Scatter plot
+* `gf_line()`  Line plot
+* `gf_histogram()` Frequency histogram
+* `gf_bar()` Bar charts
+* `gf_boxplot()` Boxplot
+* `gf_violin()` Violin plots
+* `gf_line()` Line plots
+
+You can also overlay plotting elements on top of each other, change colours, axis titles, add legends etc.
+
+### 5.2 One variable. Simple bar chart
+Here we want to create a simple bar chart showing the number of chicks in each of the four diets on day 21 (`diet_dat`). You may have noticed that there are not quite the same number of chicks present after 21 days in each diet. We don't need to work out the count, as this will be calculated automatically by `gf_bar()` when you only give it one variable: 
 
 ```{r, eval = FALSE}
 gf_bar(~Diet, data = diet_dat)
 ```
 
-Make some changes to the plot so that it looks something like this:
+That was simple, but the graph is a bit dull, and the axis labels could be improved. Let's get rid of the grey background and add some colours too. Note in the following code how we can "chain" one graphics command into the next using the **"pipe" `%>%` symbol**. When you see this, think of the English word "then":
 
 ```{r, echo = FALSE}
 gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>% 
-  gf_labs( y = "Chicks (n)") %>% 
+  gf_labs( y = "Number of chicks (n)", x = "Experimental Diet") %>% 
   gf_theme(theme_minimal())
 ```
 
@@ -316,34 +334,40 @@ You will need to:
  + use the `gf_labs()` function to change the label of the Y axis
  + use the `gf_theme()` function to change the background
  
-Remember you will need to use the pipe `%>%` (`r emo::ji("package")` dplyr) to join the functions together.
+Remember you will need to use the pipe symbol `%>%` to join multiple `gf_` functions together.
 
-As an extra challenge you can modify the colours using the `gf_refine()` and `scale_fill_manual()` functions to change the colours to four of your favorites.
+The above commands uses the default colour scheme, but you may prefer to select your own using the `gf_refine()` and `scale_fill_manual()` functions to change the colours to four of your favorites. There are many colours to choose from which can be found online. [Here is an awesome list of over 650 colours to select](https://www.datanovia.com/en/blog/awesome-list-of-657-r-color-names/). **Note** below extra comments are added to the R script so that you can understand it in future (or refer back to it later on in this practical)
 
-**REMEMBER** to comment your code so that you can understand it in future (or refer back to it later on in this practical)
-
-If you get stuck the code below gives an example of how to achieve the desired plot.
-There are many colours to choose from which can be found online: https://www.datanovia.com/en/blog/awesome-list-of-657-r-color-names/
 
 ```{r, eval = FALSE}
 # creating the bar chart 
 gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>%  # THEN
-  gf_labs( y = "Chicks (n)") %>%                 #change the labels
-  gf_theme(theme_minimal()) %>%                  #change the theme
-  gf_refine(scale_fill_manual(values = c("blue", "red", "yellow", "green"))) 
+  gf_labs( y = "Number of Chicks (n)", x = "Experimental Diet") %>%     #change axis labels
+  gf_theme(theme_minimal()) %>%      #change the theme
+  gf_refine(scale_fill_manual(values = c("blue", "red", "yellow", "green"))) # select some colours
 ```
 
-*modify the below boxplot*
+Have a go at modifying the code to try different colours or different axis labels.
+
+### 5.3 Plot two variables; categorical horizontal axis
+#### 5.3.1 Boxplots
+A boxplot is a very useful summary. It provides the median (horizontal line), a box with the inter-quartile range (75% of the data fall within the box), lines representing 1.5 * the inter-quartile range, and (sometimes) outlier points. It provides a simple yet effective way of summarising the spread of your data, showing where most of the values fall, whether it is skewed etc.
+
+Let us create a boxplot to show chick weight after 21 days on the four different diets, again using the `diet_dat` dataset. We now need two variables, i.e. the y-axis (vertical axis) "response" variable of chick weight:
+
+```{r}
+gf_boxplot(weight~Diet, data = diet_dat)
+```
+
+At the moment the axis labels are just `weight` and `Diet`. Try changing them into something more meaningful, for example the vertical axis to say "Weight (g)" as you should always include units where possible.
+
+#### 5.3.2 Violin plots
+Violin plots have become a popular alternative to boxplots in the last 5 years. You can easily do this. Let's also overlay the points, change the y-axis label, and set the colours. In other words, we are going to:
 
 1. Alter the plot type from boxplot to violin plot
 2. Add data points that are shaped according to the diet the `gf_sina()` function will be useful
 3. Modify the labels so that the units (g) are displayed with the weight
 4. Modify the theme and colours to match the bar plot you previously made
-5. *Bonus task* fill the violins with colour and alter the transparency using `alpha()`
-
-```{r, echo = FALSE}
-gf_boxplot(weight~Diet, data = diet_dat)
-```
 
 You might notice that the arguments `fill` and `colour` do slightly different things depending on the geometry (the violin or the points) that you are dealing with, play around with them to see what the differences are.
 
@@ -354,51 +378,83 @@ gf_violin(weight~Diet, colour = ~Diet, fill= ~Diet, alpha = 0.3, data = diet_dat
   gf_sina(shape = ~Diet, colour= ~Diet) %>%      #add points THEN
   gf_labs(y = "Weight (g)") %>%                  #change the labels THEN
   gf_theme(theme_minimal()) %>%                  #change the theme THEN
-  gf_refine(scale_colour_manual(values = c("blue", "red", "yellow", "green"))) %>%
-  gf_refine(scale_fill_manual(values = c("blue", "red", "yellow", "green")))
+  gf_refine(scale_colour_manual(values = c("blue", "red", "orange", "green"))) %>%
+  gf_refine(scale_fill_manual(values = c("blue", "red", "orange", "green")))
 ```
 
 
-#### Using the `growth_dat` data
+### 5.4 Plot two variables; continuous horizontal axis
+In the previous example the horizontal axis was divided into discrete categories. Often your horizontal axis will be continuous, and line or point plots will be most useful. Let's begin by plotting your chick growth data with `growth_dat` day from day 0 (hatching) to day 21 on the horizontal axis, and weight on the vertical axis:
 
-Using the skills that you have acquired during this practical, investigate the `growth_dat` object that we created at the start.
+```{r}
+gf_point(Weight~Time, data=growth_dat)
+```
 
-Plot trajectories of the mean growth of chicks being fed each diet across the experimental time period 
+The problem with this graph is that it does not indicate that we actually have four different diets. So let's colour the points accordingly:
 
-The `gf_line()` function will be of use, remember if you get stuck consult the help files.
+```{r}
+gf_point(Weight~Time, colour = ~Diet, data=growth_dat)
+```
 
-Use the skills that you have just been practicing to modify the plot so that it has the same overall appearance (colours and theme) as the previous plots.
+Finally, let's join up the points with lines:
+
+```{r}
+gf_point(Weight~Time, colour = ~Diet, data=growth_dat) %>%
+  gf_line()
+```
+
+Use the skills that you have just been practicing to modify the plot so that it has the same overall appearance (colours and theme) as the previous plots. See if you can create something similar to the following:
 
 ```{r,echo= FALSE}
 growth_dat <- read.csv("Data/Chick_growth.csv")
- gf_line(Weight~Time, colour = ~Diet, data = growth_dat) %>%  # THEN
+ gf_line(Weight~Time, colour = ~Diet, data = growth_dat) %>% # THEN
+   gf_point() %>% 
   gf_labs(x = "Day",y = "Weight (g)") %>%                     # change the labels THEN
   gf_theme(theme_minimal()) %>%                               # change the theme to a simple one THEN
-  gf_refine(scale_colour_manual(values = c("blue", "red", "yellow", "green"))) # define colours
+  gf_refine(scale_colour_manual(values = c("blue", "red", "orange", "green"))) # define colours
 ```
 
+Later in the BIO2020 course you will learn how to create fitted lines from models to add to your graphs.
 
+## 6. Export data and plots from R/RStudio to Word or Excel
+### 6.1 Exporting tables of data
+After you have created some summary data and plots that describe the dataset you may to export them to be able to put them in a report.
 
-## Export data and plots
+First, recall `diet_stats` table of summary statistics (a "data frame") that you created earlier. This contains the mean, median, variance, standard deviation and standard error of chick weights. Data frames can be exported by writing a file with the `write.csv()` function, which does the reverse of the `read.csv()` function you used earlier.
 
-Now that you have created some summary data and plots that describe the dataset you need to export them to be able to put them in a report.
-
-Export the data frame that you created detailing the mean, median, variance, standard deviation and standard error of chick weights. 
-
-Data frames can be exported by writing a file with the `write.csv()` function.
 The arguments of the `write.csv()` function are the name of the `object` that you want to export and the `filepath` including the file name of the data file that you want to create. 
 
 ```{r, eval = FALSE}
 # note that the file path specifies that the file should be created in the Data folder
-write.csv(my_data_frame, "Data/Chick_summary.csv")
+write.csv(diet_stats, "Data/Chick_summary.csv")
 ```
 
-You should now see the file that you have just created in your file explorer, you can open the file in Excel  and use this to create a table that you can import into a Microsoft Word document. 
+You should now see the `Chick_summary.csv` file that you have just created in your File Explorer, you can open the file in Excel and use this to create a table that you can import into a Microsoft Word document. 
 
-Plots can be saved  from the plots pane.
+### 6.2 Exporting plots
+Plots can be saved from the RStudio plots pane.
 Use the arrows to navigate through the plots to find the ones that you want to save such as the bar chart of number of chicks in each category, the violin plot of chick weights and the plot of chick growth through time. 
 For each plot that you want to save click `Export` then `save as image` in the preview pane you can alter the size of the plot and name the file that you want to create.
 
 Finally open a Word document and insert the plots and summary table giving each a descriptive caption. Write a short paragraph that describes how the different diets in the study impact the growth of chickens, referring to your figures and tables. 
 
+## Before you exit RStudio
+Make sure you save `Practical_1.R`  When you exit RStudio it will probably prompt you to save the "Workspace" and the "History". Click "No" to these (personally I find these prompts irritating and confusing). The key thing to save is the script of R commands. If you have **not** saved it there will be a small `*` symbol next to its name.
 
+# Appendix
+## Getting help
+I have put some useful guides to online books on the Canvas website, but there are some excellent online tutorials available, including [Coding Club](https://ourcodingclub.github.io/) which has been written by students for students. It does cover lots of advanced stuff (I don't understand it all) as well as the basics of R.
+
+R has its own built in help for functions. These are difficult to understand at first, but as the format is identical in every case they slowly become less daunting. To access the in-built help, put a `?` symbol into the console, followed by the name of the function. For example, in the R package `bio2020` I have written a function called `ordi_identify()` which you will learn how to use in Practical 5. If you wanted to view its help, you would type:
+
+```{r, eval=FALSE}
+?ordi_identify
+```
+
+## Using the traditional RGui
+The main differences are:
+
+* There are no projects. You therefore "manually" have to tell R the name of the folder in which you are working, by clicking on **'File -> Change dir...`** and navigate to the BIO2020 folder
+* Create your R script in Notepad (or TextEdit) and copy-and-paste code into the Console
+* Plots will appear in pop-up windows. Right-click on the pop-up window to save the graph to a file for use in Word.
+* Help for individual R functions will appear in your browser, Chrome (Windows) or Safari (Apple Mac)
