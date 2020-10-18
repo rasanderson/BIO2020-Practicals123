@@ -316,30 +316,30 @@ You can also overlay plotting elements on top of each other, change colours, axi
 ### 5.2 One variable. Simple bar chart
 Here we want to create a simple bar chart showing the number of chicks in each of the four diets on day 21 (`diet_dat`). You may have noticed that there are not quite the same number of chicks present after 21 days in each diet. We don't need to work out the count, as this will be calculated automatically by `gf_bar()` when you only give it one variable: 
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 gf_bar(~Diet, data = diet_dat)
 ```
 
 That was simple, but the graph is a bit dull, and the axis labels could be improved. Let's get rid of the grey background and add some colours too. Note in the following code how we can "chain" one graphics command into the next using the **"pipe" `%>%` symbol**. When you see this, think of the English word "then":
 
-```{r, echo = FALSE}
+```{r, echo = TRUE}
 gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>% 
   gf_labs( y = "Number of chicks (n)", x = "Experimental Diet") %>% 
   gf_theme(theme_minimal())
 ```
 
-You will need to:
+The main changes in the above code were to:
 
  + add a `fill=` argument to the plot to colour the bars by diet
  + use the `gf_labs()` function to change the label of the Y axis
  + use the `gf_theme()` function to change the background
  
-Remember you will need to use the pipe symbol `%>%` to join multiple `gf_` functions together.
+Remember you use the pipe symbol `%>%` to join multiple `gf_` functions together.
 
 The above commands uses the default colour scheme, but you may prefer to select your own using the `gf_refine()` and `scale_fill_manual()` functions to change the colours to four of your favorites. There are many colours to choose from which can be found online. [Here is an awesome list of over 650 colours to select](https://www.datanovia.com/en/blog/awesome-list-of-657-r-color-names/). **Note** below extra comments are added to the R script so that you can understand it in future (or refer back to it later on in this practical)
 
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 # creating the bar chart 
 gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>%  # THEN
   gf_labs( y = "Number of Chicks (n)", x = "Experimental Diet") %>%     #change axis labels
