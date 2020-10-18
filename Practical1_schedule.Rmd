@@ -2,9 +2,9 @@
 title: 'Practical 1: Data import Summary and display'
 author: "BIO2020"
 output:
-  word_document: default
   html_document:
     df_print: paged
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -190,13 +190,13 @@ We can calculate some summary statistics to see if there are differences between
 
 Remember we are using the formula 
 
-$$\text{simple statistic(variable=group, data=dataset, ...)}$$
+$$\text{simple statistic(variable ~ group, data=dataset, ...)}$$
 
 Where:
 
 + **simple statistic** = This is our "goal", the statistic that we want to calculate (mean, median, sd, etc.)
 + **variable** = the name of the column containing the response variable. (Optional, but in practice nearly always used)
-+ **group** = the name of the column containing information categorical explanatory variable by which we want to group the data
++ **group** = the name of the column containing a categorical explanatory variable by which we want to group the data
 + **dataset** = the table of data (data frame) you are using
 + **...** = options. Rarely used for simple statistics
 
