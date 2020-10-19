@@ -15,37 +15,60 @@ library(ggformula)
 library(mosaic)
 ```
 
-# Continuous explanatory variables
+# Introduction
+In this practical you will be introduced to **linear models** which provide a way to assess the relationships between a **response** variable and one or more **explanatory** variable(s). When plotting your data, the response variable is typically placed on the vertical (y) axis, and the explanatory on the horizontal (x) axis. We are thus sticking with our philosophy of
 
-We will start by looking at the `caterpillars` data set that we were using in the interactive website for linear models with continuous explanatory variables. 
+$$\text{goal(response variable ~ explanatory variable(s), data=dataset, ...)}$$
+except that now your goal is a linear model. You can access a linear model using the `lm()` function in R/RStudio. The main aim of this practical are to show you how to use the `lm()` function, using datasets that you will already have seen on the interactive websites at [](https://naturalandenvironmentalscience.shinyapps.io/linear_explan/) and [](https://naturalandenvironmentalscience.shinyapps.io/categorical_explan/). You will also have the opportunity to gain confidence using linear models with a new dataset. Specific objectives are to:
 
-The `caterpillars` data are available on Canvas and should be downloaded and saved in you BIO2020 Data folder. 
+1. understand how to interpret results from linear models with continuous explanatory variables
+2. learn the use of linear models with categorical explanatory variables
+3. practice using multiple comparison tests, to compare different treatment levels
+4. explore these ideas with a new dataset.
+
+Inherent in the idea of linear models is the idea of cause and effect, i.e. your explanatory variables cause some sort of change in your response variable. How do you know which is the response and which is the explanatory? In a "designed experiment", e.g. a laboratory experiment or field plot experiment, the response and explanatory is usually obvious, but sometimes it is less obvious. Take the following examples:
+
+| Response | Explanatory |
+|:---------:|:-----------:|
+| Plant pathogen gene regulation | Fungicide concentration (mg/l) |
+| Mean bird population size | Habitat type (Garden, Arable, Woodland, Heath) |
+| Pollinator diversity | Wildflower diversity |
+
+All linear models have a continuous response variable. By "continuous" the response can be any number (3.4, 1.9, -3 etc., rather than Yes/No, Dead/Alive, or only whole numbers permitted). In the above 3 examples note the following:
+
+* the gene regulation has a continuous explanatory fungicide concentration
+* the average bird population at a site across all surveys has a categorical explanatory habitat type, with four 'levels'
+* Pollinator diversity and wildflower diversity are both continuous. I think it is reasonable to assume that the biodiversity of wildflowers will have a big effect on the pollinators out there, so I've listed wildflower diversity as the explanatory variable. However, some scientists have shown that if the pollinator biodiversity declines sharply, this has a negative effect on the biodiversity of some wildflowers. So in this example the response and explanatory terms are a little more ambiguous.
+
+# 1. Linear models with continuous explanatory variables
+## 1.1. Download data and calculate simple statistics
+We will start by looking at the `caterpillars` data set that we were using in the interactive website for linear models with continuous explanatory variables. The `caterpillars.csv` data are available on Canvas and should be downloaded and saved in you BIO2020 `Data` folder. After you have downloaded the file:
+
+* Open up the `caterpillars.csv` file in Microsoft Excel to have a quick look at it, but ignore any requests to save it in Excel format.
+* Create a new R script, in either Notepad (RGui for Windows), TextEdit (RGui MacBook) or the RStudio script editor (Windows or Mac) and call it `Practical_1.R`. **Note**: Write a suitable comment after a `#` symbol at the top of your script to explain what it is going to do.
+* Write the line `library(bio2020)` in the script, and run it, to activate all the necessary add-on R packages.
 
 We need to load the data into R and store it in an object so we can access it easily.
 
 ```{r}
-
 caterpillar_dat <- read.csv("Data/caterpillars.csv")
-
 ```
 
+If RGui or RStudio does not find the file `caterpillars.csv` check that there are no spelling errors and that your session is in the right place. If you are using RGui you need to manually
 
 Using the functions that you learned in the first practical familiarise yourself with the `caterpillars` data. 
 
 ```{r, eval= FALSE}
 # see the first 6 rows of the data frame
 head(caterpillar_dat)
-# check the dimensions of the data frame
+# check the dimensions of the data frame (numbers of rows and columns)
 dim(caterpillar_dat)
 ```
 
-We can see that this data set contains 2 continuous variables; growth and tannin
+We can see that this data set contains 2 continuous variables; growth and tannin. What is the mean, minimum, maximum value of these two variables (look back to Practical 1 if you have forgotten how to obtain these data).
 
-### Linear Model
-
-We will start with a linear model to investigate the relationship between our two variables.
-
-Firstly lets plot the data for these two variables, using a scatter plot with our explanatory variable of tannin on the x axis.
+## 1.2 Simple visualisation of caterpillar data
+In general it is a good idea to plot your data, to gain an understanding of its characteristics, before running a linear model. As you have two fairly simple variables, a scatter plot with our explanatory variable of tannin on the x axis and growth on the y axis will do.
 
 ```{r echo = FALSE}
 gf_point(growth~tannin, data = caterpillar_dat)
@@ -53,26 +76,28 @@ gf_point(growth~tannin, data = caterpillar_dat)
 
 From this plot can you estimate:
 
- + Will the intercept of the fitted line be positive or negative?
+ + Will the intercept of the fitted line be positive or negative? Recall that the intercept is the value of the y-axis where your fitted line crosses it when the x-axis is zero.
+ + Roughly what do you think the value of the intercept is?
  + Will the gradient of the fitted line be positive or negative?
- 
-Let's create a linear model to see if our expectations were correct.
 
-You will remember from the tutorial that the standard syntax for a linear model is 
+It is always worth doing this visualisation step. Sometimes you will see your scatter of points form a distinct curve, in which case your linear model might need both $x$ and $x^2$ explanatory variables to fit a curve rather than a straight line. It may seem odd that you can fit curves with linear models. The word "linear" simply refers to the fact that you add the various terms together.
+
+## 1.3 Linear model of caterpillar growth data
+Now create a linear model to see if our expectations were correct. You will remember from the tutorial that the standard syntax for a linear model is 
 
 `lm(response_variable ~ explanatory_variable, data = dataframe_name)`
 
-The function that we use in R is `lm()` 
+Create a linear model for the relationship between tannin and caterpillar growth, storing the output of the linear model in an R object called `growth_lm`. Hints:
 
-**Create a linear model of tannin and growth**
-
-**Store the outputs of your linear model as an object called `growth_lm` that you can interrogate**
+* The function that we use in R is `lm()` 
+* To the left of your ~ put your response variable, to the right the explanatory
+* use the `<-` symbols to assign the results of your linear model to `growth_lm`
 
 ```{r, echo = FALSE}
 growth_lm <- lm(growth~tannin, data = caterpillar_dat)
 ```
 
-Use the `summary()` function to investigate the outputs of your linear model 
+Now that you have created your linear model, use the `summary()` function to investigate the outputs of your linear model 
 
 ```{r}
 summary(growth_lm)
@@ -86,36 +111,36 @@ Were your expectations correct? Using the summary information from your model an
  + What proportion of the response value can be explained by the explanatory value?  <!--adjusted rsquared--> 
  + Using the `sqrt()` function can you calculate the correlation coefficient between the variables? <!--sqrt(adjusted r2)-->
  + Is the overall model significant?  <!--Fstatistc-->
+ + What are the p-values for the intercept and slope. How would you write 
 
+### A note on t-statistics
+You will see in the above summary table a column headed `t value`. A brief description of the rather strange t-distribution can be found on the first few pages of [](https://naturalandenvironmentalscience.shinyapps.io/Other_tests/) . The t-distribution is like a fat-tailed normal distribution, and of particular value is the one-sample t-test. This checks whether an estimated value, here your Intercept and slope, is different to zero. If the p-value is **low** then there is a **high probability** that your estimate is **not** zero.
  
-### Plotting the fitted line
+## 1.4 Plotting the fitted line
 
 Add the fitted line from the linear model to your scatterplot using the `gf_lm()` function
 
 Remember that when adding a layer to your plot you will need to use the pipe ` %>% ` which can be created using the keyboard shortcut *Ctrl* + *shift* + *m* (*cmd* + *shift* + *m* on mac)
 
-```{r, echo = TRUE, eval = FALSE}
-gf_point(body_mass_g~flipper_length_mm , data = penguins) %>% 
-        gf_lm()
-```
+Using the lessons learned in the last practical can you improve the plot. First, add one extra lines using the `%>%` symbol to add the fitted line. Then a second to change the axis labels. Then a third to get rid of the grey background. Finally tweak the second line to change the colour of the fitted line. Re-run the lines of commands each time to watch your graph gradually improve in quality.
 
-Using the lessons learned in the last practical can you tidy this plot up by: 
+1. Add a fitted line using `gf_lm()`
+2. Change the axis labels. Hint: `gf_labs()`
+3. Removing the grey plot background. Hint: `gf_theme()` with `theme_minimal()`
+4. Changing the colour of the fitted line to blue. Hint: add a `colour=` option to `gf_lm()`
 
-+ Removing the grey plot background
-+ Altering the axis labels
-+ Changing the colour of the fitted line
-
-Refer back to your script from the previous practical if you need a reminder of how to do this
+Refer back to your script from the previous practical if you need a reminder of how to do this. You should end up with a graph similar to this:
 
 ```{r echo = FALSE}
 gf_point(growth~tannin, data = caterpillar_dat) %>% 
-        gf_lm(colour = "#e66101") %>% 
+        gf_lm(colour = "blue") %>% 
         gf_labs(x = "Tannin", y = "Growth") %>%                
-  gf_theme(theme_minimal())
+        gf_theme(theme_minimal())
 ```
 
+I also quite like the "classic" rather than "minimal" theme. Once you have your R commands working, try changing `theme_minimal()` to `theme_classic()` to see the difference.
 
-### Calculate fitted values for new inputs 
+## 1.5 Calculate predicted values of growth for new values of tannin 
 
 You will remember from the tutorial that the fitted or "predicted" values are those along the straight line that you have plotted using `gf_lm()` and that these values are stored in the model output under the `fitted.values` option which you can access by typing `growth_lm$fitted.values` once you have created your model object.
 
