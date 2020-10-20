@@ -121,9 +121,12 @@ Now some answers (please think about the above questions before reading these!!)
  + You can enter the `sqrt()` function directly in the Console. Again, used the adjusted $R^2$ which should give you a correlation coefficient of `0.888`. There is also a separate `cor()` function to calculate the correlation between any two variables should you need it.
  + Overall model significance is shown by the F-statistic. The higher the F-statistic (30.97), the greater the "significance" of the model, which is reflected by a **lower** p-value (here p=0.0008461). You would write something like "Overall there was a significant negative relationship between caterpillar growth and tannin ($F_{1,7}=30.97,p=0.001$)". **Note**: by convention you provide the **degrees of freedom as subscripts** when reporting F-values, and **3 decimal places** when reporting p-values.
   + The p-value for tannin is given as `0.000846` so to three decimal places it is `0.001`. But what about the p-value for the intercept? This is given as `9.54e-06`. This "exponential" format is a short-hand method of referring to very small numbers, using `e-` or very big numbers, using `e+`. So here we have a very small number, with six zeros, i.e. `0.00000954`. To three decimal places, this is zero, but in reality you **never have a p-value of zero**, there will always be a positive value. So by convention, to three decimal places you would report this as `p<0.001` which can be interpreted as "p is less than 0.001". This is highly significant, because the intercept is a long way from zero with a value of almost 12.
+  
+### 1.3.1 Interactive demonstration of SS, slopes, intercepts
+You may find it useful to look at this [Interactive demonstration](https://naturalandenvironmentalscience.shinyapps.io/how_anova_works/#section-variances-with-continuous-explanatory-variables) of the tannin and caterpillar growth data, where you can see the sums of squares, and the effects of changing the amount of "noise" in your data.
 
-### A note on t-statistics
-You will see in the above summary table a column headed `t value`. A brief description of the rather strange t-distribution can be found on the first few pages of [](https://naturalandenvironmentalscience.shinyapps.io/Other_tests/) . The t-distribution is like a fat-tailed normal distribution, and of particular value is the one-sample t-test. This checks whether an estimated value, here your Intercept and slope, is different to zero. If the p-value is **low** then there is a **high probability** that your estimate is **not** zero.
+### 1.3.2 A note on t-statistics
+You will see in the above summary table a column headed `t value`. A brief description of the rather strange t-distribution can be found on the first few pages of [this interactive website that includes t statistics](https://naturalandenvironmentalscience.shinyapps.io/Other_tests/) . The t-distribution is like a fat-tailed normal distribution, and of particular value is the one-sample t-test. This checks whether an estimated value, here your Intercept and slope, is different to zero. If the p-value is **low** then there is a **high probability** that your estimate is **not** zero.
  
 ## 1.4 Plotting the fitted line
 
@@ -266,7 +269,7 @@ $$\text{simple statistic(variable ~ group, data=dataset, ...)}$$
 Thus, to calculate the mean crop yield for each of the three different soil types, simply issue the command:
 
 ```{r}
-mean(yield~soil, data=crop_growth)
+mean(yield ~ soil, data = crop_growth)
 ```
 
 Using the same idea, calculate:
@@ -276,21 +279,39 @@ Using the same idea, calculate:
 ## 2.3 Visualise your data
 When you are working with a categorical explanatory variable, a good starting point is a boxplot:
 
+```{r}
+gf_boxplot(yield ~ soil, data = crop_growth)
+```
 
+This shows you that the yield data are reasonably well-spread around the median for all three soil types, although there are a couple of outlier observations for clay and sand. Try adding a couple of extra lines to the `gf_boxplot()` function to get a graph similar to:
+
+**Hints**:
++ Add `colour = ~soil` to the `gf_boxplot()` function to get default colours
++ Use `gf_labs()` to modify x and y labels
++ 
+
+```{r, echo=FALSE}
+gf_boxplot(yield ~ soil, data = crop_growth, colour= ~soil) %>% 
+  gf_labs(x = "Broad soil type", y = "Final crop yield") %>% 
+  gf_theme(theme_classic())
+```
+
+
+If you are feeling brave, try and create a violin plot like the following. **Hints**
+
++ Change `gf_boxplot()` to `gf_violin()`
++ Use `gf_sina()` to add the "jittered" observations, with `colour= ~soil` if you want them the same colour as the violins
++ add `draw_quantile = 0.5` to the `gf_violin()` function to draw a horizontal line to show the median (which is the 50% quantile). By using several numbers in the form of `c(0.25, 0.5, 0.75)` you can show the interquartile range which is the main box on a boxplot.
  
 ```{r, echo = FALSE}
-
-gf_violin(yield~soil, data = crop_growth) %>% 
-  gf_sina(colour = ~soil, alpha = 0.3) %>%
-  gf_labs(x = "Soil type", y = "Crop yield") %>% 
-   gf_refine(scale_color_manual(values = c("darkorange", "purple", "cyan4"))) %>%
-  gf_theme(theme_minimal())
+gf_violin(yield~soil, data = crop_growth, colour = ~soil, draw_quantiles = 0.5) %>% 
+  gf_sina(colour = ~soil) %>% 
+  gf_labs(x = "Broad soil type", y = "Final crop yield") %>% 
+  gf_theme(theme_classic())
 ```
  
-### Analyse and interpret the linear model 
-
-Using the `lm()` function and the same syntax as with a continuous variable create a linear model.
-Summarise the model results using the `anova()` function. 
+## 2.4 Analyse and interpret the linear model 
+The format of the `lm()` function is identical syntax as with a continuous variable. The conventional way of displaying the results of the model is through the `anova()` function:
 
 ```{r, echo=FALSE}
 #create linear model
@@ -299,20 +320,77 @@ soil_lm <- lm(yield ~ soil, data = crop_growth)
 anova(soil_lm)
 ```
 
-Interrogate the differences between species using the `summary()` function and compare the different species using the *Tukey Honest Significant Difference* test
+ANOVA stands for "analysis of variance" and you might be wondering how we can test the effect of an explanatory variable using variances. Indeed, where are the variances in the above table (**Hint** There is a column that contains the variance for the soil effect, but it is not labelled 'variance'). If you want a better understanding of how this works, and to play with an interactive that allows you to adjust the number of replicates and how noisy your data are, go to this [Interactive demo of crop yield data](https://naturalandenvironmentalscience.shinyapps.io/how_anova_works/#section-variances-with-categorical-explanatory-variables)
+You can see that the F-value is 4.2447 and the p-value is 0.02495. Which of these do you think best describes the results of the linear model?
 
-```{r, eval = FALSE}
+* The p-value is significant ($p<0.05$). This proves that soil type affects yield ($F=4.2447$)
+* With a p-value of $0.02495$ and F of $4.245$ there was a significant difference in yield with soil type.
+* There was a highly significant effect of soil type on yield ($F=4.245, p=0.025$)
+* Soil type appeared to have a significant effect on yield ($F_{2,27}=4.245,p=0.025$)
+
+Which of the four is the best description of the results and why? Discuss your thoughts with demonstrators and other students on the Microsoft Teams channel for this practical (Section 2).
+
+You might be wondering why we used the `anova()` function rather than `summary()`. The latter can be a little confusing at first sight:
+
+```{r}
+summary(soil_lm)
+```
+
+**Comments**
+
+* The F-statistic and p-value printed at the end are identical to what you obtained with the `anova()` function and give the overall statistical significance of the model.
+* There are three numbers in the `Estimate` column, but only two soil types (loam and sand) are mentioned.
+* The estimate value of `11.500` may look familiar to you. What was the mean yield you calculated earlier for each of the three soil types? The `11.500` is for clay
+* R has put clay as a "baseline" to compare the others with, simply because when the three levels of `clay`, `loam` and `sand` are ordered automatically in alphabetical order, and the one first in the alphabet is used as a baseline. It is possible to manually change the baseline using the `relevel()` function, but this is rarely needed.
+* The estimates for loam and sand are actually the **differences** in yield for `loam` and `sand` compared to `clay`. Cross-check with your calculated means to confirm this is true.
+* The `anova()` and `summary()` functions do not provide an easy way of comparing each soil type with the other two soil types.
+
+
+## 2.5 Multiple comparison tests
+To compare the differences between each soil type we actually need to do comparisons of:
+
+* clay vs loam
+* clay vs sand
+* loam vs sand
+
+We could break our data down into 3 smaller subsets, then re-run 3 separate linear models and check the results. There are two big problems with this:
+
+* It will be very time-consuming. If you have 4, 5 or 6+ categories (levels) in your categorical explanatory variable, the number of sub-comparisons you need to make rapidly becomes unmanagable.
+* The conventional level of statistical signficance is 0.05 or 1 in 20. So if your data are fairly random, with no experimental effect, but you end up doing 10 or more pairwise tests, you have a greater than 50:50 chance of mistakenly saying something is significant, when in reality it is not.
+
+What we need therefore is a way of easily doing multiple comparisons between each of our soil types (levels), without distorting the conventional p=0.05 statistic by running lots of separate linear models. **Multiple comparison tests** provide a solution, as it is a single test, which does all the separate comparisons, and automatically avoids mistakes in the calculation of your p-values. The most commonly used one is the **Tukey Honest Significant Difference** or HSD test:
+
+
+```{r}
 TukeyHSD(soil_lm)
 plot(TukeyHSD(soil_lm))
 ```
 
-What do the outputs tell you about the differences between soils?
+You have two sets of output here, one a table and the other a plot, but they both show the same information. First the table:
 
-**Don't forget to check your model assumptions** using a histogram or QQ plot of your residuals.
+* The column headed `diff` shows the difference in the mean crop yield for each comparison of soil types
+* The columns headed `lwr` and `upr` give the lower and upper 95% confidence intervals of this difference. See [Confidence Intervals](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-confidence-intervals) on the Canvas website if you need a refresher
+* The column headed `p adju` gives the adjusted p-value for this mean, such that:
++ if p is less than 0.05 then we assume that the difference between the two soil types being compared is statistically significant
++ it is an "adjusted" p-value to automatically correct for the multiple tests (3 in this example) that are being done.
 
-# A new data set
+The plot of the Tukey HSD test shows the same information as a graph. In both cases you can see that the only significant pairwise difference is that between sand and loam, where the yield on sand is significantly lower than that on loam. The sand vs loam comparison is the only one where the **95% confidence intervals around the difference between the means does NOT overlap zero**.
 
-Download the `penguins` data set from Canvas and save it to your BIO202O Data folder.
+## 2.6 Check the assumptions of your linear model
+Just as you did with the earlier example for the caterpillar growth and the continuous explanatory variable, so you should check model assumptions by examining the residuals (errors) from your expectations. See if you can produce a QQ plot (quantile-quantile plot) of your residuals similar to the following:
+
+```{r, echo=FALSE}
+soil_resid <- residuals(soil_lm)
+
+gf_qq(~soil_resid) %>% 
+  gf_qqline()
+
+```
+
+As you can see, nearly all of the observed residuals fall nicely along the expected pattern of the residuals (centred around zero), suggesting that a key assumption of a linear model, that the residuals are roughly normally distributed, has been met.
+
+# 3. A new data set for you to explore if you have time or want more practice
+Download the `penguins.csv` data set from Canvas and save it to your BIO2020 `Data` folder. If you want, open it in Microsoft Excel to see what it contains.
 
 ```{r, echo = FALSE}
 
