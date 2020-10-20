@@ -1,7 +1,10 @@
 ---
-title: "Practical 2: Linear models and ANOVA"
+title: 'Practical 2: Linear models and ANOVA'
 author: "BIO2020"
-output: word_document
+output:
+  word_document: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -13,18 +16,21 @@ library(dplyr)
 library(palmerpenguins)
 library(ggformula)
 library(mosaic)
+library(bio2020)
 ```
 
 # Introduction
 In this practical you will be introduced to **linear models** which provide a way to assess the relationships between a **response** variable and one or more **explanatory** variable(s). When plotting your data, the response variable is typically placed on the vertical (y) axis, and the explanatory on the horizontal (x) axis. We are thus sticking with our philosophy of
 
 $$\text{goal(response variable ~ explanatory variable(s), data=dataset, ...)}$$
-except that now your goal is a linear model. You can access a linear model using the `lm()` function in R/RStudio. The main aim of this practical are to show you how to use the `lm()` function, using datasets that you will already have seen on the interactive websites at [](https://naturalandenvironmentalscience.shinyapps.io/linear_explan/) and [](https://naturalandenvironmentalscience.shinyapps.io/categorical_explan/). You will also have the opportunity to gain confidence using linear models with a new dataset. Specific objectives are to:
+except that now your goal is a linear model. You can access a linear model using the `lm()` function in R/RStudio.
 
-1. understand how to interpret results from linear models with continuous explanatory variables
-2. learn the use of linear models with categorical explanatory variables
-3. practice using multiple comparison tests, to compare different treatment levels
-4. explore these ideas with a new dataset.
+# Aims and objectives
+The main aim of this practical are to show you how to use the `lm()` function, using datasets that you will already have seen on the interactive websites at [](https://naturalandenvironmentalscience.shinyapps.io/linear_explan/) and [](https://naturalandenvironmentalscience.shinyapps.io/categorical_explan/). You will also have the opportunity to gain confidence using linear models with a new dataset. **Specific objectives** are to:
+
+1. understand how to interpret results from linear models with **continuous explanatory variables**
+2. learn the use of linear models with **categorical explanatory variables**, and explore multiple comparison tests, to compare different treatment levels
+3. explore these ideas with a **new dataset**.
 
 Inherent in the idea of linear models is the idea of cause and effect, i.e. your explanatory variables cause some sort of change in your response variable. How do you know which is the response and which is the explanatory? In a "designed experiment", e.g. a laboratory experiment or field plot experiment, the response and explanatory is usually obvious, but sometimes it is less obvious. Take the following examples:
 
@@ -390,9 +396,11 @@ gf_qq(~soil_resid) %>%
 As you can see, nearly all of the observed residuals fall nicely along the expected pattern of the residuals (centred around zero), suggesting that a key assumption of a linear model, that the residuals are roughly normally distributed, has been met.
 
 # 3. A new data set for you to explore if you have time or want more practice
-Download the `penguins.csv` data set from Canvas and save it to your BIO2020 `Data` folder. If you want, open it in Microsoft Excel to see what it contains.
+Download the `penguins.csv` data set from Canvas and save it to your BIO2020 `Data` folder. If you want, open it in Microsoft Excel to see what it contains. It is a **huge** dataset with 343 observations about different species of penguins in Antartica. If you have not already done so, please look at [Interactive website on how to visualise data](https://naturalandenvironmentalscience.shinyapps.io/Summary_vis/) which uses this dataset as an example.
 
-```{r, echo = FALSE}
+Read in the dataset in the usual way:
+
+```{r, echo = TRUE}
 
 penguins <- read.csv("Data/penguins.csv")
 
@@ -407,26 +415,44 @@ You need to:
 + Complete a Tukey Honest Significant Difference to look at the differences in body mass between species and plot it
 + Interpret your results
 
-```{r, echo = FALSE, include = FALSE}
+See, for example, if you can produce a graph similar to this (Hint: start with something simple like a boxplot, then gradually add extra lines to improve the plot or modify it):
+
+```{r, echo = FALSE}
 
 gf_violin(body_mass_g~species, data = penguins) %>% 
   gf_sina(colour = ~species, alpha = 0.3) %>%
-  gf_labs(x = "Soil type", y = "Crop yield") %>% 
-   gf_refine(scale_color_manual(values = c("darkorange", "purple", "cyan4"))) %>%
-  gf_theme(theme_minimal())
+  gf_labs(x = "Species of penguin", y = "Body mass (g)") %>% 
+  gf_refine(scale_color_manual(values = c("darkorange", "purple", "cyan4"))) %>%
+  gf_theme(theme_classic())
 
 ```
 
-```{r, echo = FALSE, include = FALSE}
+Run a linear model and check your results:
+
+```{r, echo = FALSE}
 penguin_lm <- lm(body_mass_g~species, data = penguins)
 anova(penguin_lm)
 ```
 
-```{r, echo = FALSE, include = FALSE}
+This is a large dataset, so produce a frequency histogram of the residuals from your model, and a qqplot. If you have successfully installed the `bio2020` package you can store your two plots in separate R objects, and plot them side-by-side using the `multi_plot()` function. Type `?multi_plot` to see help.
+
+```{r, echo=FALSE}
+p1 <- gf_histogram(~residuals(penguin_lm)) %>% 
+  gf_labs(x = "Linear model residuals")
+
+p2 <- gf_qq(~residuals(penguin_lm)) %>% 
+  gf_qqline()
+
+multi_plot(p1, p2, cols=2)
+
+```
+
+Do a multiple comparison test to see which species differ from which:
+
+```{r, echo = FALSE}
 TukeyHSD(penguin_lm)
 plot(TukeyHSD(penguin_lm))
 ```
 
-**Finally compile the results from your investigations today and write a short report summarising your findings, include any figures or tables that support your results.**
-
+Again, think carefully about how you would include an explanation 
 
