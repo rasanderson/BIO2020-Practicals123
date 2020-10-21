@@ -42,3 +42,7 @@ vignettes/*.pdf
 *.docx
 *.pdf
 *.html
+
+# learnr page folders
+Summary_vis_files/*
+rsconnect/*

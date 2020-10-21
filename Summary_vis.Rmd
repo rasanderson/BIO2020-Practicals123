@@ -44,16 +44,21 @@ Using the dataset called `penguins` run the above functions to get an idea of wh
 
 ```{r data-check, exercise=TRUE, exercise.completion=FALSE}
 # The head function shows you the first 6 rows of your data set
-head()
-# The names function tells you the names of each of your columns
-names()  
- 
+head(penguins)
+# The names() function tells you the names of each of your columns; you need to edit this next line
+# names()  
+# the dim() function allows you to see the number of rows and columns
 ```
 
-<div id="data-check-hint">
-**Hint** The object of the functions is the `penguins` dataset so your code needs to read `head(penguins)` 
-</div>
-
+```{r, data-check-solution}
+# The head function shows you the first 6 rows of your data set
+head(penguins)
+# The names function tells you the names of each of your columns; you need to edit this next line
+# See the Hint if unsure
+names(penguins)  
+# the dim() function allows you to see the number of rows and columns
+dim(penguins)
+```
 
 Now that we have checked our data and we are happy that we are looking at the correct data file and we know what all of the variable names are we can start to interrogate it a bit further.
 
@@ -67,10 +72,11 @@ Using the summary function can you find out how much the heaviest penguin weighs
 # Finding the weight of the heaviest penguin
  
 ```
+```{r, heavy-penguin-solution}
+summary(penguins)
+```
 
-<div id="heavy-penguin-hint">
-**Hint** You can use `args(summary)` to check what inputs the summary function needs. The object is the data that you want to look at 
-</div>
+**Note**; The `summary()` function shows several values tagged as `NA's`. This stands for "not available" and is "missing data". This can often arise in big studies. You will notice in some of the subsequent commands we put `na.rm` or `na.remove` in the command, so that R automatically ignores them.
 
 From using the above functions to investigate your dataset can you answer the following questions:
 
@@ -179,44 +185,49 @@ knitr::include_graphics("images/lter_penguins.png")
 
 ## Always plot your data `r emo::ji("bar_chart")``r emo::ji("chart_increasing")` 
 
-Summary stats are a great starting point but to really understand what is going on with our data we need to visualize it. 
+Summary stats are a great starting point but to really understand what is going on with our data we need to visualize it. We are using data from the `datasauRus` R package, which has data with identical means, but very different appearances. It shows the imporance of plotting data.
 
-Lets take a look at the below dataset which has x and y values for different groups (recorded as the dataset variable) which are recorded as a character variable.
+Lets take a look at the below dataset, which is called `datasaurus_dozen` which has x and y values for different groups (recorded as the dataset variable) which are recorded as a character variable.
 
-```{r}
+```{r, datasaurus_exercise-setup}
+datasaurus_dozen$dataset <- as.factor(datasaurus_dozen$dataset)
+```
+
+```{r datasaurus_exercise, exercise=TRUE}
 summary(datasaurus_dozen)
 ```
 
-We can calculate some summary statistics for each group. 
-
-Have a look at the mean and sd for x and y values using dataset as a grouping variable
+You can see that the dataset contains three columns, a `dataset` column, with 142 records in each, and continuous variables `x` and `y`. We will now calculate some summary statistics for `x` and `y` using `dataset` as a grouping variable.
 
 ```{r datasaurus, echo = TRUE}
 # mean and sd of x values in each group
-mean(x~dataset, data = datasaurus_dozen, na.rm=TRUE)
-mean(y~dataset, data = datasaurus_dozen, na.rm=TRUE)
+mean(x~dataset, data = datasaurus_dozen) 
+mean(y~dataset, data = datasaurus_dozen) 
 # mean and sd of y values in each group
-sd(x~dataset, data = datasaurus_dozen, na.rm=TRUE)
-sd(y~dataset, data = datasaurus_dozen, na.rm=TRUE)
+sd(x~dataset, data = datasaurus_dozen)
+sd(y~dataset, data = datasaurus_dozen)
 ```
 <div id="datasaurus-hint">
 **Hint** Remember the formula $$\text{statistic(variable ~ group, data= dataset)}$$ 
 </div>
 
-It appears that for each group the summary statistics are the same, maybe we can see a difference between the groups when we plot them all? 
+It appears that for each `dataset` the summary statistics are the same for `x` and `y`. Every `dataset` group seems to have the same mean and standard deviation for the `x` and `y`. Is this really a good reflection of what the datasets are like?? 
 
-```{r datasaurall}
+Let us plot them all in one plot:
+
+```{r datasaurall, exercise=TRUE}
 gf_point(y~x, data = datasaurus_dozen, colour =~ dataset)
 
 ```
 
-There is a lot going on here, by colouring the points in each dataset differently we can see that there look to be some patterns but there is too much information plotted on top of other information to be of much use. We can make life easier by separating out the different datasets into separate windows (we call these facets) to get a better idea of what is going on.
+There is a lot going on here, by colouring the points in each dataset differently we can see that there look to be some patterns but there is too much information plotted on top of other information to be of much use. We can make life easier by separating out the different datasets into separate windows (we call these facets) to get a better idea of what is going on. We add the command `gf_facet_wrap()` by using the little `%>%` symbol at the end of the previous line.
 
-```{r datasaur-facet}
-gf_point(y~x, data = datasaurus_dozen, colour =~dataset) %>% gf_facet_wrap(~dataset)
+```{r datasaur-facet, exercise=TRUE}
+gf_point(y~x, data = datasaurus_dozen, colour =~dataset) %>%
+  gf_facet_wrap(~dataset)
 ```
 
-Even though each of these groups had the same mean and sd values for the points they are quite clearly different when we see them plotted and serve as a good reminder to always plot your data. 
+**Woahh!!** So even though the mean and standard deviation is the same for all 12 datasets, they are obviously not the same. Indeed one is a _T. rex_ .... This serves as a good reminder to always plot your data. 
 
 ## Data visualisation
 
@@ -252,7 +263,7 @@ We will go through some of the most common plot types that you might want to use
 In order to know what plot will be most useful to us we need to first think about the data that we are plotting.
 Let's remind ourselves of what is contained within the penguins dataset
 
-```{r}
+```{r penguins_head_reminder, exercise=TRUE}
 head(penguins)
 ```
 
@@ -289,8 +300,8 @@ knitr::include_graphics("images/data-to-viz.png")
 
 When investigating a numerical variable we might want to look at the distribution of values (we will talk more about why this is important in the summary statistics lesson) using plots which we could do in a variety of different ways. 
 
-```{r, echo = TRUE, warning=TRUE}
-gf_histogram(~body_mass_g, data= penguins)
+```{r simple_histogram, exercise=TRUE}
+gf_histogram(~body_mass_g, data=penguins)
 ```
 
 Note that the plot also came with a warning message (remember we had a couple of data points with and NA value) just to let us know that there are some data that were missing and so aren't included in the plot because our plotting function didn't know where to put them.
@@ -304,9 +315,12 @@ gf_histogram(~body_mass_g, data= penguins)
  
 ```
 
-<div id="penguin-density-hint">
-**Hint** for a density plot we can use the `gf_density()` function 
-</div>
+```{r penguin-density-solution}
+# density plot of penguin body mass 
+gf_density(~body_mass_g, data= penguins)
+
+```
+
 
 <!-- Using the `gf_boxplot()` function can you create a boxplot of body mass from the penguins data  -->
 
@@ -320,7 +334,7 @@ gf_histogram(~body_mass_g, data= penguins)
 
 For categorical data we might want to look at how many observations of each category we have using a bar chart
 
-```{r, echo = TRUE, warning=TRUE}
+```{r simple_bar, exercise=TRUE}
 gf_bar(~island, data= penguins)
 ```
 
@@ -443,7 +457,7 @@ plotting measurements through time?
 
 Comparing numeric variables across different categorical variables is extremely useful, just like we computed summary statistics across species we can do something similar in our visualisation.
 
-```{r mass-box-sp, echo = TRUE}
+```{r mass-box-sp, exercise=TRUE}
 gf_boxplot(body_mass_g~species, data = penguins)
 ```
 
@@ -452,7 +466,7 @@ To make the plot a bit more informative lets add the  data points in as an extra
 
 For example if we take the code that produced the previous plot and add a pipe and some more code at the end we are telling R to create the boxplot using the variables and data we have specified THEN add some points (because we have used the pipe R assumes that we are using the same data) on top and shape them according to the sex variable
 
-```{r, echo = TRUE}
+```{r body_mass_with_sina, exercise=TRUE}
 gf_boxplot(body_mass_g~species, data = penguins) %>% 
   gf_sina(shape = ~sex)
 ```
@@ -461,35 +475,35 @@ gf_boxplot(body_mass_g~species, data = penguins) %>%
 Lets focus on this plot and look at some of the ways we can tweak it to make it more useful. 
 We can see from having added the points that the boxes aren't truly representative of the spread of data, we could use the `gf_violin()` instead of a boxplot to get a better representation of the data.
 
-Can you convert the boxplot to a [violin plot](https://www.data-to-viz.com/graph/violin.html) by altering the code below
+Can you convert the boxplot to a [violin plot](https://www.data-to-viz.com/graph/violin.html) by altering the code below (click on Solution is you get stuck)
 
 ```{r violin, exercise = TRUE, exercise.completion=FALSE}
 gf_boxplot(body_mass_g~species, data = penguins) %>% 
   gf_sina(shape = ~sex)
 ```
-
-These plots show the distribution of data and its probability density, similar to a boxplot but a bit more informative. 
-Lets add some colour to the violins and to the points according to the species
-
-```{r violin2, exercise = TRUE, exercise.completion=FALSE}
+```{r violin-solution}
 # add colour to the violins and to the points
 gf_violin(body_mass_g~species, data = penguins) %>% 
   gf_sina(shape = ~sex)
 ```
 
+
+These plots show the distribution of data and its probability density, similar to a boxplot but a bit more informative. 
+Lets add some colour to the violins and to the points according to the species
+
+
 The `gf_sina()` function 'jitters' the points about the x axis to reduce overplotting but there is still a little bit of overplotting (points of similar value being plotted on top of each other) going on. 
 We can use the `alpha` argument to alter the transparency of the geometries in our plot to help make it a bit more aesthetically pleasing.
 The `alpha` argument takes values between 0-1 with lower values being more transparent.
 
-```{r, echo = TRUE}
+```{r violin_plus_gf_sina, exercise = TRUE}
 gf_violin(body_mass_g~species, colour = ~species, alpha = 0.5,data = penguins) %>% 
   gf_sina(shape = ~sex, colour = ~species, alpha = 0.3)
 ```
 
-The labels for the x and y axis are simply the variables that we used for the first layer of the plot.
-We can tidy them up using the `gf_labs()` function 
+The labels for the x and y axis are simply the variables that we used for the first layer of the plot. We can tidy them up using the `gf_labs()` function 
 
-```{r, echo = TRUE}
+```{r violin_sina_labs, exercise = TRUE}
 gf_violin(body_mass_g~species, colour = ~species, alpha = 0.5,data = penguins) %>% 
   gf_sina(shape = ~sex, colour = ~species, alpha = 0.3) %>% 
   gf_labs(x = "Penguin species", y = "Body mass (g)")
@@ -514,13 +528,6 @@ gf_violin(body_mass_g~species, colour = ~species, alpha = 0.5,data = penguins) %
   
 ```
 
-Now see if you can modify the faceted plot to change the theme and the colours, check the code from the bill length vs. bill depth plot if you get stuck. 
-
-```{r custom, exercise = TRUE, exercise.completion= FALSE}
-gf_violin(body_mass_g~species, colour = ~species, alpha = 0.5,data = penguins) %>% 
-  gf_sina(shape = ~sex, colour = ~species, alpha = 0.3) %>% 
-  gf_labs(x = "Penguin species", y = "Body mass (g)")
-```
 
 You have now successfully created some informative plots that you could put straight into a report about penguins such as the [Paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081) that these data were originally published in.
 
