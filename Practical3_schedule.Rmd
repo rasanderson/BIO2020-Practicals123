@@ -9,12 +9,51 @@ knitr::opts_chunk$set(echo = TRUE)
 pea_dat <- read.csv("Data/Peas.csv")
 ```
 
-Now that we have developed a good understanding of linear models we are going to look at some more complex cases. 
-During this tutorial we are going to recap how to deal with multiple explanatory variables in your analysis.
+# Introduction
+Now that we have developed a good understanding of linear models we are going to look at some more complex cases. The overall aim is to ensure that you are familiar with the use of linear models and the `lm()` function when you have multiple explanatory variables. This might arise in 'block' designed experiments, mixtures of continuous and categorical explanatories, and curve fitting. You will also have the opportunity to gain more confidence and expertise in manipulating and plotting your data. Specific objectives are to:
 
-## Pea growth
- 
- We will start by using some data that comes from an experiment investigating the effect of different fertilizers on the yield of peas.
+1. Explore the use of blocked experimental design, and how to analyse them
+2. Understand interaction terms, and how to interpret them
+3. Linear models with both categorical and continuous explanatory variables
+4. Fitting curves to your data with `lm()`
+
+# 1. Blocked experiments
+## 1.1 Refresher on basic concepts
+Recall from [Interactive Website on Blocking](https://naturalandenvironmentalscience.shinyapps.io/multiple_explan/#section-blocking) that we use block designs to increase our ability to detect a treatment effect. In the linear models we have looked at so far, there has only been one explanatory variable, so we can think of it as:
+
+$$Response = Explanatory + \epsilon$$
+where:
+
+* $Explanatory$ = your treatment, e.g. fertiliser (control, nitrogen, phosphorous)
+* $Response$ = dependent variable, e.g. crop growth as a result of fertiliser
+* $\epsilon$ = Greek letter Epsilon which stands for the unknown noise or variation in your data
+
+If you are doing a field or laboratory experiment a common design is the **fully randomised design**. For example, you might have:
+
+* 3 types of antibiotic being tested. You have 5 replicate Petri dishes for each antibiotic, and you randomly assign each antibiotic to one of the Petri dishes. You put all 15 Petri dishes on a tray into the incubator.
+* 4 varieties of tomato plant are being grown, and you want to measure the chlorophyll content of their leaves. You grow up 6 replicate seedlings of each variety, randomly put them into different pots in a glasshouse
+* 3 fertilisers plus a control (4 treatment levels) and you want to understand their effects on growth of pea plants. You create 6 plots (3 m x 3m) for each replicate giving 24 replicates in total, and allocate the fertilisers at random and later assess the growth of the pea plants.
+
+Now there is nothing wrong with these fully randomised designs, but the problem is that **they are at greater risk of going wrong**. Purely by chance, you might end up with:
+
+* most of the Petri dishes for one of your 3 antibiotics being near the door of the incubator. These get different and more variable temperatures than those at the back of the incubator.
+* the temperature and humidity in the glasshouse are likely to differ on the north and south side of the glasshouse. It might be the one of your four varieties of tomato plants ends up on the north side, and grows more slowly
+* there will be natural variation in the soil conditions across the twenty-four 3 m x 3 m plots (216 $m^2$ total area) where you grow your pea plants. If one of your fertiliser treatments ends up mainly on the poor, waterlogged soil this will bias your results.
+
+So we recognise that there is natural variation in your "experimental arena" whether it is a laboratory, glasshouse or field experiment. A fully randomised design is vulnerable to this variation biasing your results. To solve the problem we divide the experimental arena into blocks, and randomly allocate our replicate treatments within each block:
+
+* Divide your laboratory tray into 5 strips with marker pen, arranged so that when you put the tray into the incubator one strip is near the door, the fifth strip near the back of the incubator. Have 3 Petri dishes in each strip, and randomly allocate one of your 3 antibiotics to each of the three Petri dishes.
+* Divide your glasshouse into 6 bands from north to south. Within each band, randomly place 4 plant pots containing your four different varieties of tomato.
+* Divide your plot experiment with your peas into 6 areas, encompassing everything from the waterlogged soil to the drier soil. Within each area, mark out 4 plots, and randomly allocate the different fertiliser treatments.
+
+These designs are known as **randomised block designs**. You are still allocating treatments to your replicates at random (essential), but you are doing so to **minimise systematic errors** due to so sort of variation in the "experimental arena". You can adopt a similar approach even for ecological field surveys, although it is harder to implement in practice. You can now modify your linear model to:
+
+$$Response = Explanatory + Block + \epsilon$$
+
+The advantage of including an explicit term called $Block$ into your linear model is that it makes the  error or noise ($\epsilon$) term smaller. The bigger the signal-to-noise ratio, which is what your F-ratio measures, the more likely you are to find out whether your $Explanatory$ treatment is doing anything to your $Response$ variable.
+
+## 1.2 Example of a blocked experiment
+We will start by using some data that comes from an experiment investigating the effect of different fertilizers on the yield of peas.
  The data are contained within the `Peas.csv` file.
  Load the data in to R and assign it to an object called `pea_dat` that you can inspect using the functions that you have learned about in previous practical sessions.
  
