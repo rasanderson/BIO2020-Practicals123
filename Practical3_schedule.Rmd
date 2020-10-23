@@ -108,9 +108,15 @@ There are four `arguments` to the `pivot_longer()` function:
 You might have spotted that the fifth column, `Block`,in our original "wide" dataset `pea_dat` is not mentioned in the `pivot_longer()` function. Since we omitted it, R will leave it unchanged, but automatically fill out the number of repetitions needed. To look at your long set of data, either enter `View(pea_dat_long)` in the R Console window, or double-click on its name in the Envionment window.
 
 
-### Investigate using a linear model 
+### 1.2.2 Simple exploration of pea data
+Now that you have your data in long format you should be able to calculate some simple statistics and visualise it before going ahead with an analysis via a linear model. Do some initial queries to check:
 
-Now that you have your data in long format you should be able to:
+* Overall mean yield across all the plots; use
+  + `summary(pea_dat_long)`
+  + `mean(Yield ~ NULL, data=pea_dat_long)` or
+  + `mean(~Yield, data=pea_dat_long)`
+
+. Try and create a boxplot similar to the following; **Hint
 
  + Create a plot that details the differences in yield across different treatments (box plot or violin plot)
  + Create a linear model in which Yield is your response variable
