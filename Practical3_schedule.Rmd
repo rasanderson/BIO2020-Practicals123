@@ -53,22 +53,11 @@ $$Response = Explanatory + Block + \epsilon$$
 The advantage of including an explicit term called $Block$ into your linear model is that it makes the  error or noise ($\epsilon$) term smaller. The bigger the signal-to-noise ratio, which is what your F-ratio measures, the more likely you are to find out whether your $Explanatory$ treatment is doing anything to your $Response$ variable.
 
 ## 1.2 Example of a blocked experiment
-We will start by using some data that comes from an experiment investigating the effect of different fertilizers on the yield of peas.
- The data are contained within the `Peas.csv` file.
- Load the data in to R and assign it to an object called `pea_dat` that you can inspect using the functions that you have learned about in previous practical sessions.
+We will start by using some data that comes from the pea growth and fertiliser experiment mentioned above. The data are available on Canvas in the `Peas.csv` file which you should save to your `Data` folder. Use the `read.csv()` function that your are hopefully now familiar with, import it into `pea_dat`, and use some of  the functions that you have learned about in previous practical sessions to explore the data.
  
- From your inspections of the data what can you learn?
+From your inspections of the data what can you learn?
  
-```{r}
-#read in data from Peas.csv
-
-#inspect data 
-
-
-```
- 
-### Lets talk about the data
- 
+### 1.2.1 Lets talk about the 'shape' of your data
 Often when you come to analyse some data you find that the data are stored in a format that is not quite what you want for analysis.
 In such instances you may need to manipulate your data or reshape it so that you can carry out your analyses or create your plots.
 This course is primarily focused on understanding the statistical principles that will enable you to rigorously inspect data that you come across rather than on data manipulation in R.
@@ -81,7 +70,7 @@ Use the `head()` function to look at the structure of the data as we currently h
 head(pea_dat)
 ```
 
-We have columns containing the yield values  resulting from each treatment.
+We have columns containing the yield values resulting from each treatment. This is the easiest way to enter the data into Microsoft Excel, so you will often record or receive data like this.
 To compare the effects of the treatments on the yield values it would be more useful to have the yield values as a column alongside a column detailing the treatment.
 This is what is referred to as `long format` data where each row contains a single observation. 
 
@@ -90,26 +79,33 @@ This is what is referred to as `long format` data where each row contains a sing
 knitr::include_graphics("images/Pivot_longer.png")
 ```
 
-You may have noticed that in the previous tutorial we used the `pivot_longer()` function (`r emo::ji("package")` `tidyr`) on some similar data. 
+You may have noticed that in the previous practical we used the `pivot_longer()` function (`r emo::ji("package")` `tidyr`) on some similar data. The `tidy` package is auto-loaded by both the `mosaic` and `bio2020` packages.
 We are going to use that same function here to switch our data set from `wide` to `long`
-We will create a new object called `pea_dat_long` (so that we can easily compare the two data frames.)so that we retain the original format of the data which might be useful for comparison)
+We will create a new object called `pea_dat_long`. We will retain the original format of the data unchanged in `pea_dat` which might be useful for comparison.
 
 *Remember* you can inspect the help file for the function in the help tab, this will help you to understand what arguments the function is expecting
 
 ```{r}
-# remember to load the tidyr package 
-library(tidyr)
+# remember to load the tidyr package; you can do this via library(tidyr), library(mosaic) or library(bio2020)
+library(bio2020)
 
 # reshape the data
 pea_dat_long <- pivot_longer(
-  pea_dat,
+  data = pea_dat,
   cols = NitroGrow:Control,
   names_to = "Treatment",
   values_to = "Yield"
 )
 ```
 
-Here we have specified our data to be the `pea_dat` data frame, we tell R that the columns that we want to alter are those from `NitroGrow` to (`:`) `Control`, the function then takes those column names and adds them to the new column that we have named `Treatment` and adds the values that were contained in the original data  to the new `Yeild` column.
+There are four `arguments` to the `pivot_longer()` function:
+
+* `data` This is the name of your original "wide" dataset. The word `data=` is optional as the function assumes this will be the first term.
+* `cols` These are the columns that we want to stack up one on top of another to create a new named column. The `:` symbol indicates that we want to go from the column called `NitroGrow` all the way consecutively to the column called `Control`
+* `names_to` This is the name we want to give to a new column that will identify whether we have a record from `NitroGrow`, `PowerGro`, `Nitro.Power` or `Control`. These are the different levels of our new, single "explanatory" variable, so we will call it `"Treatment"` (double-quotes needed)
+* `values_to` which are the actual numbers of the yield of peas, will be stacked into a new column, which we will call `"Yield"` (double-quotes needed)
+
+You might have spotted that the fifth column, `Block`,in our original "wide" dataset `pea_dat` is not mentioned in the `pivot_longer()` function. Since we omitted it, R will leave it unchanged, but automatically fill out the number of repetitions needed. To look at your long set of data, either enter `View(pea_dat_long)` in the R Console window, or double-click on its name in the Envionment window.
 
 
 ### Investigate using a linear model 
