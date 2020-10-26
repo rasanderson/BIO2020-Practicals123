@@ -15,8 +15,8 @@ Now that we have developed a good understanding of linear models we are going to
 
 1. Explore the use of blocked experimental design, and how to analyse them
 2. Understand interaction terms, and how to interpret them
-3. Linear models with both categorical and continuous explanatory variables
-4. Fitting curves to your data with `lm()`
+3. Fitting curves to your data with `lm()`
+
 
 # 1. Blocked experiments
 ## 1.1 Refresher on basic concepts
@@ -296,7 +296,117 @@ gf_point(calcium ~ site, colour= ~sex, data=plasma_dat) %>%
 The important point to note here is that **the lines are not parallel**. If the lines were paralell, either upwards or downwards, it would indicate that the blood calcium changed in a similar way for both genders when moving from lowland to upland farms. However in reality they are not parallel, indeed the differences are so big that the gradients of the lines go in opposite directions. This indicates that the physiology of male and female rabbits in response to the elevation change is not the same.
 
 To explore these data more [look at this interactive webpage](https://naturalandenvironmentalscience.shinyapps.io/multiple_explan/#section-interactive-demonstration). This uses the same data, but you can randomly adjust some of the terms, and see how the results change. Begin by setting the interaction term to zero, and notice the difference.
- 
+
+# 3. Using linear models to fit curves
+## 3.1 Data transformation or polynomials?
+It is much easier to fit a straight line than a curve, but often an initial exploration of your data by plotting it will reveal that a straight-line does not provide a satisfactory model. The two main approaches to resolve this are to:
+
+1. A simple mathematical transformation of your data to bring it back to a straight line. Commonly used transformations are logarithmic `log()` and square-root `sqrt()` of your response variable.
+2. Use a polynomial linear model, by adding extra explanatory variables calculated from the first explanatory variable. The explanatories thus become $x$, $x^2$, $x^3$ etc.
+
+The use of both methods is somewhat controversial. Mathematical transformations can make it harder to understand and interpret the results, especially if there is not an obvious biological basis for the transformation. High-order polynomial terms such as $x^3$ and $x^4$ will create attractive smooth curves, but have little biological meaning. Conversely, some mathematical transformations are so common you probably never even think about them: **pH** is actually the log-transformation of hydrogen ions; these have a skewed 'log-normal' distribution by default, so taking a logarithm to create the pH scale makes sense. You can also end up with skewed data when you have counts of a response variable, since you cannot have negative counts. It used to be common to log-transform count data using `log(y+1)` (in case there are any zeros), but it is usually much better to use Generalised Linear Models which we cover in Practical Exercise 4. Here we will focus on a polynomial example
+
+## 3.2 Polynomial linear model: quadratic for simple curves
+The word "polynomial" simply indicates that we are going to derive new $x^2$ (x-squared), $x^3$ (x-cubed) etc. terms to put into our linear model in order to fit a curve. Due to problems of biological interpretation, it is very rare to go beyond a simple **quadratic** model:
+
+$$\textit{Response variable}=\textit{Explanatory variable}+\textit{Explanatory variable}^2 + \epsilon$$
+where
+
+* $\textit{Response variable}$ = dependent, y-axis variable
+* $\textit{Explanatory variable}$ and $\textit{Explanatory variable}^2$ = independent, x-axis variable, either in its original form, or squared.
+* $\epsilon$ = Greek letter epsilon for unknown noise or variation in your data.
+
+These are easy to create using the `lm()` function using:
+
+`lm(response ~ explanatory + I(explanatory^2), data=dataset_name)`
+
+The slightly confusing change to the usual syntax is that `^2` is used to indicate that we are going to add a squared explanatory, and we have to "wrap" the squared term in an extra set of brackets prefaced by `I()` to indicate that we "Intend" to do this, and it isn't a typing error.
+
+## 3.3 _Lolium_ growth example
+Let us build on the example at the [Interactive Website on Curve fitting](https://naturalandenvironmentalscience.shinyapps.io/multiple_explan/#section-fitting-curves) for growth of the grass _Lolium perenne_ in soils of different water content. Dowload the file `grass_growth.csv` from Canvas, save it in your `Data` folder, and import it into R using `read.csv()` as a table called `lolium_dat`. Use the `head()` function to look at the first few rows.
+
+Let's look at a simple linear model to begin. This model is of the form:
+
+$growth = water + \epsilon$
+
+```{r, echo=FALSE}
+lolium_dat <- read.csv("Data/grass_growth.csv")
+```
+
+
+```{r, echo=TRUE}
+lolium_lm1 <- lm(growth ~ water, data = lolium_dat)
+summary(lolium_lm1)
+```
+
+So that was easy! You have a highly significant linear model, showing that _Lolium_ growth increases with water content. The overall model is significant with $F_{1,17}=11.45, p=0.004$, and the $R^2=0.367$ (model explains 36.7% of variation). But... we should always do a quick plot of the data, and check model assumptions by looking at the residuals. We haven't done either of these. First, create a scatter plot of the data similar to the following (I will leave it to you to remember the correct code):
+
+```{r, echo=FALSE}
+gf_point(growth ~ water, data=lolium_dat) %>% 
+  gf_labs(x = "Soil water content (%)", y="Growth rate") %>% 
+  gf_theme(theme_classic())
+```
+
+It is immediately obvious that whilst the growth rate increases at first, beyond about 75% soil water it starts to drop sharply. _Lolium_ is not an aquatic plant, so this makes sense of course, but we have not considered it in the model. Let's also check the residuals. We can actually produce 4 "diagnostic" plots quite easily with the `plot()` function. Only the first two are really useful here. The `plot()` function extracts the residuals and creates a QQ plot automatically. All the plots look at "Residuals". Remember that these are the differences between your fitted straight line and the observed points. If you modify your plot, by adding a line for the `gf_lm()` function, the problem is obvious
+
+```{r, echo=FALSE}
+gf_point(growth ~ water, data=lolium_dat) %>% 
+  gf_labs(x = "Soil water content (%)", y="Growth rate") %>% 
+  gf_lm() %>% 
+  gf_theme(theme_classic())
+```
+
+```{r}
+plot(lolium_lm1, which=1:2) # We only want the first two diagnostic plots
+```
+
+* The first plot is called **Residuals vs Fitted**. Notice how it bends down at both low and high fitted values, with the residuals drifting away from zero, which is ideally where they should scatter.
+* The second plot, titled **Normal Q-Q** is the quantile-quantile plot you have created manually before. Notice how poorly the points align with the expected dotted line, especially at the extremes.
+
+Thus, by looking at the raw data, especially when you overlay the fitted line, as well as the residuals from the model, as well as basic plant biology, you can see this is not a good model. Let's change it to a curve, by changing it to a quadratic. This means our model is now of the form:
+
+$growth = water + water^2 + \epsilon$
+
+which we can express in R as:
+
+```{r, echo=TRUE}
+lolium_lm2 <- lm(growth ~ water + I(water^2), data = lolium_dat)
+summary(lolium_lm2)
+```
+
+This linear model is also significant. You will notice that the overall model is highly significant with $F_{2,16}=64.37,p<0.001$ and $R^2=0.876$, or 87.6% explained. Is this improvement in the overall model of `lolium_lm2` compared to the earlier `lolium_lm1` significant? We can compare the two models using `anova()`:
+
+```{r}
+anova(lolium_lm1, lolium_lm2)
+```
+
+
+This is a test to compare our two linear models, and it gives $F_{1,16}=70.48, p<0.001$ indicating that there is a big difference in the performance of our two models, with the second one, labelled `Model 2` in the above output, better. Notice also the column headed `RSS` which stands for "Residual Sum of Squares". This is a measure of the "noise" that is not explained by our model. You can see that it is much smaller at 146.81 for the second model.
+
+### 3.3.1 Coefficients from quadratic model `lolium_lm2`
+Look at the column headed `Estimate` in the `summary(lolium_lm2)` above. All three estimates, the `(Intercept)`, the `water` and quadratic `I(water^2)` terms are significant, but their values are very different, at 10.716, 1.067 and -0.009 respectively. It is common for the absolute value of the squared term to be very small. **Questions**:
+
+* Why is the value of the estimate for the squared term so small? Why might this be? 
+* Will the squared term always have a negative value?
+* When might it be positive?
+
+Ask on Microsoft Teams if unsure.
+
+### 3.3.2 Diagnostics and plots from quadratic model `lolium_lm2`
+Replot the first two diagnostic from `lolium_lm2` and you can see that both of these are improved compared to the original.
+
+```{r, echo=FALSE}
+plot(lolium_lm2, which=1:2)
+```
+
+Finally, let's plot the raw data, plus our quadratic model with confidence intervals. By default, the `gf_lm()` function adds a straight line, but if we give it the same quadratic we used in the model, it will add a curve.
+
+```{r}
+gf_point(growth ~ water, data = lolium_dat) %>% 
+  gf_lm(formula = y ~ x + I(x^2), interval = "confidence")
+```
+
+
 ## Animal weights
 
 ```{r echo = FALSE}
