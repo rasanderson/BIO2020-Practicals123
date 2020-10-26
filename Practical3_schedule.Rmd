@@ -5,6 +5,7 @@ output: word_document
 ---
 
 ```{r setup, include=FALSE}
+library(bio2020)
 knitr::opts_chunk$set(echo = TRUE)
 pea_dat <- read.csv("Data/Peas.csv")
 ```
@@ -191,6 +192,110 @@ TukeyHSD(pea_dat_lm2, which="Treatment")
 ```
 
 Next, create a plot of the results of the Tukey test. Ask a demonstrator or member of staff if you are unsure how to interpret the results.
+
+# 2. Interactions terms: when the explanatory variables are not independent
+## 2.1 What are interaction terms?
+Interaction terms can be useful in both designed experiments and field surveys. They provide a way of checking whether the effects of two explanatory variables on the response are independent of each other, or alternatively whether the value of one explanatory variable alters what the other one does.
+
+## 2.2 Basic concepts in the 'goal-oriented' approach
+Our original linear model, with two explanatory variables is
+
+$$Response = \textit{Explanatory 1} + \textit{Explanatory 2} + \epsilon$$
+and we revise this to:
+
+$$Response = \textit{Explanatory 1} + \textit{Explanatory 2} + \textit{Interaction} + \epsilon$$
+ 
+where:
+
+* $Response$ = dependent variable, e.g. crop growth as a result of fertiliser
+* $\textit{Explanatory 1}$ = your first treatment, e.g. fertiliser (control, nitrogen, phosphorous)
+* $\textit{Explanatory 2}$ = your second treatment, e.g. pesticide (control, insecticide)
+* $\textit{Interaction}$ = measures how response variable changes as a result of **both** first and second treatment
+* $\epsilon$ = Greek letter epsilon = the unexplained "noise" in your data
+ 
+The $\textit{Explanatory 1}$ and $\textit{Explanatory 2}$ variables can be continuous and/or categorical. You can express an interaction term in R using the `lm()` function, by adding an extra term with the two explanatories separated by a colon `:` symbol. Thus, if your response was `yield`, your two explanatories were `fertiliser` and `pesticide` in a table of data called `crop_data` you would write:
+
+`crop_lm <- lm(yield ~ fertiliser + pesticide + fertiliser:pesticide, data=crop_data)`
+
+Let's look at the example from the [Interactive Website on interaction terms](https://naturalandenvironmentalscience.shinyapps.io/multiple_explan/#section-interactions-between-explanatory-variables)
+
+## 2.3 Example of interactions: blood plasma calcium in rabbits
+Let's look at the example of the blood Ca level in rabbits, half from a lowland agricultural farm, half from an upland farm, split according to gender. Download the file `plasma.csv` from Canvas and put it into your **`Data`** folder. Using the `read.csv()` function, import the file into an R table called `plasma_dat`. Now see if you can produce a boxplot similar to the following. **Hints**:
+
+* `gf_boxplot()` is main function
+* `gf_labs()` to change default labels
+* `gf_refine()` to change overall format of plot
+
+```{r, echo=FALSE}
+plasma_dat <- read.csv("Data/plasma.csv")
+gf_boxplot(calcium ~ site, colour = ~sex, data=plasma_dat) %>% 
+  gf_labs(y = "Blood calcium (mg / 100 ml)", x = "Farm location") %>% 
+  gf_refine(theme_classic())
+
+```
+
+ From the plot you can see several trends:
+ 
+ * males seem to have lower blood Ca than females overall
+ * in males the blood Ca increases from lowland to upland, whereas for females it decreases
+ * the differences between males and females appear to be bigger at lowland than upland farms
+ 
+ You can now create the linear model using `lm()` as usual, but include an interaction term:
+ 
+```{r}
+calcium_lm <- lm(calcium ~ site + sex + site:sex, data=plasma_dat)
+anova(calcium_lm)
+```
+ 
+Notice how your ANOVA table now has **three** rows for the explanatories, namely `site` on the first row, `sex` on the second row, and the interaction term `site:sex` on the third row. When `site` and `sex` are on their own, as on the first and second row, they are referred to as **"main effects"** to distinguish them from when they both occur together in the third row as the interaction term. As usual there is of course a final row for the `Residuals` or unexplained noise ($\epsilon$) in your data. You can see three F-ratios (one for each explanatory variable) and associated p-values, the latter under the column headed `Pr(>F)`.
+
+Before reading on, think about these questions:
+
+* How would you report the above F and p-values in a report?
+* Which explanatory variables are "statistically significant"?
+
+## 2.4 How to interpret a linear model with interaction terms
+When you have an interaction term as one of your explanatory variables, always look at it **first**. If it is not significant, you might be able to manage with a simpler linear model that does not include interaction terms. It is always best to try and have a simpler rather than overly complex linear model when possible.
+
+However, in this example the interaction term **is** significant. Indeed, you have:
+
+* `site` main effect. $F_{1,16}=0.017, p=0.899$ non-significant
+* `sex` main effect. $F_{1,16}=167.658, p<0.001$
+* `site:sex` interaction. $F_{1,16}=47.604, p<0.001$
+
+So you can see that both the `site:sex` interaction and `sex` main effect terms are highly significant, whereas the `site` main effect is non-significant. This type of result is not uncommon, but at first glance is very confusing. Why is the `site` main effect unimportant, whilst it seems to have a big impact on blood calcium in the interaction? This seems a little contradictory.
+
+The easiest way to understand the process is to plot individual graphs for each component. See if you can create these graphs on your own.
+
+First of all the `site` main effect:
+
+```{r, echo=FALSE}
+gf_boxplot(calcium ~ site, data=plasma_dat)
+
+```
+
+It is fairly obvious that the overall amounts of blood calcium are fairly similar in both the lowland and upland farms, if we ignore gender, although the range of values is smaller in the uplands. A boxplot shows the median as the middle horizontal line (try calculating the means for comparison) and these are quite close to each other. This explains the non-significant `site` main effect.
+
+Second, the sex main effect. Try and produce a graph similar to the following:
+
+```{r, echo=FALSE}
+gf_boxplot(calcium ~ sex, data=plasma_dat)
+```
+
+Now the sets of values are very different, with the males much lower overall than the females, which explains the large F-ratio and highly significant (p<0.001) results for `sex` main effect.
+
+Finally, the interaction term. As this graph is a little trickier to draw, I have included the R code. We include both the raw data, and lines connecting the means, to show the direction of change:
+
+```{r}
+# gf_point() adds the raw data points
+# gf_line() adds lines. We use stat="summary" to indicate the mean
+gf_point(calcium ~ site, colour= ~sex, data=plasma_dat) %>%
+  gf_line(calcium ~ site, colour= ~sex, group= ~sex, stat="summary", data=plasma_dat)
+```
+
+The important point to note here is that **the lines are not parallel**. If the lines were paralell, either upwards or downwards, it would indicate that the blood calcium changed in a similar way for both genders when moving from lowland to upland farms. However in reality they are not parallel, indeed the differences are so big that the gradients of the lines go in opposite directions. This indicates that the physiology of male and female rabbits in response to the elevation change is not the same.
+
+To explore these data more [look at this interactive webpage](https://naturalandenvironmentalscience.shinyapps.io/multiple_explan/#section-interactive-demonstration). This uses the same data, but you can randomly adjust some of the terms, and see how the results change. Begin by setting the interaction term to zero, and notice the difference.
  
 ## Animal weights
 
