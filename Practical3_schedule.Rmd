@@ -16,6 +16,8 @@ Now that we have developed a good understanding of linear models we are going to
 1. Explore the use of blocked experimental design, and how to analyse them
 2. Understand interaction terms, and how to interpret them
 3. Fitting curves to your data with `lm()`
+4. Demonstrate how to manage unbalanced designs
+5. Allow you to explore some of these ideas with new datasets
 
 
 # 1. Blocked experiments
@@ -293,7 +295,7 @@ gf_point(calcium ~ site, colour= ~sex, data=plasma_dat) %>%
   gf_line(calcium ~ site, colour= ~sex, group= ~sex, stat="summary", data=plasma_dat)
 ```
 
-The important point to note here is that **the lines are not parallel**. If the lines were paralell, either upwards or downwards, it would indicate that the blood calcium changed in a similar way for both genders when moving from lowland to upland farms. However in reality they are not parallel, indeed the differences are so big that the gradients of the lines go in opposite directions. This indicates that the physiology of male and female rabbits in response to the elevation change is not the same.
+The important point to note here is that **the lines are not parallel**. If the lines were parallel, either upwards or downwards, it would indicate that the blood calcium changed in a similar way for both genders when moving from lowland to upland farms. However in reality they are not parallel, indeed the differences are so big that the gradients of the lines go in opposite directions. This indicates that the physiology of male and female rabbits in response to the elevation change is not the same.
 
 To explore these data more [look at this interactive webpage](https://naturalandenvironmentalscience.shinyapps.io/multiple_explan/#section-interactive-demonstration). This uses the same data, but you can randomly adjust some of the terms, and see how the results change. Begin by setting the interaction term to zero, and notice the difference.
 
@@ -406,6 +408,54 @@ gf_point(growth ~ water, data = lolium_dat) %>%
   gf_lm(formula = y ~ x + I(x^2), interval = "confidence")
 ```
 
+# 4. Unbalanced designs
+Unbalanced designs occur regularly in biology - the term 'unbalanced' simply means that you don't have the same number of replicates in each of your treatment levels. This can make the interpretation of the analyses a little trickier. Ideally you would have the same number of replicates in every treatment level, but sometimes for practical reasons this may not be possible. Experimental error may also cause problems, e.g.
+
+* contamination of some Petri dishes in a laboratory experiment
+* death of some plants in a glasshouse experiment
+* vandalism of some experimental plots in a field experiment (this has happened to me!)
+
+## 4.1 Revisit the blood calcium rabbits dataset
+An easy way to demonstrate the problem that unbalanced data causes is to go back to our Ca in rabbits example, but deliberately remove one row of data to make it unbalanced. Perhaps one of our tagged rabbits was eaten by a fox...
+
+In the R commands below, the `[]` syntax allows us to refer to individual rows and columns of a table. For example, `plasma_dat[3, 2]` would find the number in the 3rd row and 2nd column of the table of data in `plamsa_dat`. The description `plasma_dat[-4,]` means "omit the 4th row". As we did not add anything after the `,` it keeps all the columns. Have a look at the [Data Frames](https://naturalandenvironmentalscience.shinyapps.io/RstudioInstall/#section-working-with-data) section of the Interactive Website as a refresher.
+
+```{r, eval=FALSE}
+# Omit the 4th rabbit to create an unbalanced dataset
+plasma_dat_unbal <- plasma_dat[-4,]
+
+
+# Compare the number of records in each replicate
+tally(~ site + sex, data=plasma_dat) # Original
+tally(~ site + sex, data=plasma_dat_unbal) # Unbalanced
+```
+
+The `tally()` function counts up the numbers of replicates in each of the 4 combinations of explanatory variables, and whereas the original data shows you 5 replicates in every combination, in the second `plasma_dat_unbal` dataset (greedy fox), there are only 4 upland females. **Note**: we don't need to include a `calcium` response variable on the left of the `tally()` function, since we are focussing on the explanatories.
+
+Now repeat the earlier analysis from "2.3 Example of interactions" but with the unbalanced data. Do the analyses with the interaction term last, but change the order of the main effects:
+
+```{r, eval=FALSE}
+plasma_unbal_lm1 <- lm(calcium ~ sex + site + sex:site, data=plasma_dat_unbal)
+plasma_unbal_lm2 <- lm(calcium ~ site + sex + sex:site, data=plasma_dat_unbal)
+anova(plasma_unbal_lm1)
+anova(plasma_unbal_lm2)
+```
+
+The two analyses produce identical results for the `site:sex` interaction term, but not for the `site` and `sex` main effects. This is common with unbalanced data, and sometimes variables can change from being significant to non-significant. **Repeat**: Try the same two analyses again with the original balanced `plasma_dat` dataset and you will see that in contrast the order in which you enter the variables has no effect.
+
+## 4.2 Using different Sums of Squares (SS) with unbalanced data
+By default R uses "sequential" sums of squares (SS) when calculating the values for an ANOVA table. There are several different methods of calculating SS, all with their advantages and disadvantages. Sequential SS is usually best with balanced data, but does not work properly with unbalanced data. See [this recent paper](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2656.2009.01634.x) for a comparison of the different types of SS from a biological perspective.
+
+The easiest correction is to apply "adjusted" sums of squares, which give the same result irrespective of the order in which you enter the variables. This is available via the `Anova()` function (captial letter A), which is in the `car` package. If you successfully installed and have already loaded the `bio2020` package via `library(bio2020)` then `car` will already be loaded for you. If you have not installed `bio2020` then do `library(car)` to access the `Anova()` function. If you receive a message stating "package car not found" then you need to install it in the usual way. Try the following:
+
+```{r, eval=FALSE}
+Anova(plasma_unbal_lm1)
+Anova(plasma_unbal_lm2)
+```
+
+You can now see that it does not matter what order you put the explanatories into your linear model, and the result is the same. **Note**: This problem can sometimes arise if you have a mixture of continuous and categorical explanatory variables, and therefore you may wish to use `Anova()` rather than `anova()` in those circumstances.
+
+You might be wondering, "Why not use Type II tests all the time?". Some statistics packages do indeed use Type II tests as their default, and there is nothing wrong with them. However, if you have balanced data, Type II tests tend to be slightly less powerful. In other words, they are not quite as good at detecting a treatment effect compared to the default Type I test. Of course, this depends on you having balanced data!
 
 ## Animal weights
 
