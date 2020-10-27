@@ -37,23 +37,52 @@ RStudio projects provide a simple method of ensuring that all your files are set
 
 Start by opening up R Studio on your computer. 
 To create a new project click on the main menu on  `File` > `New Project`  
-You should now see this popup window: 
+You should now see this popup window, on which you should select **New directory** 
 
 ```{r, echo = FALSE}
 knitr::include_graphics("http://www.rstudio.com/images/docs/projects_new.png")
 ```
 
-Select `New directory`  then  `New Project`
+then a **Project Type** window like the following should appear, from which you should select **New Project**:
 
-Give your project a name (eg. the name of the module) and select where on your computer you want that to live.
-Click `Create project` and you should now see the name of your project displayed in the top right hand side of your R Studio window. 
+![](images/project_type.png)
 
-**NOTE** If you are an organised person and you had already created a folder for all of the work associated with the BIO2020 module you can select `Existing Directory` navigate to your already existing folder and then select create project and the `.RProj` file will live in that folder alongside all your other files
 
-Within your BIO2020 Project folder now create a `r emo::ji("file_folder")`  sub-folder called **Data**. We will store the data that you want to analyse in this folder. 
+Finally, the following window, entitled **Create New Project** should appear:
 
-The next step is to create a new `script` to store all of the code for today's practical. 
-In the top left click `file` > `new file` > `R script`
+![](images/create_new_project.png)
+
+In this window complete two sections:
+
+* The **Directory name**. This is the name of the folder to store your R scripts and data for your work. For convenience, call it **BIO2020** as shown above.
+* The section **Create project as subdirectory of:** Click on the **Browser** button and navigate to **Documents** or **My Documents**. The exact title will differ depending on your PC or MacBook setup. This wants to be where you normally store all your folders and files. Do **NOT** have this set as "Downloads" or similar. On my own PC, the "My Documents" area has a "shortcut" name of **~** which you can see displayed above. The setup might be slightly different on your PC.
+
+Finally, click on the **Create project** button at the bottom and you should now see the name of your project displayed in the top right hand side of your R Studio window. 
+
+**NOTE** If you have already created a BIO2020 folder in your _My Documents_ area, you can create a new project in an "Existing Directory" from the first menu option instead.
+
+#### 1.1.1 How to start RStudio in future
+Once you have created a project, all you need to do in is **double-click on the R Project file**. This will automatically start RStudio in the right place, with the correct working folder etc. Here is what it looks like for me:
+
+![](images/example_practical1.png)
+
+This is setup for the first practical. Things to note:
+
+* There is a `Data` folder (see below on how to create) in which I will store all my data files
+* I have started to write a "script" (simple text file) called `Practical_1.R`, in which I can save a record of my R commands for future use (see below on how to create)
+* The R project is stored in **This PC -> Documents -> BIO2020** , not in a Downloads or Temporary folder.
+
+Depending on your configuration, your PC or MacBook may not display the full filenames, or date or type, so the screen might look like:
+
+![](images/example_practical1_simplified.png)
+
+
+#### 1.1.1.2 Create a Data folder and a "Script"
+It is good practice to create a folder called **Data** in which to store all the datasets you plan to analyse. Open either **File Explorer** (Windows) or **Finder** (MacBook), navigate to your BIO2020 folder, and create a folder in it called **Data**. You can also do this from within RStudio by clicking on the **New Folder** button on the Files tab on the bottom right panel.
+
+An R "script" is simply a plain text file that contains all your R commands. By "plain text" we mean the simplest possible format: it does not have any fancy bold or italics etc. like a Microsoft Word document, and can be opened by any editor. The big advantage of storing the R commands in a script is that you can re-use them later, write "comments" in them to help you remember what the commands are doing, so that they are a practical resource for you in future.
+
+To create a new `script` to store all of the code for today's practical, in the top left click `File` > `New file` > `R script`
 Click on the save icon `r emo::ji("floppy_disk")` to save this script and give it a meaningful name eg. `Practical_1.R`
 
 Depending on your system, your RStudio window will roughly look like this:
@@ -86,6 +115,20 @@ You write your R commands in your script which means you can save it and repeat 
 2. Place your cursor anywhere on a line in your R script that you want to run and press <kbd>Ctrl</kbd> + <kbd>Return</kbd> (<kbd>Cmd</kbd> + <kbd>Return</kbd> on Apple Mac) together
 
 Either of these actions sends your R commands to the console where it is executed so that R carries out the instructions.
+
+### 1.5 Typical R workflow
+Here is a common workflow you might find yourself doing
+
+1. Design, plan your experiment or field survey
+2. Undertake your experiment and collect your data
+3. Enter your data into Microsoft Excel
+4. Save your data from Excel into CSV (comma separated value) format which can be read by any software
+5. Open your R Project, and start an R script, into which you can save R commands
+6. Import your data from CSV file into R
+7. Initial summary statistics and basic plots
+8. More advanced analyses
+9. Export any graphs or tables from R to Microsoft Word and/or Excel
+10. Remember to save your R script before you exit RStudio
 
 ## 2. Importing data from an external csv file into RStudio
 ### 2.1 What are csv files?
