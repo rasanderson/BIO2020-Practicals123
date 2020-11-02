@@ -2,9 +2,9 @@
 title: 'Practical 2: Linear models and ANOVA'
 author: "BIO2020"
 output:
-  word_document: default
   html_document:
     df_print: paged
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -51,7 +51,7 @@ All linear models have a continuous response variable. By "continuous" the respo
 We will start by looking at the `caterpillars` data set that we were using in the interactive website for linear models with continuous explanatory variables. The `caterpillars.csv` data are available on Canvas and should be downloaded and saved in you BIO2020 `Data` folder. After you have downloaded the file:
 
 * Open up the `caterpillars.csv` file in Microsoft Excel to have a quick look at it, but ignore any requests to save it in Excel format.
-* Create a new R script, in either Notepad (RGui for Windows), TextEdit (RGui MacBook) or the RStudio script editor (Windows or Mac) and call it `Practical_1.R`. **Note**: Write a suitable comment after a `#` symbol at the top of your script to explain what it is going to do.
+* Create a new R script, in either Notepad (RGui for Windows), TextEdit (RGui MacBook) or the RStudio script editor (Windows or Mac) and call it `Practical_2.R`. **Note**: Write a suitable comment after a `#` symbol at the top of your script to explain what it is going to do.
 * Write the line `library(bio2020)` in the script, and run it, to activate all the necessary add-on R packages.
 
 We need to load the data into R and store it in an object so we can access it easily.
