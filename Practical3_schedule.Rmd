@@ -2,6 +2,7 @@
 title: 'Practical 3: Multiple explanatory variables'
 author: "BIO2020"
 output:
+  word_document: default
   html_document:
     df_print: paged
 ---
@@ -84,15 +85,14 @@ This is what is referred to as `long format` data where each row contains a sing
 knitr::include_graphics("images/Pivot_longer.png")
 ```
 
-You may have noticed that in the previous practical we used the `pivot_longer()` function (`r emo::ji("package")` `tidyr`) on some similar data. The `tidy` package is auto-loaded by both the `mosaic` and `bio2020` packages.
-We are going to use that same function here to switch our data set from `wide` to `long`
-We will create a new object called `pea_dat_long`. We will retain the original format of the data unchanged in `pea_dat` which might be useful for comparison.
+Can can convert data to a long format via the `pivot_longer()` function (`r emo::ji("package")` `tidyr`) . The `tidyr` package is installed by both the `mosaic` and `bio2020` packages, but you need to load it separately with `library(tidyr)`. We are going to use the `pivot_longer()` function here to switch our data set from `wide` to `long`. This will create a new object called `pea_dat_long`. We will retain the original format of the data unchanged in `pea_dat` which you should look at for comparison.
 
-*Remember* you can inspect the help file for the function in the help tab, this will help you to understand what arguments the function is expecting
+*Remember* you can inspect the help file for the function in the help tab, this will help you to understand what arguments the function is expecting. Simply type `?pivot_longer` in the Console window to view the help.
 
-```{r}
-# remember to load the tidyr package; you can do this via library(tidyr), library(mosaic) or library(bio2020)
+```{r, warning=FALSE, message=FALSE}
+# remember to load the tidyr package
 library(bio2020)
+library(tidyr)
 
 # reshape the data
 pea_dat_long <- pivot_longer(

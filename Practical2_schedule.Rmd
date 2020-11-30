@@ -2,9 +2,9 @@
 title: 'Practical 2: Linear models and ANOVA'
 author: "BIO2020"
 output:
+  word_document: default
   html_document:
     df_print: paged
-  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -307,7 +307,7 @@ If you are feeling brave, try and create a violin plot like the following. **Hin
 
 + Change `gf_boxplot()` to `gf_violin()`
 + Use `gf_sina()` to add the "jittered" observations, with `colour= ~soil` if you want them the same colour as the violins
-+ add `draw_quantile = 0.5` to the `gf_violin()` function to draw a horizontal line to show the median (which is the 50% quantile). By using several numbers in the form of `c(0.25, 0.5, 0.75)` you can show the interquartile range which is the main box on a boxplot.
++ add `draw_quantiles = 0.5` to the `gf_violin()` function to draw a horizontal line to show the median (which is the 50% quantile). By using several numbers in the form of `c(0.25, 0.5, 0.75)` you can show the interquartile range which is the main box on a boxplot.
  
 ```{r, echo = FALSE}
 gf_violin(yield~soil, data = crop_growth, colour = ~soil, draw_quantiles = 0.5) %>% 
