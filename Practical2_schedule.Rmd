@@ -196,13 +196,13 @@ Are the values that you obtained from your `predictor` function the same as when
 ### 1.6.1 Revision: what are linear model residuals and why do they matter?
 All models are simplifications of reality, and thus make various assumptions about your data. You will remember from the online interactive website tutorials [Checking model assumptions](https://naturalandenvironmentalscience.shinyapps.io/linear_explan/#section-checking-model-assumptions) that one of the key assumptions of linear models is that the residuals are from a normal distribution. Residuals are the "noise" in your data. In a 'perfect' set of data all your observations would fall exactly on the fitted line. But look at the graph with your fitted line: only one observation (tannin concentration 7.0) lies very close to the fitted line. The others are all slightly above or below the line. A normal distribution is a bell-shaped curve, so if the model is a good one, if you create a frequency histogram of the residuals you should see (roughly) that sort of curve. **Note**: "residuals" are sometimes referred to as "errors" and represented by the Greek letter Epsilon ($\epsilon$).
 
-Imagine instead of the 9 observations you have in your caterpillar dataset, you'd done a huge experiment with 100 caterpillars. The residuals above and below the line should average around zero, and produce a rough bell-shaped curve:
+Imagine instead of the 9 observations you have in your caterpillar dataset, you'd done a huge experiment with 100 caterpillars. The residuals above and below the line should average around zero, and produce a rough bell-shaped curve (**Note** as you only have 9 observations, you can't create this histogram):
 
 ```{r, bell_curve-setup, echo=FALSE}
 set.seed(123)
 model_residuals <- rnorm(100)
 ```
-```{r, bell_curve}
+```{r, bell_curve, echo=FALSE}
 gf_histogram(~model_residuals) %>% 
   gf_labs(x = "Residuals from linear model") %>% 
   gf_theme(theme_classic())
