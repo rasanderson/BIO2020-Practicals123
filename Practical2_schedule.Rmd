@@ -22,11 +22,12 @@ library(bio2020)
 # Introduction
 In this practical you will be introduced to **linear models** which provide a way to assess the relationships between a **response** variable and one or more **explanatory** variable(s). When plotting your data, the response variable is typically placed on the vertical (y) axis, and the explanatory on the horizontal (x) axis. We are thus sticking with our philosophy of
 
-$$\text{goal(response variable ~ explanatory variable(s), data=dataset, ...)}$$
+$$\text{goal(response variable} \sim \text{explanatory variable(s), data=dataset, ...)}$$
 except that now your goal is a linear model. You can access a linear model using the `lm()` function in R/RStudio.
 
 # Aims and objectives
-The main aim of this practical are to show you how to use the `lm()` function, using datasets that you will already have seen on the interactive websites at [](https://naturalandenvironmentalscience.shinyapps.io/linear_explan/) and [](https://naturalandenvironmentalscience.shinyapps.io/categorical_explan/). You will also have the opportunity to gain confidence using linear models with a new dataset. **Specific objectives** are to:
+The main aim of this practical are to show you how to use the `lm()` function, using datasets that you will already have seen on the interactive websites at 
+[linear models with continuous explanatories](https://naturalandenvironmentalscience.shinyapps.io/linear_explan/) and  [linear models with categorical explanatories](https://naturalandenvironmentalscience.shinyapps.io/categorical_explan/). Please work through these websites **before** attempting this practical. You will also have the opportunity to gain confidence using linear models with a new dataset. **Specific objectives** are to:
 
 1. understand how to interpret results from linear models with **continuous explanatory variables**
 2. learn the use of linear models with **categorical explanatory variables**, and explore multiple comparison tests, to compare different treatment levels
@@ -317,19 +318,19 @@ gf_violin(yield~soil, data = crop_growth, colour = ~soil, draw_quantiles = 0.5) 
 ```
  
 ## 2.4 Analyse and interpret the linear model 
-The format of the `lm()` function is identical syntax as with a continuous variable. The conventional way of displaying the results of the model is through the `anova()` function:
+The format of the `lm()` function is identical syntax as with a continuous variable. We will save our results from the `lm()` function in an R objected called `soil_lm` and then use the `anova()` function which is conventional way of displaying the results of linear models with this type of structure:
 
-```{r, echo=FALSE}
-#create linear model
+```{r, echo=TRUE}
+# Create linear model and store the results in soil_lm
 soil_lm <- lm(yield ~ soil, data = crop_growth)
-#summarise output
+# Display the output of the linear model as an ANOVA table
 anova(soil_lm)
 ```
 
 ANOVA stands for "analysis of variance" and you might be wondering how we can test the effect of an explanatory variable using variances. Indeed, where are the variances in the above table (**Hint** There is a column that contains the variance for the soil effect, but it is not labelled 'variance'). If you want a better understanding of how this works, and to play with an interactive that allows you to adjust the number of replicates and how noisy your data are, go to this [Interactive demo of crop yield data](https://naturalandenvironmentalscience.shinyapps.io/how_anova_works/#section-variances-with-categorical-explanatory-variables)
 You can see that the F-value is 4.2447 and the p-value is 0.02495. Which of these do you think best describes the results of the linear model?
 
-* The p-value is significant ($p<0.05$). This proves that soil type affects yield ($F=4.2447$)
+* The p-value is significant ($p<0.05$). This conclusively proves that soil type affects yield ($F=4.2447$)
 * With a p-value of $0.02495$ and F of $4.245$ there was a significant difference in yield with soil type.
 * There was a highly significant effect of soil type on yield ($F=4.245, p=0.025$)
 * Soil type appeared to have a significant effect on yield ($F_{2,27}=4.245,p=0.025$)
