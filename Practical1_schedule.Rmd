@@ -2,9 +2,9 @@
 title: 'Practical 1: Data import Summary and display'
 author: "BIO2020"
 output:
+  word_document: default
   html_document:
     df_print: paged
-  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -252,11 +252,12 @@ median(weight~Diet, data = diet_dat)
 
 The above two lines print the mean and median on the screen. If you do not remember the difference between means and medians, have a look at [Measures of Central Tendancy](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-measures-of-central-tendency). You can also save the results of your mean and median in temporary variables `chick_mean` and `chick_med` for later re-use:
 
-```{r, echo= FALSE}
+```{r, echo = TRUE}
+# Save means in temporary variable called chick_mean
 chick_mean <- mean(weight~Diet, data = diet_dat)
+# Save medians in temporary variable called chick_med
 chick_med <- median(weight~Diet, data = diet_dat)
 ```
-
 
 Both median, and especially mean, can be sensitive to outliers: see the interactive on the above website. To get a good understanding of our data we need to calculate some statistics that give us an idea of how our data is **spread** about the mean. If this is unfamiliar to you go back over other sections of the interactive website tutorial linked above.
 
@@ -331,7 +332,7 @@ Now you have a data frame that contains summary statistics describing your datas
 ### 5.1 Goal-oriented philosophy
 We can use exactly the same goal-oriented philsophy when developing graphs as with basic statistic described above. For example, if you want to plot one variable against another:
 
-$$\text{plot type(variable y ~ variable x, data= dataset, ...)}$$
+$$\text{plot type(variable y} \sim \text{variable x, data= dataset, ...)}$$
 
 + **Plot type** = This is your "goal", in other words a graph.
 + **Variable y** = (optional) The value to be plotted on the vertical y-axis, usually your "response" variable
@@ -341,7 +342,7 @@ $$\text{plot type(variable y ~ variable x, data= dataset, ...)}$$
 
 Here your y-variable is plotted on the vertical axis, and your x-variable on the horizontal axis. There may also be times when you only want to plot **one** variable, for example a frequency histogram, or a count of the number of observations. In this case the pattern is as follows, with the `variable` plotted on the horizontal axis, and the vertical axis (e.g. frequency or count) calculated automatically:
 
-$$\text{plot type(~variable, data=dataset)}$$
+$$\text{plot type(} \sim \text{variable, data=dataset)}$$
 
 
 Because we are using the `ggformula` package the plotting functions that we will use will be preceded by `gf_` (graphics formula) so for a boxplot we will use `gf_boxplot()` for a bar chart we use `gf_bar()`, for scatter points `gf_point()` etc. There are links to additional information about `ggformula` on the Canvas website. Plot types you are likely to find particularly useful include:
@@ -420,7 +421,7 @@ You should end up with a plot that looks like the one below
 gf_violin(weight~Diet, colour = ~Diet, fill= ~Diet, alpha = 0.3, data = diet_dat) %>%       # THEN
   gf_sina(shape = ~Diet, colour= ~Diet) %>%      #add points THEN
   gf_labs(y = "Weight (g)") %>%                  #change the labels THEN
-  gf_theme(theme_minimal()) %>%                  #change the theme THEN
+  gf_theme(theme_minimal()) %>%                  #set theme THEN
   gf_refine(scale_colour_manual(values = c("blue", "red", "orange", "green"))) %>%
   gf_refine(scale_fill_manual(values = c("blue", "red", "orange", "green")))
 ```
@@ -452,9 +453,9 @@ Use the skills that you have just been practicing to modify the plot so that it 
 growth_dat <- read.csv("Data/Chick_growth.csv")
  gf_line(Weight~Time, colour = ~Diet, data = growth_dat) %>% # THEN
    gf_point() %>% 
-  gf_labs(x = "Day",y = "Weight (g)") %>%                     # change the labels THEN
-  gf_theme(theme_minimal()) %>%                               # change the theme to a simple one THEN
-  gf_refine(scale_colour_manual(values = c("blue", "red", "orange", "green"))) # define colours
+  gf_labs(x = "Day",y = "Weight (g)") %>% # change the labels THEN
+  gf_theme(theme_minimal()) %>% # change the theme to a simple one THEN
+  gf_refine(scale_colour_manual(values = c("blue", "red", "orange", "green"))) # set colours
 ```
 
 Later in the BIO2020 course you will learn how to create fitted lines from models to add to your graphs.
