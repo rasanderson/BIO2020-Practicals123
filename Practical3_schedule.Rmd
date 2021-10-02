@@ -2,9 +2,9 @@
 title: 'Practical 3: Multiple explanatory variables'
 author: "BIO2020"
 output:
-  word_document: default
   html_document:
     df_print: paged
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -327,47 +327,62 @@ These are easy to create using the `lm()` function using:
 The slightly confusing change to the usual syntax is that `^2` is used to indicate that we are going to add a squared explanatory, and we have to "wrap" the squared term in an extra set of brackets prefaced by `I()` to indicate that we "Intend" to do this, and it isn't a typing error.
 
 ## 3.3 _Lolium_ growth example
-Let us build on the example at the [Interactive Website on Curve fitting](https://naturalandenvironmentalscience.shinyapps.io/multiple_explan/#section-fitting-curves) for growth of the grass _Lolium perenne_ in soils of different water content. Dowload the file `grass_growth.csv` from Canvas, save it in your `Data` folder, and import it into R using `read.csv()` as a table called `lolium_dat`. Use the `head()` function to look at the first few rows.
+Let us build on the example at the [Interactive Website on Curve fitting](https://naturalandenvironmentalscience.shinyapps.io/multiple_explan/#section-fitting-curves) for growth of the grass _Lolium perenne_ in soils of different water content. You will need to first:
 
-Let's look at a simple linear model to begin. This model is of the form:
+* dowload the file `grass_growth.csv` from Canvas
+* copy `grass_growth.csv` into your `Data` folder
+* import it into R using `read.csv()` as a table called `lolium_dat`
 
-$growth = water + \epsilon$
+Use the `head()` function to look at the first few rows, or double-click on `lolium_dat` in the "Environment" pane (top-right of RStudio) to view the whole table of data. Next, produce a scatterplot of the data:
 
 ```{r, echo=FALSE}
 lolium_dat <- read.csv("Data/grass_growth.csv")
 ```
 
+```{r, echo=TRUE}
+gf_point(growth ~ water, data=lolium_dat) %>% 
+  gf_labs(x = "Soil water content (%)", y="Growth rate") %>% 
+  gf_theme(theme_classic())
+```
+
+You can see that whilst the pattern of points is broadly increasing, but beyond about 75% soil water it starts to drop sharply. _Lolium_ is not an aquatic plant, so this makes sense biologically of course. 
+
+### 3.3.1 Simple (straight line) linear model
+Let's look at a simple straight-line linear model to begin. This model is of the form:
+
+$growth = water + \epsilon$
 
 ```{r, echo=TRUE}
 lolium_lm1 <- lm(growth ~ water, data = lolium_dat)
 summary(lolium_lm1)
 ```
 
-So that was easy! You have a highly significant linear model, showing that _Lolium_ growth increases with water content. The overall model is significant with $F_{1,17}=11.45, p=0.004$, and the $R^2=0.367$ (model explains 36.7% of variation). But... we should always do a quick plot of the data, and check model assumptions by looking at the residuals. We haven't done either of these. First, create a scatter plot of the data similar to the following (I will leave it to you to remember the correct code):
+So that was easy! You have a highly significant linear model, showing that _Lolium_ growth increases with water content. The overall model is significant with $F_{1,17}=11.45, p=0.004$, and the $R^2=0.367$ (model explains 36.7% of variation). But... we should always check model assumptions by looking at the residuals to see if there are any abnormalities.
 
-```{r, echo=FALSE}
-gf_point(growth ~ water, data=lolium_dat) %>% 
-  gf_labs(x = "Soil water content (%)", y="Growth rate") %>% 
-  gf_theme(theme_classic())
+### 3.3.2 Diagnostics for simple (straight line) linear model
+We can actually produce 4 "diagnostic" plots quite easily with the `plot()` function, writing `plot(lolium_lm1)`. Only the first two are really useful here. The `plot()` function extracts the residuals and creates a QQ plot automatically. All the plots look at "Residuals". Remember residuals are the differences between your fitted straight line and the observed points.
+
+```{r}
+plot(lolium_lm1, which=1:2) # We only want the first two diagnostic plots
 ```
 
-It is immediately obvious that whilst the growth rate increases at first, beyond about 75% soil water it starts to drop sharply. _Lolium_ is not an aquatic plant, so this makes sense of course, but we have not considered it in the model. Let's also check the residuals. We can actually produce 4 "diagnostic" plots quite easily with the `plot()` function. Only the first two are really useful here. The `plot()` function extracts the residuals and creates a QQ plot automatically. All the plots look at "Residuals". Remember that these are the differences between your fitted straight line and the observed points. If you modify your plot, by adding a line for the `gf_lm()` function, the problem is obvious
+* The first plot is called **Residuals vs Fitted**. Notice how it bends down at both low and high fitted values, with the residuals drifting away from zero, whereas ideally the scatter around should be fairly constant.
+* The second plot, titled **Normal Q-Q** is the quantile-quantile plot you have created manually before. Notice how poorly the points align with the expected dotted line, especially at the extremes.
 
-```{r, echo=FALSE}
+### 3.3.3 Add the fitted line to see the problem
+If you modify your plot, by adding a line via the `gf_lm()` function, the problem is obvious:
+
+```{r, echo=TRUE}
 gf_point(growth ~ water, data=lolium_dat) %>% 
   gf_labs(x = "Soil water content (%)", y="Growth rate") %>% 
   gf_lm() %>% 
   gf_theme(theme_classic())
 ```
 
-```{r}
-plot(lolium_lm1, which=1:2) # We only want the first two diagnostic plots
-```
+Thus, by looking at the raw data, especially when you overlay the fitted line, as well as the diagnostic residual plots from the model, as well as basic plant biology, you can see this is not a good model. Let's change it to a curve, by changing it to a quadratic.
 
-* The first plot is called **Residuals vs Fitted**. Notice how it bends down at both low and high fitted values, with the residuals drifting away from zero, which is ideally where they should scatter.
-* The second plot, titled **Normal Q-Q** is the quantile-quantile plot you have created manually before. Notice how poorly the points align with the expected dotted line, especially at the extremes.
-
-Thus, by looking at the raw data, especially when you overlay the fitted line, as well as the residuals from the model, as well as basic plant biology, you can see this is not a good model. Let's change it to a curve, by changing it to a quadratic. This means our model is now of the form:
+### 3.3.4 Quadratic (curve) linear model
+This means our model is now of the form:
 
 $growth = water + water^2 + \epsilon$
 
@@ -384,10 +399,9 @@ This linear model is also significant. You will notice that the overall model is
 anova(lolium_lm1, lolium_lm2)
 ```
 
-
 This is a test to compare our two linear models, and it gives $F_{1,16}=70.48, p<0.001$ indicating that there is a big difference in the performance of our two models, with the second one, labelled `Model 2` in the above output, better. Notice also the column headed `RSS` which stands for "Residual Sum of Squares". This is a measure of the "noise" that is not explained by our model. You can see that it is much smaller at 146.81 for the second model.
 
-### 3.3.1 Coefficients from quadratic model `lolium_lm2`
+### 3.3.5 Coefficients from quadratic model `lolium_lm2`
 Look at the column headed `Estimate` in the `summary(lolium_lm2)` above. All three estimates, the `(Intercept)`, the `water` and quadratic `I(water^2)` terms are significant, but their values are very different, at 10.716, 1.067 and -0.009 respectively. It is common for the absolute value of the squared term to be very small. **Questions**:
 
 * Why is the value of the estimate for the squared term so small? Why might this be? 
@@ -396,7 +410,7 @@ Look at the column headed `Estimate` in the `summary(lolium_lm2)` above. All thr
 
 Ask on Microsoft Teams if unsure, under the "Section 3 - Dealing with multiple explanatories" channel.
 
-### 3.3.2 Diagnostics and plots from quadratic model `lolium_lm2`
+### 3.3.6 Diagnostics and plots from quadratic model `lolium_lm2`
 Replot the first two diagnostic from `lolium_lm2` and you can see that both of these are improved compared to the original.
 
 ```{r, echo=FALSE}
@@ -409,6 +423,8 @@ Finally, let's plot the raw data, plus our quadratic model with confidence inter
 gf_point(growth ~ water, data = lolium_dat) %>% 
   gf_lm(formula = y ~ x + I(x^2), interval = "confidence")
 ```
+
+This looks much better and more realistic. It is a better statistical model, and also makes more biological sense. Before you go further, try modifying this plot so that the horizontal axis is labelled "Soil wated %" and the vertical axis "Growth rate".
 
 # 4. Unbalanced designs
 Unbalanced designs occur regularly in biology - the term 'unbalanced' simply means that you don't have the same number of replicates in each of your treatment levels. This can make the interpretation of the analyses a little trickier. Ideally you would have the same number of replicates in every treatment level, but sometimes for practical reasons this may not be possible. Experimental error may also cause problems, e.g.
@@ -446,7 +462,7 @@ anova(plasma_unbal_lm2)
 The two analyses produce identical results for the `site:sex` interaction term, but not for the `site` and `sex` main effects. This is common with unbalanced data, and sometimes variables can change from being significant to non-significant. **Repeat**: Try the same two analyses again with the original balanced `plasma_dat` dataset and you will see that in contrast the order in which you enter the variables has no effect.
 
 ## 4.2 Using different Sums of Squares (SS) with unbalanced data
-By default R uses "sequential" sums of squares (SS) when calculating the values for an ANOVA table. There are several different methods of calculating SS, all with their advantages and disadvantages. Sequential SS is usually best with balanced data, but does not work properly with unbalanced data. See [this recent paper](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2656.2009.01634.x) for a comparison of the different types of SS from a biological perspective.
+By default R uses "sequential" sums of squares (SS) when calculating the values for an ANOVA table. Sequential SS are sometimes called "Type I" tests. There are several different methods of calculating SS, all with their advantages and disadvantages. Sequential SS is usually best with balanced data, but does not work properly with unbalanced data. See [this recent paper](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2656.2009.01634.x) for a comparison of the different types of SS from a biological perspective.
 
 The easiest correction is to apply "adjusted" sums of squares, which give the same result irrespective of the order in which you enter the variables. This is available via the `Anova()` function (captial letter A), which is in the `car` package. If you successfully installed and have already loaded the `bio2020` package via `library(bio2020)` then `car` will already be loaded for you. If you have not installed `bio2020` then do `library(car)` to access the `Anova()` function. If you receive a message stating "package car not found" then you need to install it in the usual way. Try the following:
 
@@ -464,7 +480,7 @@ Here we give you the opportunity to investigate some of these ideas with some di
 
 ## 5.1 Animal weights
 Download the file `Pantheria.csv` from Canvas, which contains information from the [Pantheria database](https://ecologicaldata.org/wiki/pantheria). 
-You have data which details records of weight,head-body length, skull length, home range and density for species from across several families of the order Carnivora. As usual, save this in your **`Data`** folder, and import it into R/RStudio using the `read.csv()` function. 
+You have data which details records of weight,head-body length, skull length, home range and density for species from across several families of the order Carnivora. As usual, copy this into your **`Data`** folder, and import it into R/RStudio using the `read.csv()` function. 
 
 ```{r echo = FALSE}
 pantheria <- read.csv("Data/Pantheria.csv")
