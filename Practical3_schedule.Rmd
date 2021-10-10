@@ -393,13 +393,15 @@ lolium_lm2 <- lm(growth ~ water + I(water^2), data = lolium_dat)
 summary(lolium_lm2)
 ```
 
-This linear model is also significant. You will notice that the overall model is highly significant with $F_{2,16}=64.37,p<0.001$ and $R^2=0.876$, or 87.6% explained. Is this improvement in the overall model of `lolium_lm2` compared to the earlier `lolium_lm1` significant? We can compare the two models using `anova()`:
+This linear model is also significant. You will notice that the overall model is highly significant with $F_{2,16}=64.37,p<0.001$ and $R^2=0.876$, or 87.6% explained. **Note** In the previous sentence the p-value is written as $p<0.001$ which indicates "p is less than 0.001". This is because in the overall linear model output it the p-value is shown as `p-value: 2.23e-08` which is the same as $p=0.0000000223$. The convention is that for tiny p-values, the actual amount is not shown, and instead the "less than 0.001" syntax is used.
+
+Is the improvement in the overall model of `lolium_lm2` compared to the earlier `lolium_lm1` significant? We can compare the two models using `anova()`:
 
 ```{r}
 anova(lolium_lm1, lolium_lm2)
 ```
 
-This is a test to compare our two linear models, and it gives $F_{1,16}=70.48, p<0.001$ indicating that there is a big difference in the performance of our two models, with the second one, labelled `Model 2` in the above output, better. Notice also the column headed `RSS` which stands for "Residual Sum of Squares". This is a measure of the "noise" that is not explained by our model. You can see that it is much smaller at 146.81 for the second model.
+This is a test to compare our two linear models, and it gives $F_{1,16}=70.48, p<0.001$ indicating that there is a big difference in the performance of our two models, with our second one, labelled `Model 2` in the above output, better. Notice also the column headed `RSS` which stands for "Residual Sum of Squares". This is a measure of the "noise" that is not explained by our model. You can see that it is much smaller at 146.81 for the second model.
 
 ### 3.3.5 Coefficients from quadratic model `lolium_lm2`
 Look at the column headed `Estimate` in the `summary(lolium_lm2)` above. All three estimates, the `(Intercept)`, the `water` and quadratic `I(water^2)` terms are significant, but their values are very different, at 10.716, 1.067 and -0.009 respectively. It is common for the absolute value of the squared term to be very small. **Questions**:
@@ -500,8 +502,9 @@ For example if we wanted to create a data frame that contained only information 
 dog_dat <- filter(pantheria, Family == "Canidae")
 ```
 
-**Note:** You might be wondering why it says `Family == "Canidae"` rather than `Family = "Canidae"`. The double-equals `==` symbol is used for comparisons. Other useful comparisons might include:
+**Note:** You might be wondering why it says `Family == "Canidae"` rather than `Family = "Canidae"`. The double-equals `==` symbol is used for comparisons. The following table summarises some of the more useful comparisons:
 
+|=
 * `!=` **not equal to**. So `Family != "Canidae"` would return all the records except dogs.
 * `>`  **greater than**. So `Skull_max > 12` would return larger animals, from all taxa, with a skull size greater than 12 cm.
 * `<`  **less than**. So `HomeR_max < 20` would return animals, from all taxa with a small home range
