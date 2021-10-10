@@ -477,23 +477,40 @@ You can now see that it does not matter what order you put the explanatories int
 
 You might be wondering, "Why not use Type II tests all the time?". Some statistics packages do indeed use Type II tests as their default, and there is nothing wrong with them. However, if you have balanced data, Type II tests tend to be slightly less powerful. In other words, they are not quite as good at detecting a treatment effect compared to the default Type I test. Of course, this depends on you having balanced data!
 
-# 5. Explore some of these concepts with new datasets
-Here we give you the opportunity to investigate some of these ideas with some different datasets, that are not on the interactive websites.
+# 5. "Data wrangling" large datasets
+It is likely that many of you will have to deal with large "messy" datasets at some point that need to be "cleaned" or pushed through "data wrangling" before you can analyse them. Classic examples might include:
 
-## 5.1 Animal weights
-Download the file `Pantheria.csv` from Canvas, which contains information from the [Pantheria database](https://ecologicaldata.org/wiki/pantheria). 
-You have data which details records of weight,head-body length, skull length, home range and density for species from across several families of the order Carnivora. As usual, copy this into your **`Data`** folder, and import it into R/RStudio using the `read.csv()` function. 
+* DNA sequence data. Often there are blank reads or errors, even on modern high-throughput devices such as Oxford Nanopore MinIon methods.
+* Environmental data. Automatic devices to measure the environment, such as temperature, relative humidity etc., generate large amounts of useful data, but often contain 'blanks' or missing data due to short-term equipment failures
+* Camera trap data. These are excellent for monitoring animals in the field, generating large quantities of data without interferring with animal behaviour. Unfortunately images are often blurred, unreadable, batteries can fail, or camera traps may be stolen.
 
-```{r echo = FALSE}
+
+## 5.1 Pantheria database
+As an example of a large dataset which can be tidied up or subset, we will look at the Pantheria dataset of carnivorous mammal weights. Download the file `Pantheria.csv` from Canvas, which contains information from the [Pantheria database](https://ecologicaldata.org/wiki/pantheria). This is a huge dataset with over 100,000 records and 59 columns, so only a small part of it (422 rows and 8 columns) is provided to avoid swamping your disk quota. The full dataset includes living and extinct species of the order Carnivora, with information about their geographic extent, physical size, life history, ecological characteristics etc. It has been used to try and understand why some species of mammals are at greater risk of extinction than others.
+
+As usual, download the `Pantheria.csv` file from Canvas, then copy this into your **`Data`** folder, and import it into R/RStudio using the `read.csv()` function. 
+
+```{r echo = TRUE}
 pantheria <- read.csv("Data/Pantheria.csv")
-
+summary(pantheria)
 ```
 
-Before you analyse your data, do a quick `summary()` to show you the names of the columns. You will see that two columns, `Common_name` and `Family` are listed as `Class :character`. Whilst not essential, you might find it easier to change these into "factors" and re-run the `summary()` function. Look back to Part 1.3.1 where you re-coded variables from the pea growth dataset to remind yourself how to do this. Check how many rows of data you have. You can see this is quite a big dataset.
+After reading in and summarising the data, the column names are:
+
+* **X** The first column in the CSV file is the record number. If you look at the .CSV file you'll notice that this row does not actually have a heading, therefore R has automatically added the heading `X`.
+* **Common_name** The common (English) name of the carnivore.
+* **Family** The Latin family name. Remember that under the scientific classification system, family-level names all end in "dae"
+* **HB_max** The maximum head : body length ratio recorded for that species
+* **W_max** Maximum recorded weight
+* **Skull_max** Maximum size of skull
+* **HomeR_max** Maximum home range of the predator
+* **Density_max** Maximum recorded population density of the predator
+
+The output from the `summary()` above gives the names columns, and numeric summaries of some columns. You will see that two columns, `Common_name` and `Family` are listed as `Class :character`. You might find it easier to change these into "factors" and re-run the `summary()` function. Look back to **Part 1.3.1** where you re-coded variables from the pea growth dataset to remind yourself how to do this. Check how many rows and columns of data you have either by checking in the Environment pane of RStudio, or using the `dim(pantheria)` command. You can see this is quite a big dataset.
 
 Sometimes you will only want to study a small part of a big dataset, so you need to subset or "filter" it to obtain that part. This can be where we have more data than we want to investigate or plot, in these instances it can be useful to extract only a subset of our data.
 The pantheria data for example contains species from several families of carnivores but you might only be interested in one family of animals.
-In such instances we can use the `filter` function (`r emo::ji("package")` dplyr) to extract only the subset that we are interested in. The `dplyr` package is automatically loaded for you by `mosaic` or by `bio2020`.
+In such instances we can use the `filter` function from the `dplyr` package to extract only the subset that we are interested in. The `dplyr` package is automatically loaded for you by `mosaic` or by `bio2020`.
 
 For example if we wanted to create a data frame that contained only information regarding the Canidae (dog) family we could do the following:
 
@@ -504,20 +521,56 @@ dog_dat <- filter(pantheria, Family == "Canidae")
 
 **Note:** You might be wondering why it says `Family == "Canidae"` rather than `Family = "Canidae"`. The double-equals `==` symbol is used for comparisons. The following table summarises some of the more useful comparisons:
 
-|=
-* `!=` **not equal to**. So `Family != "Canidae"` would return all the records except dogs.
-* `>`  **greater than**. So `Skull_max > 12` would return larger animals, from all taxa, with a skull size greater than 12 cm.
-* `<`  **less than**. So `HomeR_max < 20` would return animals, from all taxa with a small home range
-* `>=` and `<=` represent **greater than or equal to** and **less than or equal to** respectively
-* `&` **and** you can use this to link things together, e.g. to get dogs, with skulls less than 15 cm:
+|Symbol|Meaning|Example|Rows returned|
+|:-----:|:-----:|:-----:|:------------|
+| `==`| equal to| `Family == "Canidae"`| only dogs returned|
+| `!=` | not equal to | `Family != "Canidae"`| all the records except dogs|
+| `>` | greater than| `HomeR_max > 20` | taxa a home range greater than 20 m|
+| `<` | less than|  `HomeR_max < 20` | taxa with a home range less than 20 m|
+| `>=` |greater than or equal to| `HomeR_max >= 20`| taxa with a home range of 20 m or above|
+|`<=`|  less than or equal to | `HomeR_max <= 20`| taxa with home range of 20 m or less|
+| `&`| and| `Family == "Canidae" & Skull_max < 15|`|  dogs with skulls less than 15 cm|
 
-`small_dog_dat <- filter(pantheria, Family == "Canidae" & Skull_max < 15)`
-   
-With a big set of data such as `pantheria` you might also want to Click on its name in the **Environment** window (top-right of RStudio) and scroll down the data. It looks a bit like a spreadsheet, although you cannot edit it.
- 
-Things to try:
 
-* Choose a family to investigate, create a new data frame containing only records from that family using the `filter()` function
+## 5.2 Cleaning up missing or `NA` values
+The presence of any rows with missing values can cause problems, as if you attempt to do any calculations on them, you will receive `NA` as an output. If you direct the results of your `filter` into the `na.exclude()` function using the pipe symbol `%>%` any rows with missing data will be removed. For example, compare:
+
+```{r echo=FALSE}
+pantheria$Common_name <- as.factor(pantheria$Common_name)
+pantheria$Family <- as.factor(pantheria$Family)
+```
+```{r}
+dog_dat <- filter(pantheria, Family == "Canidae")
+summary(dog_dat)
+```
+
+with
+
+```{r}
+dog_dat <- filter(pantheria, Family == "Canidae") %>% 
+  na.exclude()
+summary(dog_dat)
+```
+
+**Note** If the information displayed for `Common_name` and `Family` shows as `character` it is because you haven't converted them to factors. See Part 1.3.1 earlier.
+
+## 5.3 Selecting columns
+The full Pantheria dataset has almost 60 columns. If you do struggle with a large dataset, it can be useful to be able to extract only some columns to work with. For example, if you only wanted the `Common_name`, `Family`, `HB_max` and `W_max` columns use the `select()` function:
+
+```{r}
+four_columns <- select(pantheria, Common_name:W_max)
+summary(four_columns)
+```
+
+If the columns you want are not next to each other, name them individually within the `c()` function. e.g. to extract `Common_name`, `Family`, `HB_max` and `Density_max`
+
+```{r}
+four_columns <- select(pantheria, c(Common_name:HB_max, Density_max))
+summary(four_columns)
+```
+
+## 5.4 Explore in your own time
+* Choose a family to investigate, create a new data frame containing only records from that family using the `filter()` function. Remove missing values using `na.exclude()`
 * Create a plot of the data that shows the relationship between head-body length and skull length for species in your chosen Family
  
 Now return to the full `panthera` data set and investigate the relationship between **body size** and **weight**.
