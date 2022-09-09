@@ -13,34 +13,28 @@ library(dplyr)
 library(flextable)
 ```
 
-## R and R Studio installation
+## R for biological data science
 
 This module is an introduction to using the R software through the R Studio interface.
-R is both a computer software and a programming language that can be used for powerful data analysis and will be used across several of the taught modules that you will undertake.
+R is both a computer software and a programming language that can be used for powerful data analysis and will be used across several of the taught modules that you will undertake. R is now widely used in Government bodies (e.g. NHS, Natural England), media organisations (BBC, The Guardian, Financial Times), research institutes (Centre for Ecology & Hydrology, Francis Crick Institute) as well as academia. This is because of its flexibility, powerful data analytics and visualisation capabilities. It has a steep initial learning curve (don't panic!) but then becomes much easier. Graduates with strong data science skills in using R are in high demand by employers so it is also a useful addition to your CV.
 
-Campus computers have the software installed and when working from home/off campus you can access it through the windows virtual desktop [WVD Client](https://services.ncl.ac.uk/itservice/core-services/software/wvd/#accesswvd).
-R and R Studio are free software that you can download and run on your computer (it is compatible with Windows, Mac and Linux).
-To get set up with the software on your machine follow these  steps
+### R vs RStudio
+R is the basic underlying computer software you use to undertake analyses of biological data. RStudio is a separate programme that creates an "Integrated Development Environment" (IDE) that makes it easier to do data science. Think of the differences between doing arithmetic on a hand-calculator vs Microsoft Excel. RStudio defaults to automatically uses R, but can handle other computer languages such as C++, HTML and Python.
 
-1. You can [download the R software](https://cran.r-project.org/) by selecting your operating system and downloading the latest release.
+### Starting RStudio
+Campus computers have the software installed and BIO2020 assumes you will be using an NUIT-managed PC. Both R and RStudio are free download from [download the R software](https://cran.r-project.org/) and [Download the R Studio desktop software](https://rstudio.com/products/rstudio/#rstudio-desktop) respectively. However, if you run it on your own laptop or MacBook we **will not provide you with any technical support** as there is too much variation between operating systems, PC configuration etc.
 
-```{r r-download, width=8, echo = FALSE}
+You should have a 'search' bar at the bottom left of your NUIT Windows PC, labelled _Type here to search_. In it type **_RStudio_** and the launch icon should be displayed for you to click on:
 
-knitr::include_graphics("images/r-dwnload-ref.png")
-
+```{r, echo = FALSE}
+knitr::include_graphics("images/start_from_windows_menu.png")
 ```
 
 
+(If you do not have a search bar, click on the Windows icon, navigate to _Programming and Databases_ or _RStudio_ and click on the _RStudio_ icon. Do **not** click on the icon labelled _R i386_ or _R x64_ )
 
-2. [Download the R Studio desktop software](https://rstudio.com/products/rstudio/#rstudio-desktop) Choosing the free open source edition.
 
-```{r rstudio-download, width=8, echo= FALSE}
-
-knitr::include_graphics("images/Rstudio-download-ref.png")
-
-```
-
-Once both R and R Studio have been downloaded and installed on your machine you can get to work
+Once RStudio has started up you can get to work.
 
 ## Navigating R Studio
 
