@@ -36,13 +36,47 @@ knitr::include_graphics("images/start_from_windows_menu.png")
 
 Once RStudio has started up you can get to work.
 
-## Navigating R Studio
+## Modify RStudio default settings
 
 On opening R Studio you should see something like this
 
 ```{r, echo = FALSE}
 knitr::include_graphics("images/Rstudiofresh.png")
 ```
+
+Unfortunately RStudio has a number of default settings which from past experience is confusing for students. If you suffer from dyslexia or have poor eyesight there are several other settings you may want to change.
+
+### Startup and close defaults
+By default RStudio tries to re-open everything you last worked with (even if you are analysing new data), prompts you to store data (even when you have it stored already) etc. Let's switch off those annoying defaults. From the main menu click on **Tools -> Global options**
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/tools_global.png")
+```
+
+Make sure that the following boxes are **unticked** or changed (see below):
+
+* Restore most recently opened project at startup
+* Restore previously opened source files at startup
+* Restore .RData into workspace at startup
+* Save workspace to .RData on exit. **Change to never**
+* Always save history (even when not saving .RData)
+* Remove duplicate entries in history
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/unset_globals.png")
+```
+Click on 'OK' or 'Apply' once you have done this.
+
+### Change appearance (optional)
+If like me you have poor eyesight, or e.g. have dyslexia and find some fonts difficult to read, you can modify the RStudio appearance. Again click on **Tools -> Global options** but click on the **Appearance** icon on the left. You should see something similar to below:
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/appearance.png")
+```
+
+The default 'Editor theme' appearance is called Textmate, which I find rather harsh on the eyes. Preview other appearance options by clicking on them (personally I like the 'Tomorrow Night bright' theme which has a black background). You can also change the font size to make it bigger, or the Zoom ratio.
+
+## Navigating RStudio
 
 In the top left click `file` > `new file` > `R script` and now you should have four windows that look something like this:
 
