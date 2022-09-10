@@ -76,6 +76,116 @@ knitr::include_graphics("images/appearance.png")
 
 The default 'Editor theme' appearance is called Textmate, which I find rather harsh on the eyes. Preview other appearance options by clicking on them (personally I like the 'Tomorrow Night bright' theme which has a black background). You can also change the font size to make it bigger, or the Zoom ratio.
 
+## R packages
+A package is an additional 'plug-in' for R that can extend its capabilities. When R was originally created there were only about 10 add-on packages, but now there are over 20,000. This is one of the reasons why it is so popular amongst scientists: it is easy to adapt, modify and improve. Here are some of the things I've seen people use packages for:
+
+* create maps of satellite data
+* analyse GPS animal movement data
+* visualise genome sequences
+* analyse next-generation sequence MinIon data
+* create phylogenetic trees
+* plot citizen science species records
+* model flood risk
+* artificial intelligence on wildlife camera trap
+* analyse songbird audio
+* model disease spread in humans and wildlife
+* scrape data from Twitter for 'sentiment' analysis
+* write books and reports
+* create websites
+
+Packages are hosted on the Comprehensive R Archive or CRAN. As there are now so many R packages they have been organised into [Task Views](https://cran.r-project.org/web/views/) on CRAN to help you navigate them.
+
+### How to install and use a package from CRAN
+R has a special function called `install.packages()` that allows you install a package onto your PC. On an NUIT computer it will install it into a networked folder, so it should be available for you on any NUIT computer. We'll begin by installing a package called `remotes` which we will use shortly.
+
+On the left of your RStudio screen you should see a large window headed **Console** which will contain introductory text about the R version you are usin etc. On my PC it shows as version 4.0.2 but you may have a more recent version:
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/R_console_initial.png")
+```
+
+At the bottom of the Console screen is a "prompt" symbol `>` at which you can type commands. We want to add a package called "remotes" to your setup. Type the following command (notice the `.` between `install` and `packages` and the `"` before and after `remotes`):
+
+```{r, eval=FALSE}
+install.packages("remotes")
+```
+
+Then hit the Enter key, which is the large key on the right of your QWERTY keyboard. It may be indicate with a large left pointing arrow, or with the word "Enter" depending on the model of your keyboard. When you hit Enter the command is sent to R and executed. You may receive a pop-up window asking you where you want to download the package from; simply select the first one in the list (Cloud) or scroll down to a UK website, and click OK. This is what my PC displays, although yours may differ slightly:
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/R_console_remotes.png")
+```
+
+If you receive an error message, double-check your spelling and punctuation in the command. Note that R is **case-sensitive** thus it will give an error if you type `Install.packages("remotes")` etc. If you still have errors, please speak to me or one of the Demonstrators. Do not worry if you merely receive warning messages.
+
+### Activating an R package
+Installing an R package simply puts the extra software on your PC, but it does not make it available for use. This is because you may have many packages eventually installed, that might have commands with identical names but which do different things. To take a simple example, in some packages the `plot` command will create a map, whereas in other packages it might disply a genome phylogeny, and you would not want to confuse them. Therefore, in any R session you generally only make available the packages you need. To make the commands from a package available to use, enter the `library` command followed by the package name. So at the Console `>` prompt, type `library(remotes)` and again hit the Enter key to execute it:
+
+```{r, eval = FALSE}
+library(remotes)
+```
+
+This is what is displayed on my PC:
+
+```{r, echo = FALSE}
+knitr::include_graphics("images/R_console_remotes.png")
+```
+
+The warning message in red simply indicates that the version of the `remotes` package on CRAN is slightly newer than my version of R. If you have a more recent version of R you might not receive this message, but it is nothing to worry about. Having activated the `remotes` package we can now use its extra commands.
+
+### The bio2020 R package
+For this module I have created a small R package called `bio2020`. This provides you a few useful extras that should make learning R easier:
+
+* automatic installation and activation of the `mosaic` and `ggformula` packages that aid "goal-oriented" methods for data science and simple plots
+* automatic installation and activation of the `ggplot2` and `tidyr` packages for improved plots and manipulation of data
+* automatic installation and activation of the `vegan` package to handle multiple response data such as obtained from genomics sequencing or wildlife species surveys
+* automatic installation and activation of the `car` package to handle unbalanced datasets that might arise with missing data
+* customised functions for easier analysis of multiple response data
+* customised functions to display and label graphical analyses of multiple response data
+
+As the `bio2020` package is solely for use by Newcastle University students it is unsurprisingly not available on CRAN. Instead, it is on a website called GitHub, which is widely used by scientists to manage their software. I store all my analytical data files at [https://github.com/](https://github.com/). If you want to view my software, search on GitHub for the user `rasanderson`. When you typed `library(remotes)` a few minutes ago, you made its extra commands available for use, including the function `install_github` which allows you to install packages from GitHub rather than CRAN. Enter the following at the Console prompt, hitting the Enter key as usual. (Note that the spelling of the function is `install_github` not `install.github`):
+
+```{r, eval=FALSE}
+install_github("rasanderson/bio2020")
+```
+
+If a message is displayed that says `These packages have more recent versions available` followed by a table of packages, simply hit the Enter key again to skip the update. You can always update them later. A large amount of text is then likely to be displayed as various extra packages are installed. There may be some `Warning` messages, especially about R versions: don't worry about these. If you receive an `Error` message then there is a problem (see below). After you have installed the `bio2020` package you can activate it with the `library` command:
+
+```{r, eval=FALSE}
+library(bio202)
+```
+
+You may receive some warning messages about R version numbers. The key thing to look for is:
+
+`Welcome to the BIO2020 package to support teaching`
+
+If that is displayed then the `bio2020` package has been installed successfully.
+
+### What to do if you are unable to install `bio2020` successfully
+Sometimes the `bio2020` package does not successfully install (I am a biologist, not a computer programmer!). Don't worry, we can easily work around it:
+
+* First, double-check with myself or a Demonstrator. Sometimes there are minor differences in the configuration of NUIT PCs within a cluster room that can cause problems, or if many students (i.e. over 150 in this class) overload the network.
+* Second, if you are unable to resolve the problems, issue the following commands to manually install the key packages you need for the first few practicals:
+
+```{r, eval=FALSE}
+install.packages("mosaic")
+install.packages("car")
+install.packages("tidyr")
+```
+
+These are all standard CRAN packages so should install without problems. However, you will have to activate them individually with their own `library` calls, rather than by using a call to `bio2020`:
+
+```{r, eval=FALSE}
+library(mosaic)
+library(car)
+library(tidyr)
+```
+
+Another package, `vegan` is needed for the last two practicals later in the Semester, but hopefully we will have the `bio2020` package working for you by then.
+
+
+
+
 ## Navigating RStudio
 
 In the top left click `file` > `new file` > `R script` and now you should have four windows that look something like this:
