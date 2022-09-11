@@ -449,63 +449,50 @@ to
 
 `pract0_dat <- read.csv("Data/yield.csv")`
 
+My preference (and recommendation to you) is to put all your CSV files into a `Data` subfolder in your `BIO2020` folder, in which case you'll need to remember to add `Data/` to any `read.csv` commands. That way your BIO2020 folder is less likely to get cluttered as you go through the module.
+
 ## Working with data
+### Using R as a calculator
+You probably won't use this very often, but you can easily enter values into the Console window if you need to do some quick arithmetic:
+
+```{r}
+7 * 3
+log(24)
+4^2
+7 / 3
+pi * 3 ^ 2
+```
+
+Individual numbers, columns, rows, or tables of data, the results from calculations, statistical analyses and graphs are all **R objects** and the ones you have created in your current RStudio are shown in the top right **Environment** panel.
 
 As mentioned before R is a programming language, as with any language there is some vocab that needs to be covered in order to help your understanding of what is being described.
 
-Here we will run through the terms:
-
- - value
- - assign
- - object
- - comments
- - functions
- - arguments
- 
-Then we will go on to talk about data types and structures that we use in R.
- 
 ### Creating Objects
+Although you have done some arithmetic above, it is much more useful to **assign** the results to an R object, so you can re-use them later. You do this using the assignment symbol `<-` which looks like a left arrow. If you are having trouble finding the `<` and `-` keys, a handy shortcut is to press
 
-You can get R to return a *value* by giving it some simple maths
-```{r maths, echo = TRUE}
-6*7
-```
+typing <kbd>Alt</kbd> + <kbd>-</kbd> (push <kbd>Alt</kbd> at the same time as the <kbd>-</kbd> key) will write ` <- ` in a single keystroke.
 
-But to do useful and interesting things with that *value* we need to *assign* it to an *object* so that R remembers it.
-To do this we first need to come up with a name for our *object*, then we use  the assignment operator which looks like this `<-` to *assign* our *value *to the *object*:
+Now you can *assign* a value(s) to an *object* so that R remembers it. You need to come up with a name for your object. Come up with a good name!
+
+Good names:
+
+* `my_height`
+* `bird_weights`
+* `bacteria_growth`
+
+Poor names:
+
+* `my_dat`  You will soon forget what this contains
+* `Bird_wght`  You will forget the upper-case `B` and whether it is `wght`, `Wght`, `weight` etc.
+* `bacterialgrowth` Rather long and difficult to read
+
+For example, if you are 175 cm tall, you can assign your height to an R object simply by the following line:
 
 ```{r object, echo = TRUE}
 my_height <- 175
 ```
 
-`<-` is used to *assign* the *value* 175 to the *object* `my_height`
-
-In R Studio, typing <kbd>Alt</kbd> + <kbd>-</kbd> (push <kbd>Alt</kbd> at the same time as the <kbd>-</kbd> key) will write ` <- ` in a single keystroke.
-
-#### Object names 
-
-Objects can be given any name, good object names are explicit (in providing some information about the object) and are not too long.
-
-There are some names that cannot be used because they are the names of fundamental functions in R (e.g.,`if`, `else`, `for`, see [here](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Reserved.html) for a complete list). 
-In general, even if it's allowed, it's best to not use other function names (e.g., `c`, `T`, `mean`, `data`, `df`, `weights`). 
-If in doubt, check the help to see if the name is already in use. 
-It's also best to avoid dots (`.`) within names so use an underscore (`_`) if you need.
-
-**Objects vs. variables**
-What are known as `objects` in `R` are known as `variables` in many other programming languages. However, in this lesson, the two words are used synonymously. For more information see:
-https://cran.r-project.org/doc/manuals/r-release/R-lang.html#Objects
-
-The *objects* that we create are stored in the Environment (remember that top right pane)
-To see what has been assigned to an object you can send the name of the object to the console. 
-
-```{r my-height}
-
-my_height
-
-```
-
-We can update the *value* that is assigned to the *object* `my_height` by overwriting the current value.
-Update the value of `my_height` so that it has the value of **Your** height in cm and then press the green button to run the code.
+Edit the following code to contain your height, and display the value:
 
 ```{r your-height, exercise=TRUE, exercise.completion=FALSE}
 my_height <- 175 
@@ -547,12 +534,13 @@ my_height_inch
 > ### Comments
 >The comment character in R is `#`, anything to the right of a `#` in a script will be ignored by R. 
 It is very useful to leave notes and explanations in your scripts, we highly recommend that you get into the habit of commenting your code as it will help you to remember what you have done AND it will help us to help you if you encounter problems. 
-R Studio makes it easy to comment or uncomment a paragraph: after selecting the lines you  want to comment, press at the same time on your keyboard <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>. If you only want to comment out one line, you can put the cursor at any location of that line (i.e. no need to select the whole line), then press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>.
+R Studio makes it easy to comment or uncomment a paragraph: after selecting the lines you  want to comment, press at the same time on your keyboard <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>. If you only want to comment out one line, you can put the cursor at any location of that line (i.e. no need to select the whole line), then press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>. **Comments are the most important lines in any R script!!**
 
-### Functions
+### Functions (or "commands")
 Almost all or our R coding uses functions, which are essentially bits of code that have been written to do something.
  When we refer to functions we will generally do so following the convention `functionname()` the brackets are a giveaway that we are referring to a function.
-Functions take *arguments*, the arguments (inputs) are specified within the brackets.
+Functions take *arguments*, the arguments (inputs) are specified within the brackets. We have already used the `read.csv` function, and gave it the argument "yield.csv" to import some data into R.
+
 Lets use the function `sqrt()` as an example.
 The argument to this function is a value (or an object that contains a value) for which we want to calculate the square root.
 When we run a function it returns an output that is the square root of the input value.
@@ -706,7 +694,7 @@ animal_info[c(1,4)]
 
 #### Data frames
 
-Another very common data structure in R is the Data frame, these may be more useful when we have different data types that we want to keep together. 
+This is the best R object for storing your data in. It is basically a table of data, with columns of numbers or text. Another very common data structure in R is the Data frame, these may be more useful when we have different data types that we want to keep together. 
 
 Rather than combining `animals` and `weight_kg` into a single vector we can convert them into a data frame.
 
@@ -744,81 +732,6 @@ animals_df[1,2]
 These operations can be useful when we are dealing with small data frames but often when we are working with data we have large datasets, perhaps contained in spreadsheets on your computer or downloaded from the net. Such information needs to be imported into R before we can start to interrogate the data frame. 
 
 Remember the kitchen analogy - Data contained in a file on your computer is like an ingredient in your cupboard, to be able to use it you first need to put it on the kitchen counter, which means we need to import it in  to R and assign it to an object so that it appears in our environment pane.
-
-
-## Projects `r emo::ji("file_cabinet")` 
-
-<!-- When we are working on something in R it is good to keep all of the files associated with that work together in one place. -->
-<!-- Not only is this good practice but it can help us to help you (if you get stuck) and can save you from having to work with unnecessarily long file paths which makes life easier. -->
-<!-- What do we mean by the term 'file path'?  -->
-
-Before we go through importing your data to R it is worth taking some time to consider how to make this process as painfree as possible.
-To load information from files in to R we need to tell R exactly where on our computer that file is.
-The file path is the information that denotes where on your computer a file is stored.
-Often file paths are specific to your computer or to your username and might look something like this: 
-
-```{r, eval = FALSE, echo = TRUE}
-
-"C:/Users/Myusername/Documents/Uniwork/mydataforbio2020.xlsx"
-
-```
-
-This tells us that "mydata.xlsx" is in the `r emo::ji("file_folder")`Uniwork, which is in the `r emo::ji("file_folder")` Documents on my computer.
-
-The file path for a specific file will almost always be different on different peoples computers (depending on which folder you saved a file in for example) and this can cause confusion when we are trying to run our code or asking a friend to check our code. 
-
-We can minimise the issues with this by using the [Projects](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) option that is built in to R Studio.
-When we create a Project R Studio will create a file with the extension `.Proj` which basically tells R to start looking for files from the folder that we are in. 
-
-It is good practice to have a separate R Studio project for each project that you are working on so it would be a good idea to have a separate Project for each of the modules that you use R for and a project for your dissertation work.
-
-#### Setting up a Project
-
-To create a new project go to the projects menu, either by clicking the dropdown in the top right hand side of your window (next to where it says Project: (None)) or by clicking `File` > `New Project`  
-
-You should now see this popup window: 
-
-```{r, echo = FALSE}
-knitr::include_graphics("http://www.rstudio.com/images/docs/projects_new.png")
-```
-
-Select `New directory`  then  `New Project`
-
-Give your project a name (eg. the name of the module) and select where on your computer you want that to live.
-Click `Create project` and you should now see the name of your project displayed in the top right hand side of your R Studio window. 
-
-**NB** If you are an organised person and you had already created a folder for all of the work associated with a given module you can select `Existing Directory` navigate to your already existing folder and then select create project and the `.RProj` file will live in that folder alongside all your other files
-
-
-When you work in a Project R knows to look within that project folder for any files that you want to access.
-Now that you are working in a project the Files tab (bottom right window) will default to displaying the files that are in your project folder.
-
-`r emo::ji("file_cabinet")` How you organise your files within the project folder is up to you, there are some good tips in this [guide](https://www.britishecologicalsociety.org/wp-content/uploads/2017/12/guide-to-reproducible-code.pdf) produced by the [British Ecological Society](https://www.britishecologicalsociety.org/)
-
-We suggest that you have a couple of subfolders to keep you organised
-
- + `r emo::ji("file_folder")` Data, where all of your data files live
- + `r emo::ji("file_folder")`Analysis, where you can store all of your scripts
- 
-When working in a project you can access your data files using a shorter file path 
-
-```{r, eval = FALSE, echo = TRUE}
-
-"Data/mydataforbio2020.xlsx"
-
-```
-rather than 
-```{r, eval = FALSE, echo = TRUE}
-
-"C:/Users/Myusername/Documents/Uniwork/BIO2020/Data/mydataforbio2020.xlsx"
-
-```
-
-
-```{r, echo = FALSE}
-knitr::include_graphics("images/tidy.jpg")
-```
-
 
 
 ## Importing and exporting data
