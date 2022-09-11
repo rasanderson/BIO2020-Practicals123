@@ -62,10 +62,13 @@ Make sure that the following boxes are **unticked** or changed (see below):
 * Always save history (even when not saving .RData)
 * Remove duplicate entries in history
 
+Click on 'OK' once you have done this.
+
 ```{r, echo = FALSE}
-knitr::include_graphics("images/unset_globals.png")
+library(knitr)
+knit_hooks$set(optipng = hook_optipng)
+include_graphics("images/unset_globals.png")
 ```
-Click on 'OK' or 'Apply' once you have done this.
 
 ### Change appearance (optional)
 If like me you have poor eyesight, or e.g. have dyslexia and find some fonts difficult to read, you can modify the RStudio appearance. Again click on **Tools -> Global options** but click on the **Appearance** icon on the left. You should see something similar to below:
@@ -128,7 +131,7 @@ library(remotes)
 This is what is displayed on my PC:
 
 ```{r, echo = FALSE}
-knitr::include_graphics("images/R_console_remotes.png")
+knitr::include_graphics("images/R_console_library_remotes.png")
 ```
 
 The warning message in red simply indicates that the version of the `remotes` package on CRAN is slightly newer than my version of R. If you have a more recent version of R you might not receive this message, but it is nothing to worry about. Having activated the `remotes` package we can now use its extra commands.
