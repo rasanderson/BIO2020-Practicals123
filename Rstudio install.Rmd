@@ -331,7 +331,7 @@ If you are moving panes about and you accidentally lose one don't worry, it can 
 knitr::include_graphics("images/recover_panels.gif")
 ```
 
-## Download files from Canvas and import data
+## Download files from Canvas and import data {download}
 In BIO2020 all of the data will be provided for you on Canvas for import into R. When you work independently, you will probably be entering data in Microsoft Excel. Either way there are a couple of 'gotchas' to look out for. Download the Excel File `yield.xlsx` from Canvas - you can open it in Excel and look at it, but don't edit it or make any changes to it. The file contains crop growth in three different soil types. Now, in your Script window (top left) type the following text:
 
 ```{r, eval=FALSE}
@@ -740,30 +740,15 @@ To be able to analyse our data in R we first have to import/read it in to R so t
 How we go about this varies slightly depending on the file that we are going to be using.
 In all cases we need to assign the information in the file to an object so our code will start with the name of the object we are creating and the `<-` symbol
 
-#### `r emo::ji("file_folder")`CSV
+### Importing tables of data `r emo::ji("file_folder")`CSV
 
-Often data are stored in a `.csv` file a specific file type that is commonly used, these files look just like excel files (you can open them up and look at them in excel) they are just read differently by the computer.
-
-You can convert Excel spreadsheets to `.csv` files by saving them as such. 
-When saving your file in excel select `file` > `save as` > `comma delimited (csv)` to save it as this file type.
-You can then read it into R using the `read.csv()` function.
-
-<!-- You will likely see two different ways of reading these files in to R using either the `read.csv()` function or the `read_csv()` function (`r emo::ji("package")` readr). -->
-<!-- These functions essentially do the same thing (get your data in to R) but with some slight differences that we will address later on. -->
+We have already looked at CSV files, which you can export from Microsoft Excel using Excel's "Save As" option. This makes them the most useful "general" format for storing data.
 
 ```{r, eval = FALSE, echo = TRUE}
 my_data_object <- read.csv(path = "Path_to_the_file.csv")
 
 ```
 
-<!-- #### `r emo::ji("file_folder")` Excel  -->
-
-<!-- Using the `read_excel()` function (`r emo::ji("package")` reaxl) you can import information from excel files (`.xlsx` and `.xls`) containing multiple sheets.  -->
-<!-- By default the function will read the information from the first sheet unless you specify the name of the sheet that you want.  -->
-
-<!-- ```{r, eval = FALSE, echo = TRUE} -->
-<!-- my_data_object <- read_excel(path = "Path to the file.xlsx", sheet = "name of sheet") -->
-<!-- ``` -->
 
 ### Saving outputs
 
@@ -835,10 +820,11 @@ you can try googling them or searching [Rseek](https://rseek.org/) a search engi
 
 
 **Still stuck?**
+Please do not worry. R has a steep initial learning curve, so expect to hit problems.
 
-Ask your classmates, they might have encountered the same or similar problem!
-
-Check out the [`#`rstats](https://twitter.com/hashtag/rstats?lang=en) on twitter for useful advice.
+* Ask your classmates, they might have encountered the same or similar problem!
+* Make use of **Microsoft Teams BIO2020**. Ask questions of staff and **answer questions from other students**
+* Check out the [`#`rstats](https://twitter.com/hashtag/rstats?lang=en) on twitter for useful advice.
 
 The community or R users are extremely welcoming and supportive so just remember you're not alone!
 
