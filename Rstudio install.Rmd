@@ -495,38 +495,44 @@ For example, if you are 175 cm tall, you can assign your height to an R object s
 my_height <- 175
 ```
 
-Edit the following code to contain your height, and display the value:
+It can be assigned and displayed:
 
-```{r your-height, exercise=TRUE, exercise.completion=FALSE}
+```{r your-height, exercise=TRUE}
 my_height <- 175 
 # check the new value
 my_height
  
 ```
 
-Now that you have stored your height in the `my_height` *object* we can do some arithmatic with it.
+Now that you have stored your height in the `my_height` *object* we can do some arithmetic with it.
 Run the below code to convert your height from cm to inches
 
-```{r your-height-in, exercise=TRUE, exercise.completion=FALSE}
+
+```{r your-height-in-display, exercise=TRUE}
+my_height <- 175 
 my_height/2.54
  
 ```
 
-What do you think is the current *value* of `my_height`? Check below 
+In the following code *value* of `my_height` is unchanged at 175 
 
-```{r your-height-check, exercise=TRUE, exercise.completion=FALSE}
 
+```{r your-height-check, exercise=TRUE}
+my_height <- 175 
+my_height/2.54
+my_height
  
 ```
-<div id="your-height-check-hint">
-**Hint** Remember that to get R to display the *value* of an *object* you need to give it the object name (my_height)
-</div>
 
 You will notice that the *value* of `my_height` is still in cm, why? 
-Because we didn't store your height in inches as an object, let's do that now
+Because we didn't store your height in inches as an object, let's do that now. We will also add some comments to make the code more readable:
 
-```{r your-height-inch, exercise=TRUE, exercise.completion=FALSE}
-# create a new object
+
+```{r your-height-inch, exercise=TRUE}
+# Assign height in cm
+my_height <- 175
+
+# Calculate height in inches and assign to new R object
 my_height_inch <- my_height/2.54
 
 # check the value of the object 
@@ -547,6 +553,12 @@ Functions take *arguments*, the arguments (inputs) are specified within the brac
 Lets use the function `sqrt()` as an example.
 The argument to this function is a value (or an object that contains a value) for which we want to calculate the square root.
 When we run a function it returns an output that is the square root of the input value.
+
+```{r function1-setup}
+my_height <- 175
+```
+
+
 ```{r function1, exercise=TRUE, exercise.completion=FALSE}
 #run the function on a number
  sqrt(10)
@@ -636,7 +648,13 @@ animals <- c("lion", "tiger", "bear")
 
 We can inspect the contents of a vector, using functions such as `length()` and `class()` by giving these functions the name of the vector that we want to inspect. 
 
-Using `length()` and `class()`  inspect the vectors `weight_kg` and `animals` that we have just created to see if you can work out what these functions do
+Using `length()` and `class()`  inspect the vectors `weight_kg` and `animals` that we have just created to see if you can work out what these functions do. Edit the following two lines to put the correct text inside the `()` brackets:
+
+```{r vect-inspect-setup}
+weight_kg <- c(190, 310, 500)
+animals <- c("lion", "tiger", "bear")
+```
+
 
 ```{r vect-inspect, exercise=TRUE, exercise.completion=FALSE}
 
@@ -655,45 +673,6 @@ class(animals)
 ```
 
 As we can see the above examples are vectors that contain a single data type, lets have a look at what happens when we have multiple data types.
-We can use the `c()` function again to join the two vectors together
-
-```{r}
-animal_info <- c(animals, weight_kg)
-```
-
-As before have a go at using the `length()` and `class()` functions to inspect the vector
-
-```{r vect-inspect2, exercise=TRUE, exercise.completion=FALSE}
-
-length()
-class()
-
-```
-
-R is telling us that our vector is a character vector but we know that we have got some numeric information in there.
-R converts data to a single shared type within a vector, the numeric information is converted into character data. 
-As soon as R detects character data in the vector it assumes that everything in that vector is character data.
-
-We can extract information from a vector by *indexing*, using square brackets [] to specify the information that we want from the vector according to it's position. 
-From using the `length()` function we know that the `animal_info` vector contains 6 bits of information. 
-We could ask R to show us the 6th bit of information only
-```{r}
-animal_info[6]
-```
-
-or we could ask for multiple bits of information according to their position
-
-```{r}
-#asking for the infomation in the first 3 slots of the vector
-# the : tells R to return everything FROM 1 to 3
-animal_info[1:3]
-
-# asking for the first and last bits of information
-# here we use the c() function to ask for information
-# in locations 1 AND 4
-animal_info[c(1,4)]
-```
-
 
 #### Data frames
 
@@ -701,9 +680,15 @@ This is the best R object for storing your data in. It is basically a table of d
 
 Rather than combining `animals` and `weight_kg` into a single vector we can convert them into a data frame.
 
-```{r}
+
+```{r animals_dataframe-setup}
+weight_kg <- c(190, 310, 500)
+animals <- c("lion", "tiger", "bear")
+```
+
+```{r animals_dataframe, exercise=TRUE}
 # create an object in which to store the data frame
-animals_df <-data.frame(animals,weight_kg)
+animals_df <- data.frame(animals, weight_kg)
 
 # look at the data frame
 animals_df
@@ -712,7 +697,13 @@ animals_df
 We now have something that might look more familiar to those of us that are used to working with data in excel.
 
 We can use the `str()` function to look at the structure of the data frame.
-```{r}
+```{r animals_structure-setup}
+weight_kg <- c(190, 310, 500)
+animals <- c("lion", "tiger", "bear")
+animals_df <- data.frame(animals, weight_kg)
+```
+
+```{r animals_structure, exercise=TRUE}
 str(animals_df)
 ```
 
@@ -720,7 +711,13 @@ From this we can see that the data frame has 3 observations (rows) and 2 variabl
 
 If we want to extract a specific column of a data frame we can do so using the `$` operator.
 
-```{r}
+```{r animals_column-setup}
+weight_kg <- c(190, 310, 500)
+animals <- c("lion", "tiger", "bear")
+animals_df <- data.frame(animals, weight_kg)
+```
+
+```{r animals_column, exercise=TRUE}
 animals_df$animals
 ```
 
@@ -728,8 +725,18 @@ Here we are telling R that from the `animmals_df` we want the column `$` that is
 
 To extract a specific value we can *index* it using the square brackets [] to specify the position by location using dataframe[rownumber,columnnumber]
 
-```{r}
-animals_df[1,2]
+```{r animals_rowcol-setup}
+weight_kg <- c(190, 310, 500)
+animals <- c("lion", "tiger", "bear")
+animals_df <- data.frame(animals, weight_kg)
+```
+
+```{r animals_rowcol, exercise=TRUE}
+animals_df[1,2]  # First row, second column
+animals_df[2,1]  # Second row, first column
+
+# Enter the name of the data.frame to display its contents
+animals_df
 ```
 
 These operations can be useful when we are dealing with small data frames but often when we are working with data we have large datasets, perhaps contained in spreadsheets on your computer or downloaded from the net. Such information needs to be imported into R before we can start to interrogate the data frame. 
