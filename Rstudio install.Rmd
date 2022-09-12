@@ -273,10 +273,9 @@ knitr::include_graphics("images/Rstudio4packages.png")
 
 ```{r, message =FALSE, warning= FALSE, echo = FALSE}
 
-p <- paste("When working through tutorials you might find examples of functions being noted to belong to a package. eg. we're going to use the `mean` function (", emo::ji("package"),"mosaic). The package is noted for reference, a common error that we see is students trying to use a fnumction without remembering to first load the package that it belongs to. This casues R to return an error, checking that the correct package is loaded is usually the first thing that we do when trying to resolve an error like this. Students often ask how do you remember which functions to use? and which functions are in each package? the answer is that it is experience, the more you come to use R the more of the code you remember. The good news is that you don't necessarily need to memorise which package a particular function belongs to but knowing can help with troubleshooting issues,which is why we reference them here for you.")
+p <- paste("When working through tutorials you might find examples of functions being noted to belong to a package. eg. we're going to use the `mean` function (from the `mosaic` package). The package is noted for reference, a common error that we see is students trying to use a fnumction without remembering to first load the package that it belongs to. This casues R to return an error, checking that the correct package is loaded is usually the first thing that we do when trying to resolve an error like this. Students often ask how do you remember which functions to use? and which functions are in each package? the answer is that it is experience, the more you come to use R the more of the code you remember. The good news is that you don't necessarily need to memorise which package a particular function belongs to but knowing can help with troubleshooting issues,which is why we reference them here for you.")
 
 p <- as.data.frame(p)
-#names(p) <- paste("A note on packages", emo::ji("package"))
 names(p) <- paste("A note on packages")
 
 
@@ -293,11 +292,6 @@ set_table_properties(width = 1, layout = "autofit") %>%
 border_remove()
 myft
 ```
-
-
-<!-- A note on packages `r emo::ji("package")`  -->
-
-<!-- When working through tutorials you might find examples of functions being noted to belong to a package. eg. we're going to use the `read_csv` function (`r emo::ji("package")`  readr) -->
 
 
 The ***Help*** tab offers you an interactive window through which you can use the help files for R functions.
@@ -750,7 +744,7 @@ To be able to analyse our data in R we first have to import/read it in to R so t
 How we go about this varies slightly depending on the file that we are going to be using.
 In all cases we need to assign the information in the file to an object so our code will start with the name of the object we are creating and the `<-` symbol
 
-### Importing tables of data `r emo::ji("file_folder")`CSV
+### Importing tables of data via CSV files
 
 We have already looked at CSV files, which you can export from Microsoft Excel using Excel's "Save As" option. This makes them the most useful "general" format for storing data.
 
@@ -760,11 +754,11 @@ my_data_object <- read.csv(path = "Path_to_the_file.csv")
 ```
 
 
-### Saving outputs
+### Saving (exporting) outputs
 
-#### Saving data objects `r emo::ji("1234")`
+#### Saving data objects 
 Once we have manipulated our data we may want to save it as a file that we can then share with others. 
-Data can be saved to `.csv` files using <!--either--> the `write.csv` function. <!--or the `write_csv` function (`r emo::ji("package")` readr).-->
+Data can be saved to `.csv` files using the `write.csv` function.
 
 The code is similar to that used to read data in, it requires the filepath specifying where you want to save the file which includes the name that you want to give to the file, and it requires the name of the object that is being written (saved).
 
@@ -777,7 +771,7 @@ write_csv(my_data_object, path = "Data/my_output_data.csv")
 ```
 
 
-#### Saving plots `r emo::ji("framed_picture")`
+#### Saving plots
 
 Once you have created your beautiful plots that support your analysis you will want to be able to copy them into your reports. 
 The easiest way to do this is to use the dropdown `Export` menu in the plots pane. 
