@@ -22,9 +22,9 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 Now that we are starting to think about analysing some data we need to know some of the basic functions that we can use in R to:
 
-- Check our data `r emo::ji("heavy_check_mark")`
-- Generate summary statistics for our dataset (as a whole and for individual variables) `r emo::ji("multiply")` `r emo::ji("abacus")` `r emo::ji("heavy_division_sign")`
-- Visualise and plot our data `r emo::ji("bar_chart")``r emo::ji("chart_increasing")`  
+- Check our data 
+- Generate summary statistics for our dataset (as a whole and for individual variables) 
+- Visualise and plot our data
 
 This tutorial focuses more on the 'how', offering you some code chunks that you can modify (and reuse in future should you need to)to help you familiarize yourself with carrying out such operations in R, the 'why' pertaining to many of the concepts touched on here will be covered in more detail in the Summary Stats tutorial.
 
@@ -33,7 +33,7 @@ This tutorial focuses more on the 'how', offering you some code chunks that you 
 Once you have collected your data and read it in to R (if you need a recap of reading in data go to back to the previous tutorial) the first thing to do is to check that you have the right data!
 
 Lets start by having a look at some data.
-We are going look at some data that contains information about penguins that was collected by researchers at the `r emo::ji("penguin")` [palmer research station](https://pal.lternet.edu/)  `r emo::ji("penguin")`  
+We are going look at some data that contains information about penguins that was collected by researchers at the [palmer research station](https://pal.lternet.edu/)
 
 There are a couple of R functions that offer a useful jumping off point for us to get to know our dataset.
 
@@ -114,7 +114,7 @@ summary(penguins)
 ```
 
 
-We could  do this manually for a chosen variable using the `mean()` function (`r emo::ji("package")` mosaic)
+We could  do this manually for a chosen variable using the `mean()` function from the `mosaic` package
 ```{r mean-func, echo =TRUE}
 # mean weight
 mean(~body_mass_g, data = penguins)
@@ -141,23 +141,66 @@ mean(~body_mass_g, data = penguins, na.rm=TRUE)
 ```
 
 
-From using the `summary()` function we can see that there are three different species of penguin in our dataset, whilst the above code gives us an indication of the overall mean often we want to compute those same statistics for each group to see if the groups differ from each other.
+From using the `summary()` function we can see that there are three different species of penguin in our dataset, whilst the above code gives us an indication of the overall mean often we want to compute those same statistics for each group to see if the groups differ from each other. This is where we can start to think about "templates" which give a single overall goal to what you are doing.
 
-An easy way to do this is to use functions (such as `mean()`) from the `mosaic` package with the formula: 
+## Think about your goal
+### The Most Important Template
+&nbsp;
 
-$$\text{statistic(variable ~ group, data= dataset)}$$
+The following template is important because we can do so much with it.
+
+![](images/template_blank.png)
+
+### Template components
+It is useful to name the components of the template:
+
+![](images/template_filled.png)
+
+We're hiding a bit of complexity in the template, and there will be times 
+that we will want to add some options, e.g. to handle missing data etc.  We'll indicate that by adding `...` to the end of the template.  Just don't let `...` become a distraction
+early on.
+
+![](images/template_with_options.png)
+Often you won't need to add options, but it depends on your data.
+
+### Other versions
+Here are some variations on the template that you might see
+```{r, eval = FALSE, echo=TRUE}
+# Goal only has one variable
+goal(~ x, data = mydata)
+
+# May want to group by another variable
+goal(y ~ x | z , data = mydata)
+
+# Might want to link in additional goals (usually for graphs)
+goal(y ~ x, data = mydata) %>% 
+  additional_goal()
+```
+
+In all these cases the word **`goal`** will be replaced by an R command to:
+
+* calculate a simple statistic
+* do a data analysis
+* create a graph.
+
+## Using the template for simple statistics
+Here are goal is to calculate a simple summary statistic such as a mean or median. We can do this with the formula: 
+
+$$\text{statistic(variable ~ group, data = dataset, ...)}$$
 Where:
 
 + **statistic** = the statistic that we want to calculate (mean, median, sd, etc.)
-+ **variable** = the name of the column containing the variable that we are interested in 
-+ **group** = the name of the column containing information by which we want to group the data
++ **variable** = the name of the column of your **response** data 
++ **group** = the name of the column of **explanatory** data
++ **...** = options. Not always needed.
 
 So we can look at the mean of the weight variable according to the species 
 
 ```{r sp-weight, echo = TRUE}
 mean(body_mass_g ~ species, data= penguins, na.rm=TRUE)
-
 ```
+
+We need to add the option `na.rm=TRUE` as there are missing data in this dataset.
 
 We can see that the Gentoo penguins are generally heavier than the other two species
 
@@ -166,6 +209,7 @@ How might we modify the below code to see if there is any sexual dimporhism amon
 ```{r penguin-dimorphism, exercise=TRUE, exercise.completion=FALSE}
 # What is the median weight of male penguins?
 median(~body_mass_g, data = penguins, na.rm=TRUE)
+
 # What is the mean weight of female gentoo penguins?
 mean(~body_mass_g, data = penguins, na.rm=TRUE) 
 ```
@@ -183,9 +227,9 @@ knitr::include_graphics("images/lter_penguins.png")
 ```
 
 
-## Always plot your data `r emo::ji("bar_chart")``r emo::ji("chart_increasing")` 
+## Always plot your data 
 
-Summary stats are a great starting point but to really understand what is going on with our data we need to visualize it. We are using data from the `datasauRus` R package, which has data with identical means, but very different appearances. It shows the imporance of plotting data.
+Summary stats are a great starting point but to really understand what is going on with our data we need to visualize it. We are using data from the `datasauRus` R package, which has data with identical means, but very different appearances. It shows the importance of plotting data.
 
 Lets take a look at the below dataset, which is called `datasaurus_dozen` which has x and y values for different groups (recorded as the dataset variable) which are recorded as a character variable.
 
@@ -195,14 +239,21 @@ datasaurus_dozen$dataset <- as.factor(datasaurus_dozen$dataset)
 
 ```{r datasaurus_exercise, exercise=TRUE}
 summary(datasaurus_dozen)
+unique(datasaurus_dozen$dataset)
 ```
 
-You can see that the dataset contains three columns, a `dataset` column, with 142 records in each, and continuous variables `x` and `y`. We will now calculate some summary statistics for `x` and `y` using `dataset` as a grouping variable.
+You can see that the table of data `datasaurus_dozen` contains three columns:
+
+* a `dataset` column, with 142 records in each. This is a categorical variable with 13 names listed above.
+* two continuous variables `x` and `y`.
+
+We will now calculate some summary statistics for `x` and `y` using `dataset` as a grouping variable.
 
 ```{r datasaurus, echo = TRUE}
 # mean and sd of x values in each group
 mean(x~dataset, data = datasaurus_dozen) 
-mean(y~dataset, data = datasaurus_dozen) 
+mean(y~dataset, data = datasaurus_dozen)
+
 # mean and sd of y values in each group
 sd(x~dataset, data = datasaurus_dozen)
 sd(y~dataset, data = datasaurus_dozen)
@@ -211,19 +262,19 @@ sd(y~dataset, data = datasaurus_dozen)
 **Hint** Remember the formula $$\text{statistic(variable ~ group, data= dataset)}$$ 
 </div>
 
-It appears that for each `dataset` the summary statistics are the same for `x` and `y`. Every `dataset` group seems to have the same mean and standard deviation for the `x` and `y`. Is this really a good reflection of what the datasets are like?? 
+It appears that for each `dataset` the summary statistics are the same for `x` and `y`. Every `dataset` group has the same mean and standard deviation for the `x` and `y`. Is this really a good reflection of what the datasets are like?? So is the data the same!!??
 
-Let us plot them all in one plot:
+Let us plot all the `x` and `y` values in one scatterplot, using the option `colour = ~dataset` to colour the points by `dataset` code:
 
 ```{r datasaurall, exercise=TRUE}
-gf_point(y~x, data = datasaurus_dozen, colour =~ dataset)
+gf_point(y~x, data = datasaurus_dozen, colour = ~dataset)
 
 ```
 
 There is a lot going on here, by colouring the points in each dataset differently we can see that there look to be some patterns but there is too much information plotted on top of other information to be of much use. We can make life easier by separating out the different datasets into separate windows (we call these facets) to get a better idea of what is going on. We add the command `gf_facet_wrap()` by using the little `%>%` symbol at the end of the previous line.
 
 ```{r datasaur-facet, exercise=TRUE}
-gf_point(y~x, data = datasaurus_dozen, colour =~dataset) %>%
+gf_point(y~x, data = datasaurus_dozen, colour = ~dataset) %>%
   gf_facet_wrap(~dataset)
 ```
 
@@ -234,20 +285,7 @@ gf_point(y~x, data = datasaurus_dozen, colour =~dataset) %>%
 One of the most powerful things that we can do with our data is to visualize it. Good data viz can help us to see what our data is doing and to communicate our findings to others. 
 Several institutions including the BBC and the Financial times do the majority of their data visualisation using R. 
 
-The below images are examples of the graphics that can be made entirely using R
-
-```{r}
-knitr::include_graphics("images/cedric-wwcup.png")
-```
-
-```{r}
-knitr::include_graphics("images/cedric-coffee.png")
-```
- 
- 
-Although we are going to be starting with simple plots they have the same building blocks as those we have just seen.
-
-For plotting we will use functions from `ggformula` (`r emo::ji("package")`) which allow us to create powerful plots with simple code. 
+For plotting we will use functions from `ggformula` package which allow us to create powerful plots with simple code. 
 The formula that we will use is similar to the one that we used to generate summary statistics.
 
 For visualizing a single variable:
@@ -257,7 +295,7 @@ $$\text{plot type(~variable, data= dataset)}$$
 For visualizing two variables: 
 
 $$\text{plot type(variable y ~ variable x, data= dataset)}$$
-Because we are using the `ggformula` package the plotting functions that we will use will be preceded by `gf_` so for a boxplot we will use `gf_boxplot()` for a bar chart we use `gf_bar()`
+Because we are using the `ggformula` package the plotting functions that we will use will be preceded by `gf_` ("graph formula") so for a boxplot we will use `gf_boxplot()` for a bar chart we use `gf_bar()`
 We will go through some of the most common plot types that you might want to use but for more detail have a look at different functions [here](https://cran.r-project.org/web/packages/ggformula/vignettes/ggformula.html).
 
 In order to know what plot will be most useful to us we need to first think about the data that we are plotting.
@@ -301,17 +339,17 @@ knitr::include_graphics("images/data-to-viz.png")
 When investigating a numerical variable we might want to look at the distribution of values (we will talk more about why this is important in the summary statistics lesson) using plots which we could do in a variety of different ways. 
 
 ```{r simple_histogram, exercise=TRUE}
-gf_histogram(~body_mass_g, data=penguins)
+gf_histogram(~body_mass_g, data = penguins)
 ```
 
 Note that the plot also came with a warning message (remember we had a couple of data points with and NA value) just to let us know that there are some data that were missing and so aren't included in the plot because our plotting function didn't know where to put them.
 Going forward these error messages have been hidden from the output so that we can focus purely on the visualizations but it is important to note why they appear. 
 
-Can you alter the below code to show a density plot rather than a histogram? 
+Can you alter the below code to show a "density" plot rather than a "histogram"? 
 
 ```{r penguin-density, exercise=TRUE, exercise.completion=FALSE}
 # density plot of penguin body mass 
-gf_histogram(~body_mass_g, data= penguins)
+gf_histogram(~body_mass_g, data = penguins)
  
 ```
 
@@ -321,14 +359,6 @@ gf_density(~body_mass_g, data= penguins)
 
 ```
 
-
-<!-- Using the `gf_boxplot()` function can you create a boxplot of body mass from the penguins data  -->
-
-<!-- ```{r penguin-box, exercise=TRUE, exercise.completion=FALSE} -->
-<!-- # Boxplot of penguin body mass  -->
-
-
-<!-- ``` -->
 
 ### Categorical data
 
@@ -349,7 +379,7 @@ $$\text{plot type(variable_y ~ variable_x, data= dataset)}$$
 #### Comparing multiple categorical variables 
 
 We can take our bar chart that showed how many penguins were recorded on each island and we can add information about the species. Using the position argument we can create different plots that show similar information. 
-Run the code below to see the output, then change the position argument in the below code to `dodge` and see what the different output looks like.
+Run the code below to see the output, then change the position argument in the below code from `stack` to `dodge` and see what the different output looks like.
 
 ```{r penguin-dodge, exercise=TRUE, exercise.completion=FALSE}
 gf_bar(~island, position= "stack", 
@@ -357,7 +387,7 @@ gf_bar(~island, position= "stack",
 ```
 
 <div id="penguin-dodge-hint">
-**Hint** Remember that the dodge argument needs to be inside some quotation marks "dodge"
+**Hint** Remember that the dodge argument needs to be inside quotation marks "dodge"
 </div>
 
 The `gf_bar()` function gives us counts of our variables in each group, we could change that to show us what proportion of the data are in each category by instead using the `gf_props()` function 
@@ -392,12 +422,18 @@ gf_point(bill_depth_mm ~ bill_length_mm,
 ```
 
 Now we have an informative plot that clearly shows the trends within each species.
+You have just created a really sophisticated and informative plot.
 
-You have just created a really sophisticated and informative plot `r emo::ji("tada")`
+The best way of building up plots is:
 
-```{r, echo = FALSE}
-knitr::include_graphics("https://media.giphy.com/media/VvXg0yjJQgfEQ/giphy.gif")
-```
+* Write the plotting code in your script file, with the simplest initial plot
+* Send the code from the script to the Console to execute and display your plot
+* Add more complex modification
+* Re-run the plotting code
+* Add further refinement
+* etc.
+
+That way you will quickly master how to build a complex plot.
 
 The below code is similar to the code you just used to create your plot but with a couple of extra details. 
 Look at the code and see if you can work out what the extra bits are doing, run the code and compare the two plots to check if you guessed correctly
@@ -406,25 +442,25 @@ Look at the code and see if you can work out what the extra bits are doing, run 
 
 gf_point(bill_depth_mm ~ bill_length_mm, colour = ~species, 
          size = ~body_mass_g, alpha = 0.4, data= penguins) %>% 
-   gf_labs(x = "Bill length (mm)", y = "Bill depth (mm)") %>% 
+  gf_labs(x = "Bill length (mm)", y = "Bill depth (mm)") %>% 
   gf_refine(scale_color_manual(values = c("darkorange", "purple", "cyan4"))) %>%
-  gf_theme(theme_minimal())
+  gf_theme(theme_classic())
 
 ```
 
-The `alpha` argument alters the transparency of the points, this is useful when we have lots of points that are close together as it helps us to see where points are plotted on top of one another.
- 
-`gf_labs()` is a function that allows us to alter the labels, the default labels are the variable names but often when we are creating plots that we are going to present we might want to tidy them up a bit.
+#### Explanation of the above
 
-`gf_refine()` is a function that lets us refine some aspects of the plot, here we have used it to manually specify the colours that we want to use in the plot. 
-We use `scale_color_manual()` to create a custom colour pallet, here we have specified three colours by [name](https://www.r-graph-gallery.com/42-colors-names.html)
+* `gf_point` creates the scatterplot. We have added **three** additional options:
+  + `alpha` argument alters the transparency of the points, this is useful when we have lots of points that are close together as it helps us to see where points are plotted on top of one another.
+  + `size` adjusts the size of each point based on the body mass
+  + `colour` uses different colours for each species
+  + We have spread the `gf_point` command across two lines, as it is getting rather wide. This is acceptable in R.
+* `gf_labs()` is a function that allows us to alter the labels, the default labels are the variable names but often when we are creating plots that we are going to present we might want to tidy them up a bit.
+* `gf_refine()` is a function that lets us refine some aspects of the plot, here we have used it to manually specify the colours that we want to use in the plot. 
+We use `scale_color_manual()` to create a custom colour pallet, here we have specified three colours by [name](https://www.r-graph-gallery.com/42-colors-names.html). Be careful about choice of colours, as colour-blindness is common.
+* `gf_theme()` is a function that allows us to alter the overall [theme](https://ggplot2.tidyverse.org/reference/ggtheme.html) of the plot. The `theme_classic` removes the grey background and gives a simple, clean appearance.
 
-Add in a note about checking colour blind friendliness of colours
-
-
-`gf_theme()` is a function that allows us to alter the overall [theme](https://ggplot2.tidyverse.org/reference/ggtheme.html) of the plot, most noticeably it has removed the grey background. 
-
-The other new thing that you may have spotted in the above code is what we call the pipe ` %>% `
+The other new thing that you may have spotted in the above code is what we call the pipe ` %>% ` to join plotting commands together.
 
 ```{r pipe-note}
 
@@ -462,7 +498,7 @@ gf_boxplot(body_mass_g~species, data = penguins)
 ```
 
 Here we can see that the Gentoo penguins are generally heavier than the other species.
-To make the plot a bit more informative lets add the  data points in as an extra layer, to do this we are going to use the `gf_sina()` function and the pipe. 
+To make the plot a bit more informative lets add the  data points in as an extra layer, to do this we are going to use the `gf_sina()` function and the pipe. The `gf_sina()` overlays the points from a **sin**gle variable (the individual penguins), but **"jitters"** at random them so they don't all overlap.
 
 For example if we take the code that produced the previous plot and add a pipe and some more code at the end we are telling R to create the boxplot using the variables and data we have specified THEN add some points (because we have used the pipe R assumes that we are using the same data) on top and shape them according to the sex variable
 
@@ -528,8 +564,9 @@ gf_violin(body_mass_g~species, colour = ~species, alpha = 0.5,data = penguins) %
   
 ```
 
+## Publication quality graphs
 
-You have now successfully created some informative plots that you could put straight into a report about penguins such as the [Paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081) that these data were originally published in.
+You have now successfully created some informative plots that you could put straight into a report about penguins such as the [Paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081) that these data were originally published in. Have a think about what you have learnt and other plots you can produce.
 
 
 
