@@ -156,6 +156,12 @@ It is useful to name the components of the template:
 
 ![](images/template_filled.png)
 
+In general here you will have:
+
+* goal: calculate a summary statistic, do an analysis, create a graph
+* y ~ x: y is your response variable, x is your explanatory (see first lecture)
+* mydata: this is a `data.frame` with columns `x` and `y`
+
 We're hiding a bit of complexity in the template, and there will be times 
 that we will want to add some options, e.g. to handle missing data etc.  We'll indicate that by adding `...` to the end of the template.  Just don't let `...` become a distraction
 early on.
