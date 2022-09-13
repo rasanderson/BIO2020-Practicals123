@@ -165,15 +165,25 @@ You may receive some warning messages about R version numbers. The key thing to 
 If that is displayed then the `bio2020` package has been installed successfully.
 
 ### What to do if you are unable to install `bio2020` successfully
-Sometimes the `bio2020` package does not successfully install (I am a biologist, not a computer programmer!). Don't worry, we can easily work around it:
+Often the `bio2020` package does not successfully install (I am a biologist, not a computer programmer!). Don't worry, we can easily work around it:
 
 * First, double-check with myself or a Demonstrator. Sometimes there are minor differences in the configuration of NUIT PCs within a cluster room that can cause problems, or if many students (i.e. over 150 in this class) overload the network.
-* Second, if you are unable to resolve the problems, issue the following commands to manually install the key packages you need for the first few practicals:
+* Second, if you are unable to resolve the problems, if you are using an NUIT PC some of the key packages you will need should already have been installed. Try issuing the following commands (don't worry about Warning messages, but look out for Error messages):
+
+```{r, eval=FALSE}
+library(mosaic)
+library(car)
+library(tidyr)
+library(vegan)
+```
+
+* Third, if those commands give an Error, or if using your own MacBook or Laptop (**unsupported**) then issue:
 
 ```{r, eval=FALSE}
 install.packages("mosaic")
 install.packages("car")
 install.packages("tidyr")
+install.packages("vegan")
 ```
 
 These are all standard CRAN packages so should install without problems. However, you will have to activate them individually with their own `library` calls, rather than by using a call to `bio2020`:
