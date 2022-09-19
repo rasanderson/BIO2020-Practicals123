@@ -285,27 +285,6 @@ Packages mostly contain bits of code called *functions* which we will cover in a
 knitr::include_graphics("images/Rstudio4packages.png")
 ```
 
-```{r, message =FALSE, warning= FALSE, echo = FALSE}
-
-p <- paste("When working through tutorials you might find examples of functions being noted to belong to a package. eg. we're going to use the `mean` function (from the `mosaic` package). The package is noted for reference, a common error that we see is students trying to use a fnumction without remembering to first load the package that it belongs to. This casues R to return an error, checking that the correct package is loaded is usually the first thing that we do when trying to resolve an error like this. Students often ask how do you remember which functions to use? and which functions are in each package? the answer is that it is experience, the more you come to use R the more of the code you remember. The good news is that you don't necessarily need to memorise which package a particular function belongs to but knowing can help with troubleshooting issues,which is why we reference them here for you.")
-
-p <- as.data.frame(p)
-names(p) <- paste("A note on packages")
-
-
-#big_border = fp_border(color="#9cdce6", width = 2)
-
-
-myft <- flextable(p) %>% 
- bg(., bg = "#9cdce6", part = "header") %>% 
-bg(bg = "#9cdce6", part = "body") %>% 
-align(align = "left", part = "all") %>% 
-  bold(part = "header") %>% 
-  fontsize(part= "all", size = 12) %>% 
-set_table_properties(width = 1, layout = "autofit") %>% 
-border_remove()
-myft
-```
 
 
 The ***Help*** tab offers you an interactive window through which you can use the help files for R functions.
