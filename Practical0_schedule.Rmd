@@ -2,10 +2,11 @@
 title: "Navigating R and RStudio"
 author: "BIO2020"
 output:
+  word_document:
+    number_sections: true
   html_document:
     df_print: paged
     number_sections: true
-  word_document: default
 ---
 
 ```{r setup, include=FALSE, warning = FALSE, message = FALSE}
