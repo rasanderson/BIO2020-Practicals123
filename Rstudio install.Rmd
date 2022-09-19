@@ -16,7 +16,7 @@ library(flextable)
 ## R for biological data science
 
 This module is an introduction to using the R software through the R Studio interface.
-R is both a computer software and a programming language that can be used for powerful data analysis and will be used across several of the taught modules that you will undertake. R is now widely used in Government bodies (e.g. NHS, Natural England), media organisations (BBC, The Guardian, Financial Times), research institutes (Centre for Ecology & Hydrology, Francis Crick Institute) as well as academia. This is because of its flexibility, powerful data analytics and visualisation capabilities. It has a steep initial learning curve (don't panic!) but then becomes much easier. Graduates with strong data science skills in using R are in high demand by employers so it is also a useful addition to your CV.
+R is both a computer software and a programming language that can be used for powerful data analysis and will be used across several of the taught modules that you will undertake. R is now widely used in Government bodies (e.g. NHS, Natural England), media organisations, e.g. [BBC](https://bbc.github.io/rcookbook/), The Guardian, [Financial Times](https://blog.revolutionanalytics.com/2018/06/ft-bbc-uses-r.html), plus research institutes (Centre for Ecology & Hydrology, Francis Crick Institute) as well as academia. This is because of its flexibility, powerful data analytics and visualisation capabilities. It has a steep initial learning curve (don't panic!) but then becomes much easier. Graduates with strong data science skills in using R are in high demand by employers so it is also a useful addition to your CV.
 
 ### R vs RStudio
 R is the basic underlying computer software you use to undertake analyses of biological data. RStudio is a separate programme that creates an "Integrated Development Environment" (IDE) that makes it easier to do data science. Think of the differences between doing arithmetic on a hand-calculator vs Microsoft Excel. RStudio defaults to automatically uses R, but can handle other computer languages such as C++, HTML and Python.
@@ -834,19 +834,20 @@ knitr::include_graphics("images/code_hero.png")
 
 
 
-## Further resources
+## Further resources 
 
 Want to keep learning
 
-```{r, echo = FALSE}
-knitr::include_graphics("https://media.giphy.com/media/26mkhLA0gzRJbAWL6/giphy.gif")
-```
+There are A LOT of excellent resources out there for learning R, some of those that we recommend are listed here and should be enough to keep you going: 
+
+[learnR4free](http://learnR4free.com)
+
+[Data science box](http://datasciencebox.org)
+
+[Data carpentry](https://datacarpentry.org/R-ecology-lesson/index.html)
+
+[Our Coding Club](https://ourcodingclub.github.io/)
+
+These sites are for reference only.
 
 
-There are A LOT of excellent resources out there for learning R, some of those that we recommend are listed here and should be enough to keep you going 
-
-[learnR4free](learnR4free.com)
-
-[Data science box](datasciencebox.org)
-
-[Data carpentry](datacarpentry.org/lessons/#ecology-workshop)
