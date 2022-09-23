@@ -16,7 +16,7 @@ library(flextable)
 library(mosaic)
 ```
 
-# Aims and objectives of Practical 1
+# Aims and objectives of Practical 0
 The overall aim of this practical is to help you become more familiar with RStudio, what its main panels are for, how to download data from Canvas, and import it into R. Specific objectives include:
 
 1. explain the concept of RStudio projects to allow you to store data, files containing R commands (known as scripts), and the four main panels in RStudio
@@ -368,7 +368,7 @@ There are four files listed, although the default settings in File Manager does 
 
 Look very carefully and you can see that the icons for the two yield files are slightly different, as one has **,a** in it. You can change the settings in File Manager so that full file names with the final "extension" are showing. For the rest of the BIO2020 course all the files will be CSV format, so you will not have this problem. When you enter your own data into Excel for use in RStudio, you need to be aware of it.
 
-Go back to RStudio. Now you should be able to re-run your `read.csv` line. If it is successful, nothing will be displayed in the console, but in your Environment window (top right panel) you should see `pract_dat` listed, and when you run the `summary(pract0_dat)` and `mean(yield ~ soil, data = pract0_dat)` commands you should see:
+Go back to RStudio. Now you should be able to re-run your `read.csv` line. If it is successful, nothing will be displayed in the console, but in your Environment window (top right panel) you should see the table (data frame) `pract0_dat` listed, and when you run the `summary(pract0_dat)` and `mean(yield ~ soil, data = pract0_dat)` commands you should see:
 
 
 ```{r, echo = FALSE, eval = TRUE}
@@ -705,7 +705,7 @@ write.csv(my_data_object, path = "Data/my_output_data.csv")
 
 ### Saving plots
 
-Once you have created your beautiful plots that support your analysis you will want to be able to copy them into your reports. 
+We will create various graphs of data in the next practical. Once you have created beautiful plots that support your analysis you will want to be able to copy them into your reports. 
 The easiest way to do this is to use the dropdown `Export` menu in the plots pane. 
 
 You can copy plots to the clipboard or save them as a file (specifying the file type, .png/.jpg/.tiff etc.)
@@ -760,4 +760,14 @@ Please look at the **Ten-minute videos** (TMV) that provide clear background inf
 
 ## Books, online guides
 See the Canvas reading list for BIO2020. I have updated this with new resources for 2022, with most books in electronic format. There are also lots of excellent resources out there for learning R, some of those that we recommend are listed here and should be enough to keep you going 
+
+[learnR4free](http://learnR4free.com)
+
+[Data science box](http://datasciencebox.org)
+
+[Data carpentry](https://datacarpentry.org/R-ecology-lesson/index.html)
+
+[Our Coding Club - written by students for students](https://ourcodingclub.github.io/)
+
+These sites are for reference only.
 
