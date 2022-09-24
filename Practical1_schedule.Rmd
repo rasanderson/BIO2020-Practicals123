@@ -28,8 +28,8 @@ We will primarily focus on two datasets:
 
 **Chick data**
 
-* `chick_diet.csv` This contains the final weights of chicks after 21 days on four different diets.
-* `chick_growth.csv` This shows the average growth rate on each day of all the chicks from day 0 (hatching) to day 21.
+* `chick_diet.csv` contains the variables `weight`, `time`, `chick` and `diet`. It contains the weights of 45 individual chicks after a 21 day time period on 4 diets; A, B, C and D..
+* `chick_growth.csv` contains the variables weight, time and diet. It contains the average weight of all the chicks on each day of the experiment, from day 0 (hatching) to day 21, for each of the same 4 diets.
 
 **Bivalve data**
 
@@ -127,15 +127,20 @@ bivalves_dat <- read.csv("Data/bivalves.csv")
 Save your script by selecting **File -> Save** from the main RStudio menu. Next, position your mouse cursor on the first of the three `read.csv` lines, and hit the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> key combinations several times to send the commands to the RStudio Console where they will be run. If you receive an error message, check you've copied the CSV files over from Downloads to your BIO2020 project folder, look for any spelling errors (R is case-sensitive too), check you've typed `read.csv` and not `read-csv`, make sure you've surrounded the CSV filenames with opening and closing `"` symbols, and finally ask a demonstrator.
 
 
-### 2.1 What are csv files?
-Comma Separated Format (.csv) files are very useful. Tables of data can be entered into Microsoft Excel, then exported via Excel's **File -> Save As** menu. These .csv files can then be imported into R/RStudio for sophisticated analyses. Likewise, you can export tables of results from R/RStudio back to Excel as .csv format.
+## Check your data has been imported correctly
+The names of your three datasets, `diet_dat`, `growth_dat` and `bivalves_dat` should be displayed in the "Environment" pane at the top right. Double-click on any of them and you should see their contents. It is also worth running the `summary()` function to quickly check on column names, if their are any missing values coded `NA` etc. Add the following lines to your `practical1.R` script:
 
-For this practical we will be using the following data files:
+```{r}
+# Quick check of newly imported data. Display summary information
+# Summaries of chick data
+summary(diet_dat)
+summary(growth_dat)
 
- + chick_diet.csv
- + chick_growth.csv
+# Summary of the bivalve abundance dataset
+summary(bivalves_dat)
+```
 
-Find these 2 files on Canvas and download them to your computer. By default they will probably end up in your `Downloads` folder. **Please copy both .csv files to the `Data` folder you created in Section 1 of this practical**. To use these files we need to import them into R and store each one in R's memory as an "object". An object in R can be a table of raw data, results of analysis, a graph saved for later use. Open the two .csv files in Microsoft Excel to have a quick look at them. (**Note:** Excel might complain that you have not saved the files when you try to close Excel, as Bill Gates gets upset if you do not use his proprietary file format. Ignore the warning.)
+You should see summaries with minimum, maximum, median and means displayed for numeric variables, although not for character variables. **Question** the `bivalves_dat` table contains a column `site_sample` which is simply the sample code for each of three random samples taken at every site along one of the two transects. It has been coded `1`, `2`, `3`, but could just as easily have been coded `a`, `b`, `c`. Do you think means, minimum, maximum etc have any real value here?
 
 * `chick_diet.csv`  contains the variables weight, Time, Chick and Diet. It contains the weights of 45 individual chicks after a 21 day time period on 4 diets; A, B, C and D.
 * `chick_growth.csv` contains the variables Weight (note that this one is with a capital W), Time and Diet. It contains the average weight of all the chicks on each day of the experiment, from day 0 (hatching) to day 21, for each of the same 4 diets.
@@ -242,17 +247,17 @@ Where:
 For each group we can calculate statistics such as the mean and median
 
 ```{r}
-mean(weight~Diet, data = diet_dat)
-median(weight~Diet, data = diet_dat)
+mean(weight~diet, data = diet_dat)
+median(weight~diet, data = diet_dat)
 ```
 
 The above two lines print the mean and median on the screen. If you do not remember the difference between means and medians, have a look at [Measures of Central Tendancy](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-measures-of-central-tendency). You can also save the results of your mean and median in temporary variables `chick_mean` and `chick_med` for later re-use:
 
 ```{r, echo = TRUE}
 # Save means in temporary variable called chick_mean
-chick_mean <- mean(weight~Diet, data = diet_dat)
+chick_mean <- mean(weight~diet, data = diet_dat)
 # Save medians in temporary variable called chick_med
-chick_med <- median(weight~Diet, data = diet_dat)
+chick_med <- median(weight~diet, data = diet_dat)
 ```
 
 Both median, and especially mean, can be sensitive to outliers: see the interactive on the above website. To get a good understanding of our data we need to calculate some statistics that give us an idea of how our data is **spread** about the mean. If this is unfamiliar to you go back over other sections of the interactive website tutorial linked above.
@@ -264,18 +269,18 @@ This is straightforward, using the functions `var()` and `sd()`
 
 ```{r}
 # calculate variance for each group
-var(weight~Diet, data = diet_dat)
+var(weight~diet, data = diet_dat)
 # calculating standard deviation for each group
-sd(weight~Diet, data = diet_dat)
+sd(weight~diet, data = diet_dat)
 ```
 
 As before, rather than merely displaying these values on screen, we can put them into temporary R "objects" called  `chick_var` and `chick_sd` and assign the output of the `var()` and `sd()` functions to those objects.
 
 ```{r}
 # calcualating variance for each group
-chick_var <- var(weight~Diet, data = diet_dat)
+chick_var <- var(weight~diet, data = diet_dat)
 #calculating standard deviation for each group
-chick_sd <- sd(weight~Diet, data = diet_dat)
+chick_sd <- sd(weight~diet, data = diet_dat)
 ```
 
 ### 4.3 Calculate standard error
@@ -290,7 +295,7 @@ First, we store the results of all the commonly used statistics using `favstats(
 
 ```{r}
 #creating favstats table
-fav_dat <- favstats(weight~Diet, data = diet_dat)
+fav_dat <- favstats(weight~diet, data = diet_dat)
 # inspect the contents of fav_dat
 fav_dat
 ```
@@ -357,13 +362,13 @@ You can also overlay plotting elements on top of each other, change colours, axi
 Here we want to create a simple bar chart showing the number of chicks in each of the four diets on day 21 (`diet_dat`). You may have noticed that there are not quite the same number of chicks present after 21 days in each diet. We don't need to work out the count, as this will be calculated automatically by `gf_bar()` when you only give it one variable: 
 
 ```{r, eval = TRUE}
-gf_bar(~Diet, data = diet_dat)
+gf_bar(~diet, data = diet_dat)
 ```
 
 That was simple, but the graph is a bit dull, and the axis labels could be improved. Let's get rid of the grey background and add some colours too. Note in the following code how we can "chain" one graphics command into the next using the **"pipe" `%>%` symbol**. When you see this, think of the English word "then":
 
 ```{r, echo = TRUE}
-gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>% 
+gf_bar(~diet, fill= ~diet, data = diet_dat) %>% 
   gf_labs( y = "Number of chicks (n)", x = "Experimental Diet") %>% 
   gf_theme(theme_minimal())
 ```
@@ -381,7 +386,7 @@ The above commands uses the default colour scheme, but you may prefer to select 
 
 ```{r, eval = TRUE}
 # creating the bar chart 
-gf_bar(~Diet, fill= ~Diet, data = diet_dat) %>%  # THEN
+gf_bar(~diet, fill= ~diet, data = diet_dat) %>%  # THEN
   gf_labs( y = "Number of Chicks (n)", x = "Experimental Diet") %>%     #change axis labels
   gf_theme(theme_minimal()) %>%      #change the theme
   gf_refine(scale_fill_manual(values = c("blue", "red", "yellow", "green"))) # select some colours
@@ -396,7 +401,7 @@ A boxplot is a very useful summary. It provides the median (horizontal line), a 
 Let us create a boxplot to show chick weight after 21 days on the four different diets, again using the `diet_dat` dataset. We now need two variables, i.e. the y-axis (vertical axis) "response" variable of chick weight:
 
 ```{r}
-gf_boxplot(weight~Diet, data = diet_dat)
+gf_boxplot(weight~diet, data = diet_dat)
 ```
 
 At the moment the axis labels are just `weight` and `Diet`. Try changing them into something more meaningful, for example the vertical axis to say "Weight (g)" as you should always include units where possible.
@@ -414,8 +419,8 @@ You might notice that the arguments `fill` and `colour` do slightly different th
 You should end up with a plot that looks like the one below
 
 ```{r}
-gf_violin(weight~Diet, colour = ~Diet, fill= ~Diet, alpha = 0.3, data = diet_dat) %>%       # THEN
-  gf_sina(shape = ~Diet, colour= ~Diet) %>%      #add points THEN
+gf_violin(weight~diet, colour = ~diet, fill= ~diet, alpha = 0.3, data = diet_dat) %>%       # THEN
+  gf_sina(shape = ~diet, colour= ~diet) %>%      #add points THEN
   gf_labs(y = "Weight (g)") %>%                  #change the labels THEN
   gf_theme(theme_minimal()) %>%                  #set theme THEN
   gf_refine(scale_colour_manual(values = c("blue", "red", "orange", "green"))) %>%
@@ -427,19 +432,19 @@ gf_violin(weight~Diet, colour = ~Diet, fill= ~Diet, alpha = 0.3, data = diet_dat
 In the previous example the horizontal axis was divided into discrete categories. Often your horizontal axis will be continuous, and line or point plots will be most useful. Let's begin by plotting your chick growth data with `growth_dat` day from day 0 (hatching) to day 21 on the horizontal axis, and weight on the vertical axis:
 
 ```{r}
-gf_point(Weight~Time, data=growth_dat)
+gf_point(weight~time, data=growth_dat)
 ```
 
 The problem with this graph is that it does not indicate that we actually have four different diets. So let's colour the points accordingly:
 
 ```{r}
-gf_point(Weight~Time, colour = ~Diet, data=growth_dat)
+gf_point(weight~time, colour = ~diet, data=growth_dat)
 ```
 
 Finally, let's join up the points with lines:
 
 ```{r}
-gf_point(Weight~Time, colour = ~Diet, data=growth_dat) %>%
+gf_point(weight~time, colour = ~diet, data=growth_dat) %>%
   gf_line()
 ```
 
@@ -447,7 +452,7 @@ Use the skills that you have just been practicing to modify the plot so that it 
 
 ```{r,echo= FALSE}
 growth_dat <- read.csv("Data/chick_growth.csv")
- gf_line(Weight~Time, colour = ~Diet, data = growth_dat) %>% # THEN
+ gf_line(weight~time, colour = ~diet, data = growth_dat) %>% # THEN
    gf_point() %>% 
   gf_labs(x = "Day",y = "Weight (g)") %>% # change the labels THEN
   gf_theme(theme_minimal()) %>% # change the theme to a simple one THEN
