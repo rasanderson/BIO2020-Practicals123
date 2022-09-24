@@ -74,7 +74,59 @@ Whilst there are both biology and zoology students on this course, with a wide r
 
 One of the reasons why R is so popular is that it allows you to do **reproducible** research. Several weeks or even months may pass between your data analyses (steps 6 and 7), and writing your report (step 10) but your R script will provide a complete record of what you have done. Indeed, even the final report can be written in R, to automatically include relevant graphs, data analyses etc. All the Microsoft Word documents on the BIO2020 Canvas pages are actually written in RStudio, and auto-converted to Word, so I can skip Step 9 above!
 
-## 2. Importing data from an external csv file into RStudio
+# Download and import data
+## Download data files
+Go to Canvas and download `chick_diet.csv`, `chick_growth.csv` and `bivalves.csv` . Remember that when you download anything from a browser like Chrome or Edge, in general it will be stored in your "Downloads" folder. See the practical material for 30th September 2022 if you have forgotten the details. Therefore, before you can import the data, you need to copy it to your BIO2020 project folder:
+
+* Start the File Explorer from the Windows main menu
+* Navigate to your downloads folder
+* Hold down the <kbd>Ctrl</kbd> key and with your mouse, left-click on `chick_diet.csv`, `chick_growth.csv` and `bivalves.csv`. Holding down the <kbd>Ctrl</kbd> allows you to select multiple files
+* Right click and select "Copy"
+* Navigate to your "BIO2020" folder, right-click in a blank area inside the BIO2020 folder and select "Paste"
+
+You should now see the following:
+
+![](images/practical1_files.png)
+
+This folder now has quite a number of entries. Exact appearance may differ slightly, but the screenshot shows default Windows settings where the full name of a file is not displayed:
+
+* `BIO2020` (full name `BIO2020.RProj`). Your RStudio Project settings created in the previous practical
+* `bivalves`, `chick_diet` and `chick_growth` (full names `bivalves.csv`, `chick_diet.csv` and `chick_growth.csv`). The three data files in CSV format just downloaded from Canvas
+* `practical0` and `practical1` (full names `practical0.R` and `practical1.R`). Your "script" files containing a record of your R commands.
+* `yield` and `yield` with slightly different icons (full names `yield.csv` and `yield.xlsx`). The two data files you worked with in the initial practical, one in Microsoft Excel format, the other in CSV format
+
+**Where should you store your data files?** : For this course you should be fine storing your data in your BIO2020 project folder, as you will only have a relatively small number of files to work with. In general, however, it is better to create a "Data" subfolder, and store all your data files there. This leads to less clutter and helps you be more organised. If you use this idea, simply add `Data/` before the data file name when you use the `read.csv()` command.
+
+## Import your data into R
+Go to your R script, called `practical1.R`, and edit it so that it reads as follows. Your script **must** contain comments, blank lines, spaces around the `<-` assign symbol etc so that it is readable!!
+
+```{r, eval = FALSE}
+# Practical 1 : introduction to basic summary statistics and graphs using chick
+# and bivalve data.
+
+library(bio2020)
+
+# Read in data for chick diets and growth rates
+diet_dat <- read.csv("chick_diet.csv")
+growth_dat <- read.csv("chick_growth.csv")
+
+# Read in bivalve abundance data for 4 sites, 2 transects
+bivalves_dat <- read.csv("bivalves.csv")
+```
+
+```{r, echo = FALSE}
+# Read in data for chick diets and growth rates
+diet_dat <- read.csv("Data/chick_diet.csv")
+growth_dat <- read.csv("Data/chick_growth.csv")
+
+# Read in bivalve abundance data for 4 sites, 2 transects
+bivalves_dat <- read.csv("Data/bivalves.csv")
+```
+
+
+Save your script by selecting **File -> Save** from the main RStudio menu. Next, position your mouse cursor on the first of the three `read.csv` lines, and hit the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> key combinations several times to send the commands to the RStudio Console where they will be run. If you receive an error message, check you've copied the CSV files over from Downloads to your BIO2020 project folder, look for any spelling errors (R is case-sensitive too), check you've typed `read.csv` and not `read-csv`, make sure you've surrounded the CSV filenames with opening and closing `"` symbols, and finally ask a demonstrator.
+
+
 ### 2.1 What are csv files?
 Comma Separated Format (.csv) files are very useful. Tables of data can be entered into Microsoft Excel, then exported via Excel's **File -> Save As** menu. These .csv files can then be imported into R/RStudio for sophisticated analyses. Likewise, you can export tables of results from R/RStudio back to Excel as .csv format.
 
