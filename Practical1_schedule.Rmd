@@ -142,67 +142,26 @@ summary(bivalves_dat)
 
 You should see summaries with minimum, maximum, median and means displayed for numeric variables, although not for character variables. **Question** the `bivalves_dat` table contains a column `site_sample` which is simply the sample code for each of three random samples taken at every site along one of the two transects. It has been coded `1`, `2`, `3`, but could just as easily have been coded `a`, `b`, `c`. Do you think means, minimum, maximum etc have any real value here?
 
-* `chick_diet.csv`  contains the variables weight, Time, Chick and Diet. It contains the weights of 45 individual chicks after a 21 day time period on 4 diets; A, B, C and D.
-* `chick_growth.csv` contains the variables Weight (note that this one is with a capital W), Time and Diet. It contains the average weight of all the chicks on each day of the experiment, from day 0 (hatching) to day 21, for each of the same 4 diets.
 
-### 2.2 Where to type your R commands
-We are now going to show you how to import the data from your .csv files into RStudio and temporarily store them as R "objects" called `diet_dat` and `growth_dat` using the `read.csv()` function. Please write your R comands in the script `Practical_1.R` (top left panel of RStudio). You can save and re-run the script later. You do not actually need to save the temporary R objects `diet_dat` and `growth_dat` as you can re-create them within seconds from your R script. **In contrast, it is always important to save your script before you close R/RStudio**.
+**Other useful summary commands** As well as the `summary()` function, explore some other functions: `head()` `str()` `summary()` `nrow()` `ncol()` `names()`. Use these functions to answer the following questions about the data:
 
-The `read.csv()` function takes a single "argument" to tell R the name of the .csv you are importing. This is the full "path" to the .csv file, therefore since your .csv files are in a `Data` folder you also need to include the word `Data` in the argument, as well as the name of the .csv file. **Important** R is "case-sensitive", so if you put `chick_diet.csv`, `chick_diet.csv` or `chick_diet.csv` etc. you will get an error that R cannot find the file. 
-
-Type the next three lines into the top of your `Practical_1.R` script in the top-left panel of RStudio:
-
-```{r}
-# Introduction to R. Basic data handling
-
-diet_dat <- read.csv("Data/chick_diet.csv") # Read in diet data
-```
-
-A few points about the above 3 lines of code
-
-* The first line contains the `#` sign. This tells R to ignore the rest of the line. This is a "comment" and is probably the most important single command you will ever use. I put comments throughout my R scripts, so that when I re-use them months later I understand what they are doing. I generally use the first line to remind myself what the script is going to do.
-* The second line is blank. Students tend to be poor at including blank line(s). However, it is a good idea to group a set of related R commands together, and then separate them with one or two blank lines, in the same way that you use paragraphs when writing an essay to structure the text.
-* The third line contains an R function called `read.csv()` which imports the `chick_diet.csv` file into the R environment. It takes a single 'argument' in double-quotation marks, namely where the csv file is stored and its name. Note that it also includes the name of the `Data` folder where you stored the .csv file
-* The third line contains the `<-` symbol that points into `diet_dat`. This means "assign the output the `read.csv()` function into the R table of data called `diet_dat`". If you look at the top-right window of you should notice that the "Environment" tab is no longer empty, but now contains the `diet_dat` table. Tables of data in R are usually known as "data frames" and you will see this term pop up several times in this course.
-* Finally, the third line also contains a comment, but at the end of the line, after the R commands.
-
-<!-- Note for demonstrator, if they have trouble reading in the data file check where the script file is saved, if it's in a sub-folder of the project the code specifying the file path will need to escape that sub-folder first using ../ so they need  read.csv("../Data/chick_diet.csv")-->
-
-### 2.3 Check the data that you have loaded
-After you have imported data into RStudio it is useful to look at the first few rows, understand its structure, check the names of variables (columns) etc. Some suggested functions are `head()` `str()` `summary()` `nrow()` `ncol()` `names()`. Use these functions to answer the following questions about the data
-
- 1. What are the names of the columns in the `diet_dat` data frame?
- 2. How many variables (columns) and how many observations (rows) are in the dataset? 
- 3. How heavy is the heaviest chicken? And is this the same in both of the datasets?
+ 1. What are the names of the variables(columns) in the `diet_dat` data frame?
+ 2. How many variables (columns) and how many observations (rows) each dataset? 
+ 3. How heavy is the heaviest chicken? And is this the same in both of the chick datasets?
 
 **Reminder** Make sure to comment your script, using the `#` write some comments (notes) to annotate the script that you have just written so that you know what all the lines do, e.g.
 
 ```{r, eval = FALSE, echo= TRUE}
-# reading in the Chick_Diet data file 
-diet_dat <- read.csv("Data/chick_diet.csv")
-
-# Display the first few lines of the data
+# Display the first few lines of the chick diet data
 head(diet_dat)
+
 # Inspect the structure of the data
 str(diet_dat)
+
 # Try the nrow(), ncol() and summary() functions
 ```
 
-Repeat the process with the `chick_growth.csv` file:
-
-```{r, eval = TRUE, echo=TRUE}
-# reading in the Chick_Diet data file 
-growth_dat <- read.csv("Data/chick_growth.csv")
-
-# Display the first few lines of the data with the head() function
-# Try the nrow(), ncol() and summary() functions
-```
- 
-```{r, eval = TRUE, echo=FALSE}
-# ensure both datasets available later 
-growth_dat <- read.csv("Data/chick_growth.csv")
-diet_dat <- read.csv("Data/chick_diet.csv")
-```
+**In your own time**: repeat the process with the `growth_dat` and `bivalves_dat` tables of data until you are confident using these basic commands.
 
 
 ## 3. R Packages
