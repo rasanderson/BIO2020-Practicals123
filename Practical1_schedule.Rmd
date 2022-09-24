@@ -58,20 +58,21 @@ Position your cursor on `library(bio2020)` and hit the  <kbd>Ctrl</kbd> + <kbd>E
 * Click on the main RStudio menu and select **File -> Save**. You will be prompted for a name. Call your script **practical1.R**
 
 
+# Typical Research Scientist Workflow
+Whilst there are both biology and zoology students on this course, with a wide range of different interests, when doing your scientific research your "workflow" is likely to be quite similar:
 
-### 1.5 Typical R workflow
-Here is a common workflow you might find yourself doing
+1. Design, plan your laboratory experiment or field survey
+2. Undertake your experiment or survey and collect your data
+3. Enter data into Microsoft Excel, and save as CSV (comma separated value) format
+4. Open your R Project, and start an R script, into which you can save R commands
+5. Import your data from CSV file into R
+6. Initial summary statistics and basic plots
+7. More advanced analyses
+8. Interpret results. Design new experiments or surveys if needed.
+9. Export any graphs or tables from R to Microsoft Word
+10. Write a report describing your findings
 
-1. Design, plan your experiment or field survey
-2. Undertake your experiment and collect your data
-3. Enter your data into Microsoft Excel
-4. Save your data from Excel into CSV (comma separated value) format which can be read by any software
-5. Open your R Project, and start an R script, into which you can save R commands
-6. Import your data from CSV file into R
-7. Initial summary statistics and basic plots
-8. More advanced analyses
-9. Export any graphs or tables from R to Microsoft Word and/or Excel
-10. Remember to save your R script before you exit RStudio
+One of the reasons why R is so popular is that it allows you to do **reproducible** research. Several weeks or even months may pass between your data analyses (steps 6 and 7), and writing your report (step 10) but your R script will provide a complete record of what you have done. Indeed, even the final report can be written in R, to automatically include relevant graphs, data analyses etc. All the Microsoft Word documents on the BIO2020 Canvas pages are actually written in RStudio, and auto-converted to Word, so I can skip Step 9 above!
 
 ## 2. Importing data from an external csv file into RStudio
 ### 2.1 What are csv files?
