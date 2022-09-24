@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(bio2020)
 ```
 
-## Aims and objectives of Practical 1
+# Aims and objectives of Practical 1
 The overall aim of this practical is to help you become more familiar with RStudio, and some basic summary statistics and visualisations. The specific objectives are to:
 
 1. how to calculate simple summary statistics of the data you have imported into R
@@ -25,27 +25,39 @@ The overall aim of this practical is to help you become more familiar with RStud
 3. show you how these graphs and tables of calculated statistics can be exported to Microsoft Word and Microsoft Excel
 
 We will primarily focus on two datasets:
+
 **Chick data**
+
 * `chick_diet.csv` This contains the final weights of chicks after 21 days on four different diets.
 * `chick_growth.csv` This shows the average growth rate on each day of all the chicks from day 0 (hatching) to day 21.
+
 **Bivalve data**
+
 * `bivalve.csv` This contains the abundance of bivalves at two sites on four transects
 
+# Start RStudio, open your BIO2020 project, create R script
+If you did the first practical on 30th September 2022 this should be straightforward:
 
-This practical assumes you are using RStudio rather than the older RGui interface to R. The RGui interface is, however, **much simpler** and some students prefer to use it instead. The main difference is that you typically write your R scripts in Notepad (or TextEdit on an Apple Mac) and copy-and-paste the R commands into the RGui. If you would prefer to use the RGui please ask myself or one of the demonstrators. I have added some notes about using the simpler RGui in the Appendix at the end of the Practical 1 schedule.
+* Click on the Windows command button (bottom left of screen), type in RStudio and start the software
+* Inside RStudio on the main menu click on **File -> Recent Projects -> BIO2020**
+* On the RStudio main menu click on **File -> New File -> R Script**
+
+This should open a blank R script at the top left of your screen. Before you go any further, I suggest you type into your script a couple of lines of comments to explain what the script is being used for. As you will be using the `bio2020` R package you should also activate it. (If for any reason you were unable to install `bio2020` then use `mosaic` instead, but speak to a demonstrator first):
+
+```{r, eval = FALSE}
+# Practical 1 : introduction to basic summary statistics and graphs using chick
+# and bivalve data.
+
+library(bio2020)
+```
+
+Position your cursor on `library(bio2020)` and hit the  <kbd>Ctrl</kbd> + <kbd>Enter</kbd>  key combination to send the command into the Console screen so that R executes it. You are likely to get several messages, but hopefully will see "Welcome to the BIO2020 package to support teaching". Finally, before you go further, save your R script. 
+
+* Look at the name of your R script. It is probably called `Untitled1.R`
+* Also notice that its name is in red and that there is an asterisk, or * symbol, after its name, indicating it needs to be saved
+* Click on the main RStudio menu and select **File -> Save**. You will be prompted for a name. Call your script **practical1.R**
 
 
-### 1.4 Running R commands
-
-You might notice that in the online interactive website tutorials that you completed on your own we ran R code by clicking on a big green run code button, when we are working in RStudio it's a little bit different. 
-
-You write your R commands in your script which means you can save it and repeat the exact analysis weeks or months later. This is known as **reproducible research**. Later in this practical, there are a couple of ways to *run* the R and you can choose whichever feels best for you. 
-
-1. Highlight the R commands in the script that you want to run and then press the `run` button that is available at the top of the script
-
-2. Place your cursor anywhere on a line in your R script that you want to run and press <kbd>Ctrl</kbd> + <kbd>Return</kbd> (<kbd>Cmd</kbd> + <kbd>Return</kbd> on Apple Mac) together
-
-Either of these actions sends your R commands to the console where it is executed so that R carries out the instructions.
 
 ### 1.5 Typical R workflow
 Here is a common workflow you might find yourself doing
