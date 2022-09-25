@@ -264,32 +264,40 @@ chick_var <- var(weight ~ diet, data = diet_dat)
 chick_sd <- sd(weight ~ diet, data = diet_dat)
 ```
 
-### 4.3 Calculate standard error
-Remember that we also discussed Standard Error as a useful measure that can be calculated as:
+## Calculate standard error
+Standard error is usually preferred to standard deviation when presenting summary statistics in graphs or tables, as it corrects for sample size. See [this part of the online website](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-accuracy-and-precision) that explains the difference between "accuaracy" and "precision". Standard deviation measures accuracy, whereas standard error measures precision; see [this section on how to calculate standard error](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-how-to-measure-accuracy-and-precision). It presents a simple equation to convert standard deviation: 
 
 $$se = \frac{\sigma}{\sqrt{n}}$$
 
-We have already calculated the variance but for the calculation of se we need to know n, the number of observations in our group.
-Again there is no need to count the number of observations in each group by hand, lets use the `favstats()` function which also computes some other useful measures that we might be interested in. The name `favstats()` refers to "favorite statistics"!
+where:
 
-First, we store the results of all the commonly used statistics using `favstats()` in a temporary R object, which we'll call `fav_dat`:
+* $se$ = standard error
+* $\sigma$ = standard deviation, by convention shown with Greek letter _sigma_
+* $\sqrt{n}$ = the square root of the number of samples
+
+We have already calculated the variance and standard deviation, but for the calculation of se we need to know n, the number of observations in our group.
+Again there is no need to count the number of observations in each group by hand, let's use the `favstats()` function which also computes some other useful measures that we might be interested in. The name `favstats()` refers to "favorite statistics"!
+
+First, we store the results of all the commonly used statistics using `favstats()` in a temporary R table (data frame), which we'll call `fav_dat`:
 
 ```{r}
-#creating favstats table
+# create favourite statistics table of summary stats on each diet
 fav_dat <- favstats(weight~diet, data = diet_dat)
-# inspect the contents of fav_dat
+
+# Inspect the contents of fav_dat
 fav_dat
 ```
 
-The results of your `favstats()` function are stored in a data frame with several columns. We can access single columns using the `$` sign. The column headed `n` contains the number of observations, and you need this in order to convert standard deviations into standard errors. **We can access the values in a single column of a table (data frame) using the `$` symbol**. Here we want to access the column `n` which contains the number of chicks in each diet. To calculate se we want R to use `fav_dat$n` in our calculation, we can substitute this as well as the values that we already calculated for sd `chick_sd` into the equation
+The results of your `favstats()` function are stored in a table (data frame) with several columns. Recall from last week that we can access single columns using the `$` sign. The column headed `n` contains the number of observations, and you need this in order to convert standard deviations into standard errors. To calculate se we want R to use `fav_dat$n` in our calculation, we can substitute this as well as the values that we already calculated for sd `chick_sd` into the equation
 
 ```{r}
+# Calculate standard error from standard deviation and square root of number of samples
 chick_se <- chick_sd/(sqrt(fav_dat$n))
 ```
 
 **Note:** It is important to modify your `Practical_1.R` script as you go along, adding additional comments using `#` symbols, so that if you come back after 6 months you will still understand the R script. Add some notes about the above commands as comments to demonstrate that you understand what each bit is doing.
 
-### 4.4 Assembling all the summary statistics into a new table 
+## Assemble all your summary statistics into a new table 
 We have created summary statistics with mean, median, variance, standard deviation and standard error. It would be useful to put them all into one table, or data frame. This is easy to do using the (you guessed it!) `data.frame()` function:
 
  + `chick_mean`
@@ -299,16 +307,19 @@ We have created summary statistics with mean, median, variance, standard deviati
  + `chick_se`
 
 ```{r}
+# Assemble all the summary statistics on chick diets into one table
 diet_stats <- data.frame(chick_mean,
                          chick_med,
                          chick_var,
                          chick_sd,
                          chick_se)
+
+# Display the table contents
 diet_stats
 ```
 
 
-Now you have a data frame that contains summary statistics describing your dataset that might be useful in a report. 
+Now you have a data frame `diet_stats` that contains summary statistics describing your dataset that might be useful in a report. 
 
 ## 5. Basic summary plots
 ### 5.1 Goal-oriented philosophy
