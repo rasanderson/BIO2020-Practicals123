@@ -13,6 +13,25 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<style type="text/css">
+span.boxed {
+  border:5px solid gray;
+  border-radius:10px;
+  padding: 5px;
+}
+span.invboxed {
+  border:5px solid gray;
+  padding: 5px;
+  border-radius:10px;
+  color: white;
+}
+table, td, th
+{
+border:0px;
+}
+</style>
+
+
 ```{r, echo = FALSE, message=FALSE, warning= FALSE}
 library(bio2020)
 ```
@@ -164,41 +183,63 @@ str(diet_dat)
 **In your own time**: repeat the process with the `growth_dat` and `bivalves_dat` tables of data until you are confident using these basic commands.
 
 
-## 4. Summary statistics
-### 4.1 Goal-oriented approach
-Please have a look at the [Course Handbook](https://ncl.instructure.com/courses/23926/files/3203623?fd_cookie_set=1) on the Canvas website. You will see there that we are using a goal-oriented approach, where your goal can be a simple statistic, a data analysis or a graph. Let us start with some simple statistics on the `diet_dat` data.
+# Summary statistics
+## Goal-oriented approach
+Please have a look at the [Course Handbook](https://ncl.instructure.com/courses/23926/files/3203623?fd_cookie_set=1) on the Canvas website. You will see there that we are using a goal-oriented approach, where your goal can be a simple statistic, a data analysis or a graph. Let us start with some simple statistics on the `diet_dat` data. You will recall that in the goal-oriented approach we have:
 
-We can calculate some summary statistics to see if there are differences between chicks being fed different diets. Calculate the mean weights for chicks being fed different diets.
+&nbsp;
 
-Remember we are using the formula 
+<center>
+<h2><strong><span class="boxed">goal</span> ( <span class="boxed">y</span> ~ <span class="boxed">x</span> , data = <span class="boxed">mydata</span>, ... )</strong> 
+</h2></center>
 
-$$\text{simple statistic(variable ~ group, data=dataset, ...)}$$
+&nbsp;
 
-Where:
+where:
 
-+ **simple statistic** = This is our "goal", the statistic that we want to calculate (mean, median, sd, etc.)
-+ **variable** = the name of the column containing the response variable. (Optional, but in practice nearly always used)
-+ **group** = the name of the column containing a categorical explanatory variable by which we want to group the data
++ **goal** = What you want to do; a statistical summary, data analysis, or graph
++ **variable** = the name of the column containing the response variable
++ **group** = the name of the column containing an explanatory variable
 + **dataset** = the table of data (data frame) you are using
-+ **...** = options. Rarely used for simple statistics
++ **...** = options
 
-For each group we can calculate statistics such as the mean and median
+We can calculate some summary statistics to see if there are differences between chicks being fed different diets. So we can attempt our goal-oriented diagram to:
+
+&nbsp;
+
+<center>
+<h2><strong><span class="boxed">simple statistic</span> ( <span class="boxed">chick weights</span> ~ <span class="boxed">diet</span> , data = <span class="boxed">diet_dat</span>)</strong> 
+</h2></center>
+
+&nbsp;
+
+where:
+
++ **simple statistic** = the statistic that we want to calculate, e.g. mean, median, sd, etc.
++ **chick weights** = the weight of the individual chicks on the different diets at the end of the 21 day study. This is your **_response_** variable.
++ **diet** = the column describing which diet the chicks were fed. This is your **_explanatory_** variable as it should be obvious that diet might or might not determine chick weight, but the reverse is cannot true.
++ **diet_dat** = the table (data frame) of data containing the columns for chick weights and diets
++ **...** = options. This has been omitted as not needed in this first example
+
+We can now replace the "simple statistic" above with what we want to calculate, and use the correct names `weight` and `diet` for the two columns in `diet_dat`. Add the following lines to the end of your `practical1.R` script and execute them:
 
 ```{r}
-mean(weight~diet, data = diet_dat)
-median(weight~diet, data = diet_dat)
+# Calculate arithmetic mean and medians for the chick weights
+mean(weight ~ diet, data = diet_dat)
+median(weight ~ diet, data = diet_dat)
 ```
 
-The above two lines print the mean and median on the screen. If you do not remember the difference between means and medians, have a look at [Measures of Central Tendancy](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-measures-of-central-tendency). You can also save the results of your mean and median in temporary variables `chick_mean` and `chick_med` for later re-use:
+The above two lines print the mean and median on the screen. If you do not remember the difference between means and medians, have a look at [Measures of Central Tendancy](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-measures-of-central-tendency). You can also store the results of your mean and median in temporary variables `chick_mean` and `chick_med` for later re-use. Nothing is actually printed onto the screen when you store the data:
 
 ```{r, echo = TRUE}
 # Save means in temporary variable called chick_mean
 chick_mean <- mean(weight~diet, data = diet_dat)
+
 # Save medians in temporary variable called chick_med
 chick_med <- median(weight~diet, data = diet_dat)
 ```
 
-Both median, and especially mean, can be sensitive to outliers: see the interactive on the above website. To get a good understanding of our data we need to calculate some statistics that give us an idea of how our data is **spread** about the mean. If this is unfamiliar to you go back over other sections of the interactive website tutorial linked above.
+Both median, and especially mean, can be sensitive to outliers: move the sliders on the [interactive graphs](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-sensitivity-to-outliers) to make sure you understand the effects of outliers. To get a good understanding of our data we need to calculate some statistics that give us an idea of how our data is **spread** about the mean. If this is unfamiliar to you go back over other sections of the interactive website tutorial linked above.
 
 Thankfully because we are doing our analysis in R we don't have to calculate measures such as variance, standard deviation and standard error by hand, we can use functions to help us.
 
