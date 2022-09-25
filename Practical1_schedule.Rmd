@@ -361,41 +361,75 @@ Because we are using the `ggformula` package the plotting functions that we will
 
 You can also overlay plotting elements on top of each other, change colours, axis titles, add legends etc. There are many different plotting options. In your own time, look at [this interactive website](https://naturalandenvironmentalscience.shinyapps.io/Summary_vis/#section-introduction) for a wide range of example plots.
 
-### 5.2 One variable. Simple bar chart
-Here we want to create a simple bar chart showing the number of chicks in each of the four diets on day 21 (`diet_dat`). You may have noticed that there are not quite the same number of chicks present after 21 days in each diet. We don't need to work out the count, as this will be calculated automatically by `gf_bar()` when you only give it one variable: 
+## Plotting one variable
+### Frequency histogram
+This is probably the most common type of single variable graph you will create. It shows the frequency (i.e. count of 
+numbers of cases) on vertical y-axis for a continuous numeric variable on horizontal x-axis. The frequency is calculated for you automatically. Let's look at the overall frequency histogram of your chick weights. Add the following lines to the end of your `practical1.R` script, save it, and run the lines:
+
+```{r}
+# Create a frequency histogram of chick weights
+gf_histogram(~weight, data=diet_dat)
+```
+
+You can see that across all four diets combined, the most common chick weights are around 200g, although there is quite a lot of variation from less than 100g to over 350g.
+
+### Simple bar chart of total numbers of chicks per diet
+Here we want to create a simple bar chart showing the number of chicks in each of the four diets on day 21 (`diet_dat`). You may have noticed ealier that there are not quite the same number of chicks present after 21 days in each diet. We don't need to work out the count, as this will be calculated automatically by `gf_bar()` when you only give it one variable: 
 
 ```{r, eval = TRUE}
-gf_bar(~diet, data = diet_dat)
+# Create a bar chart showing numbers of birds in each diet
+gf_bar(~diet, data = diet_dat) # Plot bar chart
 ```
 
-That was simple, but the graph is a bit dull, and the axis labels could be improved. Let's get rid of the grey background and add some colours too. Note in the following code how we can "chain" one graphics command into the next using the **"pipe" `%>%` symbol**. When you see this, think of the English word "then":
+So, survivorship appears to be best on diet A, and worst on diet D.
+
+### Chain plot commands to improve graphs
+After you have created a basic plot, you will often want to improve it. I recommend do this sequentially, i.e. get your basic plot displayed, then gradually add extra lines of R code to improve it. Taking the above bar chart, the labels on the horizontal and vertical axes should be better. To chain a series of plot commands together we slightly tweak our original template to:
+
+
+&nbsp;
+
+<center>
+<h2><strong><span class="boxed">plot type</span> ( <span class="boxed">y</span> ~ <span class="boxed">x</span> , data = <span class="boxed">mydata</span>, ... ) <span class="boxed">%>%</span></strong> 
+</h2></center>
+
+&nbsp;
+&nbsp;
+
+<center>
+<h2><strong><span class="boxed">plot extras</span> ( <span class="boxed">additional plot options</span>)</strong> 
+</h2></center>
+
+&nbsp;
+
+where:
+
+* **%>%** = read as "then" or "go on and add". It is sometimes called a "pipe" symbol
+* **plot extras** = what needs to be added or changed on the plot. e.g. add axis labels
+* **additional plot options** = specifics for the plot extras, e.g. contents of axis labels
+
+Let's begin by improving the axis labels, then getting rid of the miserable grey background to the plot. To modify the axis labels we use the `gf_labs()` function, specifying the contents of the horizontal (x) and vertical (y) axis labels. Add the following lines of code to your `practical1.R` script noting:
+
+1. add the pipe symbol `%>%` to the end of your existing `gf_bar()` line
+2. indent the start of your `gf_labs()` line by a couple of spaces. RStudio should do this automatically - it makes your code more readable.
 
 ```{r, echo = TRUE}
-gf_bar(~diet, fill= ~diet, data = diet_dat) %>% 
-  gf_labs( y = "Number of chicks (n)", x = "Experimental Diet") %>% 
-  gf_theme(theme_minimal())
+# Create a bar chart showing numbers of birds in each diet
+gf_bar(~diet, data = diet_dat) %>% # Plot bar chart THEN
+  gf_labs( y = "Number of chicks (n)", x = "Experimental Diet") # Modify axis labels
 ```
 
-The main changes in the above code were to:
-
- + add a `fill=` argument to the plot to colour the bars by diet
- + use the `gf_labs()` function to change the label of the Y axis
- + use the `gf_theme()` function to change the background
- 
-Remember you use the pipe symbol `%>%` to join multiple `gf_` functions together.
-
-The above commands uses the default colour scheme, but you may prefer to select your own using the `gf_refine()` and `scale_fill_manual()` functions to change the colours to four of your favorites. There are many colours to choose from which can be found online. [Here is an awesome list of over 650 colours to select](https://www.datanovia.com/en/blog/awesome-list-of-657-r-color-names/). **Note** below extra comments are added to the R script so that you can understand it in future (or refer back to it later on in this practical)
+Finally, we will add an additional chain symbol `%>%` to modify or "refine" the "theme" or overall appearance using `gf_theme()`. Personally I like the "classic" theme, `theme_classic()`, which is a simple black-and-white one, although you might prefer the "minimal" theme, `theme_minimal()`:
 
 
 ```{r, eval = TRUE}
 # creating the bar chart 
-gf_bar(~diet, fill= ~diet, data = diet_dat) %>%  # THEN
-  gf_labs( y = "Number of Chicks (n)", x = "Experimental Diet") %>%     #change axis labels
-  gf_theme(theme_minimal()) %>%      #change the theme
-  gf_refine(scale_fill_manual(values = c("blue", "red", "yellow", "green"))) # select some colours
+gf_bar(~diet, data = diet_dat) %>%  # Plot bar chart THEN
+  gf_labs( y = "Number of Chicks (n)", x = "Experimental Diet") %>% # Modify axis labels THEN
+  gf_theme(theme_classic()) # Change graph theme to remove grey backdrop
 ```
 
-Have a go at modifying the code to try different colours or different axis labels.
+Building up graphs from simple to more complex ones like this by "chaining" commands together is always most reliable. Save your `practical1.R` script before continuing.
 
 ### 5.3 Plot two variables; categorical horizontal axis
 #### 5.3.1 Boxplots
