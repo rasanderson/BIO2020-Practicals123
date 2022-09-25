@@ -321,11 +321,17 @@ diet_stats
 
 Now you have a data frame `diet_stats` that contains summary statistics describing your dataset that might be useful in a report. 
 
-## 5. Basic summary plots
-### 5.1 Goal-oriented philosophy
+# Basic summary plots
+## Goal-oriented philosophy
 We can use exactly the same goal-oriented philsophy when developing graphs as with basic statistic described above. For example, if you want to plot one variable against another:
 
-$$\text{plot type(variable y} \sim \text{variable x, data= dataset, ...)}$$
+&nbsp;
+
+<center>
+<h2><strong><span class="boxed">plot type</span> ( <span class="boxed">variable y</span> ~ <span class="boxed">variable x</span> , data = <span class="boxed">mydata</span>, ... )</strong> 
+</h2></center>
+
+&nbsp;
 
 + **Plot type** = This is your "goal", in other words a graph.
 + **Variable y** = (optional) The value to be plotted on the vertical y-axis, usually your "response" variable
@@ -335,8 +341,13 @@ $$\text{plot type(variable y} \sim \text{variable x, data= dataset, ...)}$$
 
 Here your y-variable is plotted on the vertical axis, and your x-variable on the horizontal axis. There may also be times when you only want to plot **one** variable, for example a frequency histogram, or a count of the number of observations. In this case the pattern is as follows, with the `variable` plotted on the horizontal axis, and the vertical axis (e.g. frequency or count) calculated automatically:
 
-$$\text{plot type(} \sim \text{variable, data=dataset)}$$
+&nbsp;
 
+<center>
+<h2><strong><span class="boxed">plot type</span> (~ <span class="boxed">horizontal axis variable</span> , data = <span class="boxed">mydata</span>, ... )</strong> 
+</h2></center>
+
+&nbsp;
 
 Because we are using the `ggformula` package the plotting functions that we will use will be preceded by `gf_` (graphics formula) so for a boxplot we will use `gf_boxplot()` for a bar chart we use `gf_bar()`, for scatter points `gf_point()` etc. There are links to additional information about `ggformula` on the Canvas website. Plot types you are likely to find particularly useful include:
 
@@ -348,7 +359,7 @@ Because we are using the `ggformula` package the plotting functions that we will
 * `gf_violin()` Violin plots
 * `gf_line()` Line plots
 
-You can also overlay plotting elements on top of each other, change colours, axis titles, add legends etc.
+You can also overlay plotting elements on top of each other, change colours, axis titles, add legends etc. There are many different plotting options. In your own time, look at [this interactive website](https://naturalandenvironmentalscience.shinyapps.io/Summary_vis/#section-introduction) for a wide range of example plots.
 
 ### 5.2 One variable. Simple bar chart
 Here we want to create a simple bar chart showing the number of chicks in each of the four diets on day 21 (`diet_dat`). You may have noticed that there are not quite the same number of chicks present after 21 days in each diet. We don't need to work out the count, as this will be calculated automatically by `gf_bar()` when you only give it one variable: 
