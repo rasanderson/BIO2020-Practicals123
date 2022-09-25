@@ -164,27 +164,6 @@ str(diet_dat)
 **In your own time**: repeat the process with the `growth_dat` and `bivalves_dat` tables of data until you are confident using these basic commands.
 
 
-## 3. R Packages
-### 3.1 What is an R package
-One of the reasons why R is so popular amongst scientists is that its basic functionality can be readily extended by packages. Anyone can write one, and they are made publically available free of charge. Packages exist for bioinformatics, animal tracking, habitat analysis, species distributions, phylogenetics. There are over 10,000 free packages available.
-
-### 3.2 Installing packages
-You can install a package even if you do not have Administrator rights for a PC using the `install.packages()` function. **This only has to be used once to install a package**. If you have not already done so, please follow the instructions at [Getting Started](https://ncl.instructure.com/courses/23926/pages/the-bio2020-r-package) to install several packages including:
-
-* `mosaic`, which gives a unified interface for statistics. This also automatically installs several other packages such as `ggformula` which simplifies plotting, `tidyr` for manipulating data etc.
-* `vegan`, which handles large compositional datasets, of the sort that might be obtained from molecular / bioinformatics studies, as well as species assemblage data for plants, birds, mammals etc.
-* `car`, this is useful to clarify analyses if you have any missing data
-* `bio2020`. I have written this package (which is why the installation method was slightly different). It gives easier to understand graphics and commands for the `vegan` package, and automatically loads all the other packages you need.
-
-### 3.3 Activating packages
-To use the new functions in a package you need to activate it or "load" it. This has to be done once in **every** R/RStudio, using the `library()` function. The best practice is to put the `library()` function near the start of your script, so you do not forget about it. The little `bio2020` package I have written should (hopefully!) automatically load all the other packages you need for this course, to make things easier. Put the following line near the start of your `Practical_1.R` script and run it.
-
-```{r, echo=TRUE, eval=FALSE}
-library(bio2020)
-```
-
-You should see a message welcoming you to the package, and you have access to the extra functions in `mosaic`, `ggformula`, `tidyr`, `vegan`, `car` and several other packages automatically. I recommend that you put the line `library(bio2020)` near the start of all your R scripts.
-
 ## 4. Summary statistics
 ### 4.1 Goal-oriented approach
 Please have a look at the [Course Handbook](https://ncl.instructure.com/courses/23926/files/3203623?fd_cookie_set=1) on the Canvas website. You will see there that we are using a goal-oriented approach, where your goal can be a simple statistic, a data analysis or a graph. Let us start with some simple statistics on the `diet_dat` data.
