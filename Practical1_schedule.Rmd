@@ -431,39 +431,74 @@ gf_bar(~diet, data = diet_dat) %>%  # Plot bar chart THEN
 
 Building up graphs from simple to more complex ones like this by "chaining" commands together is always most reliable. Save your `practical1.R` script before continuing. Remember to save your scripts regularly.
 
-### 5.3 Plot two variables; categorical horizontal axis
-#### 5.3.1 Boxplots
-A boxplot is a very useful summary. It provides the median (horizontal line), a box with the inter-quartile range (75% of the data fall within the box), lines representing 1.5 * the inter-quartile range, and (sometimes) outlier points. It provides a simple yet effective way of summarising the spread of your data, showing where most of the values fall, whether it is skewed etc.
+## Plot two variables; categorical horizontal axis
+### Boxplots
+A boxplot is a very useful summary. It displays **horizontal line** for the median of each category, a **box** with the inter-quartile range (75% of the data fall within the box), **lines** above and below the box that represent 1.5 * the inter-quartile range, and (sometimes) outlier points. It provides a simple yet effective way of summarising the spread of your data, showing where most of the values fall, whether it is skewed etc.
 
-Let us create a boxplot to show chick weight after 21 days on the four different diets, again using the `diet_dat` dataset. We now need two variables, i.e. the y-axis (vertical axis) "response" variable of chick weight:
+Let us create a boxplot to show chick weight after 21 days on the four different diets, again using the `diet_dat` dataset. We now need **two** variables, i.e. the y-axis (vertical axis) "response" variable of chick weight vs the x-axis (horizontal) of diet type:
 
 ```{r}
+# Display boxplot of final chick weight for each diet
 gf_boxplot(weight~diet, data = diet_dat)
 ```
 
-At the moment the axis labels are just `weight` and `Diet`. Try changing them into something more meaningful, for example the vertical axis to say "Weight (g)" as you should always include units where possible.
+At the moment the axis labels are just `weight` and `Diet`. Try changing them into something more meaningful by "chaining" on an additional line that begins `gf_labs()`, so the vertical axis label reads "Weight (g)" as you should always include units where possible.
 
-#### 5.3.2 Violin plots
+### Violin plots
 Violin plots have become a popular alternative to boxplots in the last 5 years. You can easily do this. Let's also overlay the points, change the y-axis label, and set the colours. In other words, we are going to:
 
 1. Alter the plot type from boxplot to violin plot
 2. Add data points that are shaped according to the diet the `gf_sina()` function will be useful
 3. Modify the labels so that the units (g) are displayed with the weight
-4. Modify the theme and colours to match the bar plot you previously made
+4. Modify the theme to match the bar plot you previously made
 
-You might notice that the arguments `fill` and `colour` do slightly different things depending on the geometry (the violin or the points) that you are dealing with, play around with them to see what the differences are.
+Start with a very simple violin plot. Add the following lines to the end of your `practical1.R` script. Remember to hit the  <kbd>Ctrl</kbd> + <kbd>Enter</kbd> key combinations after each edit, so you can see what happens as you gradually edit your R script:
+
+```{r, eval=FALSE}
+# Create a violin plot showing distribution of chick weights on each diet
+gf_violin(weight ~ diet, data = diet_dat) 
+```
+
+Now add the individual data points using `gf_sina()` which creates a "jitter" around their positions so that they are easier to visualise, and hit the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> key combinations to see the changes:
+
+```{r, eval=FALSE}
+# Create a violin plot showing distribution of chick weights on each diet
+gf_violin(weight~diet, data = diet_dat) %>%  # THEN
+  gf_sina()                                  # add jittered points
+```
+
+Now change the y-axis label, using `gf_labs()` as before, and hit the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> key combinations:
+
+```{r, eval=FALSE}
+# Create a violin plot showing distribution of chick weights on each diet
+gf_violin(weight~diet, data = diet_dat) %>%   # THEN
+  gf_sina() %>%                               # add jittered points THEN
+  gf_labs(y = "Weight (g)")                   # change the vertical axis label
+```
+
+Next, smarten up the overall "theme" of the plot with `gf_theme()` and hit the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> key combinations:
+
+```{r, eval=FALSE}
+# Create a violin plot showing distribution of chick weights on each diet
+gf_violin(weight~diet, data = diet_dat) %>%     # THEN
+  gf_sina() %>%                                 # add jittered points THEN
+  gf_labs(y = "Weight (g)") %>%                 # change the vertical axis label THEN
+  gf_theme(theme_classic())                     # set theme 
+```
+
+Finally, colour in the violin shapes with a colour of your choosing via the `fill` option (I'm going to use grey) and set its transparency with the `alpha` option. Play around with the arguments `fill` and `alpha`: play around with them to see what they do.
 
 You should end up with a plot that looks like the one below
 
 ```{r}
-gf_violin(weight~diet, colour = ~diet, fill= ~diet, alpha = 0.3, data = diet_dat) %>%       # THEN
-  gf_sina(shape = ~diet, colour= ~diet) %>%      #add points THEN
-  gf_labs(y = "Weight (g)") %>%                  #change the labels THEN
-  gf_theme(theme_minimal()) %>%                  #set theme THEN
-  gf_refine(scale_colour_manual(values = c("blue", "red", "orange", "green"))) %>%
-  gf_refine(scale_fill_manual(values = c("blue", "red", "orange", "green")))
+# Create a violin plot showing distribution of chick weights on each diet
+gf_violin(weight~diet, fill="grey", alpha = 0.3, data = diet_dat) %>%       # THEN
+  gf_sina() %>%                                 # add jittered points THEN
+  gf_labs(y = "Weight (g)") %>%                 # change the vertical axis label THEN
+  gf_theme(theme_classic())                     # set theme 
 ```
 
+Hopefully you can see that it is possible to build complex plots step-by-step in this manner.
 
 ### 5.4 Plot two variables; continuous horizontal axis
 In the previous example the horizontal axis was divided into discrete categories. Often your horizontal axis will be continuous, and line or point plots will be most useful. Let's begin by plotting your chick growth data with `growth_dat` day from day 0 (hatching) to day 21 on the horizontal axis, and weight on the vertical axis:
@@ -490,7 +525,7 @@ Use the skills that you have just been practicing to modify the plot so that it 
 ```{r,echo= FALSE}
 growth_dat <- read.csv("Data/chick_growth.csv")
  gf_line(weight~time, colour = ~diet, data = growth_dat) %>% # THEN
-   gf_point() %>% 
+  gf_point() %>% 
   gf_labs(x = "Day",y = "Weight (g)") %>% # change the labels THEN
   gf_theme(theme_minimal()) %>% # change the theme to a simple one THEN
   gf_refine(scale_colour_manual(values = c("blue", "red", "orange", "green"))) # set colours
