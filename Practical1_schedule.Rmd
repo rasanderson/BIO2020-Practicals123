@@ -534,8 +534,8 @@ gf_line(weight~time, colour = ~diet, data = growth_dat) %>% # THEN
 
 Later in the BIO2020 course you will learn how to create fitted lines from models to add to your graphs.
 
-## 6. Export data and plots from R/RStudio to Word or Excel
-### 6.1 Exporting tables of data
+# Export data and plots from R/RStudio to Word or Excel
+## Exporting tables of data
 After you have created some summary data and plots that describe the dataset you may to export them to be able to put them in a report.
 
 First, recall `diet_stats` table of summary statistics (a "data frame") that you created earlier. This contains the mean, median, variance, standard deviation and standard error of chick weights. Data frames can be exported by writing a file with the `write.csv()` function, which does the reverse of the `read.csv()` function you used earlier.
@@ -544,35 +544,27 @@ The arguments of the `write.csv()` function are the name of the `object` that yo
 
 ```{r, eval = FALSE}
 # note that the file path specifies that the file should be created in the Data folder
-write.csv(diet_stats, "Data/Chick_summary.csv")
+write.csv(diet_stats, "chick_summary.csv")
 ```
 
-You should now see the `Chick_summary.csv` file that you have just created in your File Explorer, you can open the file in Excel and use this to create a table that you can import into a Microsoft Word document. 
+You should now see the `chick_summary.csv` file that you have just created in your File Explorer, you can open the file in Excel and use this to create a table that you can import into a Microsoft Word document. 
 
-### 6.2 Exporting plots
-Plots can be saved from the RStudio plots pane.
+## Exporting plots
+Plots can be saved from the RStudio plots pane (See the end of last week's practical)
 Use the arrows to navigate through the plots to find the ones that you want to save such as the bar chart of number of chicks in each category, the violin plot of chick weights and the plot of chick growth through time. 
-For each plot that you want to save click `Export` then `save as image` in the preview pane you can alter the size of the plot and name the file that you want to create.
+For each plot that you want to save click `Export` then `save as image` in the preview pane you can alter the size of the plot and name the file that you want to create. Alternatively, simply click on the **Copy** button.
 
 Finally open a Word document and insert the plots and summary table giving each a descriptive caption. Write a short paragraph that describes how the different diets in the study impact the growth of chickens, referring to your figures and tables. 
 
-## Before you exit RStudio
-Make sure you save `Practical_1.R`  When you exit RStudio it will probably prompt you to save the "Workspace" and the "History". Click "No" to these (personally I find these prompts irritating and confusing). The key thing to save is the script of R commands. If you have **not** saved it there will be a small `*` symbol next to its name.
+# Save your `practical1.R` script before you exit RStudio
+Make sure you save `Practical_1.R` using the **File -> Save** options from the main RStudio menu. It is good practice to save your script regularly anyway, in case RStudio crashes for any reason. It usually autosaves, but best to be on the safe side when working.
 
-# Appendix
-## Getting help
+# Getting help
 I have put some useful guides to online books on the Canvas website, but there are some excellent online tutorials available, including [Coding Club](https://ourcodingclub.github.io/) which has been written by students for students. It does cover lots of advanced stuff (I don't understand it all) as well as the basics of R.
 
-R has its own built in help for functions. These are difficult to understand at first, but as the format is identical in every case they slowly become less daunting. To access the in-built help, put a `?` symbol into the console, followed by the name of the function. For example, in the R package `bio2020` I have written a function called `ordi_identify()` which you will learn how to use in Practical 5. If you wanted to view its help, you would type:
+R has its own built in help for functions. These are difficult to understand at first, but as the format is identical in every case they slowly become less daunting. To access the in-built help, put a `?` symbol into the console, followed by the name of the function. For example, in the R package `bio2020` I have written a function called `ordi_identify()` which you will learn how to use in Practical 6. If you wanted to view its help, you would type **in the Console window** (bottom left of RStudio) the following, and hit the <kbd>Enter</kbd> key:
 
 ```{r, eval=FALSE}
 ?ordi_identify
 ```
 
-## Using the traditional RGui
-The main differences are:
-
-* There are no projects. You therefore "manually" have to tell R the name of the folder in which you are working, by clicking on **'File -> Change dir...`** and navigate to the BIO2020 folder
-* Create your R script in Notepad (or TextEdit) and copy-and-paste code into the Console
-* Plots will appear in pop-up windows. Right-click on the pop-up window to save the graph to a file for use in Word.
-* Help for individual R functions will appear in your browser, Chrome (Windows) or Safari (Apple Mac)
