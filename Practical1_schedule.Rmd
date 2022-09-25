@@ -364,7 +364,7 @@ You can also overlay plotting elements on top of each other, change colours, axi
 ## Plotting one variable
 ### Frequency histogram
 This is probably the most common type of single variable graph you will create. It shows the frequency (i.e. count of 
-numbers of cases) on vertical y-axis for a continuous numeric variable on horizontal x-axis. The frequency is calculated for you automatically. Let's look at the overall frequency histogram of your chick weights. Add the following lines to the end of your `practical1.R` script, save it, and run the lines:
+numbers of cases) on vertical y-axis for a continuous numeric variable on horizontal x-axis. The frequency is calculated for you automatically. Let's look at the overall frequency histogram of your chick weights. Add the following lines to the end of your `practical1.R` script, save it. **Note** Remember to leave a few blank lines in your `practical1.R` script before beginning the commands for this plot, to make your script more readable. Run the new lines by hitting the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> key combinations as usual:
 
 ```{r}
 # Create a frequency histogram of chick weights
@@ -500,35 +500,36 @@ gf_violin(weight~diet, fill="grey", alpha = 0.3, data = diet_dat) %>%       # TH
 
 Hopefully you can see that it is possible to build complex plots step-by-step in this manner.
 
-### 5.4 Plot two variables; continuous horizontal axis
-In the previous example the horizontal axis was divided into discrete categories. Often your horizontal axis will be continuous, and line or point plots will be most useful. Let's begin by plotting your chick growth data with `growth_dat` day from day 0 (hatching) to day 21 on the horizontal axis, and weight on the vertical axis:
+## Plot two variables; continuous horizontal axis
+In the previous example the horizontal axis was divided into discrete categories. Often your horizontal axis will be continuous, and line or point plots will be most useful. Let's begin by plotting your chick growth data with `growth_dat` day from day 0 (hatching) to day 21 on the horizontal axis, and weight on the vertical axis. **Note** Remember to leave a few blank lines in your `practical1.R` script before beginning this plot. Hit the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> key combinations to execute the code after each edit to understand the changes:
 
 ```{r}
+# Scatterplot of change in chick weight over time
 gf_point(weight~time, data=growth_dat)
 ```
 
-The problem with this graph is that it does not indicate that we actually have four different diets. So let's colour the points accordingly:
+You can see that the chicks get heavier with time, as expected. The problem with this graph is that it does not indicate that we actually have four different diets. So let's colour the points accordingly:
 
 ```{r}
+# Scatterplot of change in chick weight over time, coloured by diet
 gf_point(weight~time, colour = ~diet, data=growth_dat)
 ```
 
-Finally, let's join up the points with lines:
+Next, let's join up the points with lines, by chaining into the `gf_line()` function:
 
 ```{r}
-gf_point(weight~time, colour = ~diet, data=growth_dat) %>%
-  gf_line()
+# Scatterplot of change in chick weight over time, coloured by diet
+gf_point(weight~time, colour = ~diet, data=growth_dat) %>% # THEN
+  gf_line()                                                # join up points with lines
 ```
 
 Use the skills that you have just been practicing to modify the plot so that it has the same overall appearance (colours and theme) as the previous plots. See if you can create something similar to the following:
 
-```{r,echo= FALSE}
-growth_dat <- read.csv("Data/chick_growth.csv")
- gf_line(weight~time, colour = ~diet, data = growth_dat) %>% # THEN
+```{r, echo= FALSE}
+gf_line(weight~time, colour = ~diet, data = growth_dat) %>% # THEN
   gf_point() %>% 
-  gf_labs(x = "Day",y = "Weight (g)") %>% # change the labels THEN
-  gf_theme(theme_minimal()) %>% # change the theme to a simple one THEN
-  gf_refine(scale_colour_manual(values = c("blue", "red", "orange", "green"))) # set colours
+  gf_labs(x = "Day", y = "Weight (g)") %>% # change the labels THEN
+  gf_theme(theme_classic())
 ```
 
 Later in the BIO2020 course you will learn how to create fitted lines from models to add to your graphs.
