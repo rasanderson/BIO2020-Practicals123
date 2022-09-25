@@ -429,7 +429,7 @@ gf_bar(~diet, data = diet_dat) %>%  # Plot bar chart THEN
   gf_theme(theme_classic()) # Change graph theme to remove grey backdrop
 ```
 
-Building up graphs from simple to more complex ones like this by "chaining" commands together is always most reliable. Save your `practical1.R` script before continuing.
+Building up graphs from simple to more complex ones like this by "chaining" commands together is always most reliable. Save your `practical1.R` script before continuing. Remember to save your scripts regularly.
 
 ### 5.3 Plot two variables; categorical horizontal axis
 #### 5.3.1 Boxplots
