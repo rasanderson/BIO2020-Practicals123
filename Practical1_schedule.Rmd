@@ -568,3 +568,37 @@ R has its own built in help for functions. These are difficult to understand at 
 ?ordi_identify
 ```
 
+# Optional extra - bivalves data
+Are you really enjoying R (don't scream...)? If so, do you want to learn how to create a graph like this?
+
+```{r}
+bivalves_mean <- mean(abundance ~ site + transect, data=bivalves_dat)
+bivalves_sd   <-   sd(abundance ~ site + transect, data=bivalves_dat)
+bivalves_fav  <- favstats(abundance ~ site + transect, data=bivalves_dat)
+bivalves_se   <- bivalves_sd / sqrt(bivalves_fav$n)
+bivalves_stats <- data.frame(bv_mean = bivalves_mean,
+                             bv_se = bivalves_se,
+                             transect = c(rep("T1", 4), rep("T2", 4)),
+                             site = c("A", "B", "C", "D", "A", "B", "C", "D"))
+
+gf_col(bv_mean ~ site, fill= ~transect,
+       position=position_dodge(), data = bivalves_stats) %>% 
+  gf_labs(x="Site", y="Mean abundance of bivalves per m^2") %>%
+  gf_errorbar((bv_mean - bv_se) + (bv_mean + bv_se) ~ site,
+              position=position_dodge(0.9), width = 0.2) %>% 
+              gf_theme(theme_classic())
+  #, inherit=TRUE) #, 
+              #data = bivalves_stats, width = 0.2 , position = position_dodge(0.9), inherit = TRUE)
+  
+
+
+
+# gf_col(mean_abundance ~ Site, fill = ~ Transect, position = position_dodge(), group = ~ Transect, 
+#        data = bivalves_data) %>%
+#   gf_labs(x = "Site", y = "Mean abundance per m3") %>%
+#   gf_errorbar((mean_abundance - sd_abundance) + (mean_abundance + sd_abundance) ~ Site, 
+#               data = bivalves_data, width = 0.2 , position = position_dodge(0.9), inherit = TRUE)
+
+
+```
+
