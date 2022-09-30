@@ -40,6 +40,8 @@ knitr::include_graphics("images/start_from_windows_menu.png")
 (If you do not have a search bar, click on the Windows icon, navigate to _Programming and Databases_ or _RStudio_ and click on the _RStudio_ icon. Do **not** click on the icon labelled _R i386_ or _R x64_ )
 
 
+**IMPORTANT**: If a popup window appears when you start RStudio click "Ignore Update"
+
 Once RStudio has started up you can get to work.
 
 # Modify RStudio default settings
