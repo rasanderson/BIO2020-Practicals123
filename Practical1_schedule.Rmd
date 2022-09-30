@@ -2,10 +2,10 @@
 title: 'Practical 1: Data import Summary and display'
 author: "BIO2020"
 output:
+  word_document:
+    number_sections: true
   html_document:
     df_print: paged
-    number_sections: true
-  word_document:
     number_sections: true
 ---
 
@@ -590,4 +590,88 @@ gf_col(bv_mean ~ site, fill= ~transect,
 
 ```
 
-This hows the mean numbers of bivalves (+/- standard error bars) at each site, colour-coded for each treatment. To be honest, boxplots are generally my preferred method of displaying data as they show skew better, but as this type of bar-plot is so common, you may need to know how to create it, especially if requested on other modules etc.
+This hows the mean numbers of bivalves (+/- standard error bars) at each site, colour-coded for each treatment. To be honest, boxplots are generally my preferred method of displaying data as they show skew better, but as this type of bar-plot is so common, you may need to know how to create it, especially if requested on other modules etc. To create a boxplot is very straightforward: simply set abundance as your response, site as your explanatory, and colour of boxes to be transect, and you know how to edit axis labels, plot themes etc. if needed:
+
+```{r}
+gf_boxplot(abundance ~ site, colour= ~transect, data=bivalves_dat)
+```
+
+Creating the bar chart is more complicated. You need to make a table (data frame) of 8 rows, one for each bar, that contains the mean abundance, the standard error, the transect, and the site code:
+
+```{r, echo=FALSE}
+tmp <- bivalves_stats
+rownames(tmp) <- NULL
+print(tmp)
+```
+
+Here the columns headed `bv_mean` and `bv_se` are the mean and standard error of bivalve abundance respectively. You'll recall from earlier that R doesn't have a built-in command to calculate standard error, so we need to use the `favstats()` function to get the numbers of observations per site+transect combination, and calculate standard error from the standard deviation. Here, we are storing the standard devation in `bivalves_sd` and the table of favourite statistics in `bivalves_fav`. **Note**: in all these commands we have **two** explanatory variables; `site` and `transect`.
+
+```{r}
+bivalves_mean <- mean(abundance ~ site + transect, data=bivalves_dat)
+bivalves_sd   <-   sd(abundance ~ site + transect, data=bivalves_dat)
+bivalves_fav  <- favstats(abundance ~ site + transect, data=bivalves_dat)
+bivalves_se   <- bivalves_sd / sqrt(bivalves_fav$n)
+```
+
+We can now assemble the means and standard deviations into a table. We also need the transect codes and site letters. We can use a shortcut command if you want, to save having to type all 8 transect codes out. Enter the following command into the Console and see what you get:
+
+```{r, eval=FALSE}
+rep("T1", 4)
+```
+
+You'll see the "T1" code displayed four times (`rep` stands for "repeat"). You can do a similar thing for T2. For the site codes, it is probably simpler just to type them out. Thus we can use the `data.frame()` function to assemble a single table:
+
+```{r}
+bivalves_stats <- data.frame(bv_mean = bivalves_mean,
+                             bv_se = bivalves_se,
+                             transect = c(rep("T1", 4), rep("T2", 4)),
+                             site = c("A", "B", "C", "D", "A", "B", "C", "D"))
+```
+
+Check the contents of your `bivalves_stats` table to make sure it matches what is displayed above. We will use a stepwise approach to building your bar chart. First, a simple barplot:
+
+```{r}
+gf_col(bv_mean ~ site, data = bivalves_stats)
+
+```
+
+but this ignores transect, as we want the data for each site displayed for each transect, and coloured differently:
+
+```{r}
+gf_col(bv_mean ~ site, fill= ~transect, data = bivalves_stats)
+```
+
+The problem here is that this is a 'stacked' barchart: these are also popular in science, but is not what we want here. So we'll use the `position_dodge` option to move the bars side-by-side:
+
+```{r}
+gf_col(bv_mean ~ site, fill= ~transect,
+       position=position_dodge(), data = bivalves_stats)
+```
+
+Now we can add the error bars using the `gf_errorbar` function. We have to express both the error bar above and below the line, and that this is being done by `site`. So we include two little subtractions and additions to the `gf_errorbar` function to indicate that our standard error is above and below the mean:
+
+```{r}
+gf_col(bv_mean ~ site, fill= ~transect,
+       position=position_dodge(), data = bivalves_stats) %>% 
+  gf_errorbar((bv_mean - bv_se) + (bv_mean + bv_se) ~ site)
+```
+
+The problem here is that the error bars are too wide. We will make them narrower, using the `width = 0.2` option:
+
+```{r}
+gf_col(bv_mean ~ site, fill= ~transect,
+       position=position_dodge(), data = bivalves_stats) %>% 
+  gf_errorbar((bv_mean - bv_se) + (bv_mean + bv_se) ~ site,
+              width = 0.2)
+```
+
+Now the problem is that our error bars are "stacked", just like in our earlier version of the barplot. Thus we again want to use the `position_dodge` function, to shift them to the middle of each bar. Setting a dodge value of about 0.9 sets them nicely in the middle:
+
+```{r}
+gf_col(bv_mean ~ site, fill= ~transect,
+       position=position_dodge(), data = bivalves_stats) %>% 
+  gf_errorbar((bv_mean - bv_se) + (bv_mean + bv_se) ~ site,
+              position=position_dodge(0.9), width = 0.2)
+```
+
+The final steps I will leave to you - try and tidy up the axis labels, and change the theme of the plot to remove the grey background.
