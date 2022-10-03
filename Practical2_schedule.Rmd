@@ -13,6 +13,25 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
+<style type="text/css">
+span.boxed {
+  border:5px solid gray;
+  border-radius:10px;
+  padding: 5px;
+}
+span.invboxed {
+  border:5px solid gray;
+  padding: 5px;
+  border-radius:10px;
+  color: white;
+}
+table, td, th
+{
+border:0px;
+}
+</style>
+
+
 ```{r, echo = FALSE, message=FALSE,warning= FALSE}
 library(dplyr)
 library(palmerpenguins)
@@ -22,10 +41,26 @@ library(bio2020)
 ```
 
 # Introduction
-In this practical you will be introduced to **linear models** which provide a way to assess the relationships between a **response** variable and one or more **explanatory** variable(s). When plotting your data, the response variable is typically placed on the vertical (y) axis, and the explanatory on the horizontal (x) axis. We are thus sticking with our philosophy of
+In this practical you will be introduced to **linear models** which provide a way to assess the relationships between a **response** variable and one or more **explanatory** variable(s). You will recall that we are trying to use a "goal-oriented" approach where possible in BIO2020:
 
-$$\text{goal(response variable} \sim \text{explanatory variable(s), data=dataset, ...)}$$
-except that now your goal is a linear model. You can access a linear model using the `lm()` function in R/RStudio.
+&nbsp;
+
+<center>
+<h2><strong><span class="boxed">goal</span> ( <span class="boxed">y</span> ~ <span class="boxed">x</span> , data = <span class="boxed">mydata</span>, ... )</strong> 
+</h2></center>
+
+&nbsp;
+
+So farm your goals have been simple summary statistics (mean, median, standard deviation), or different types of plots (boxplot, scatterplot etc.). In both cases the response variable is **y**, typically placed on the vertical axis in a graph, and **x** is the explanatory variable(s) on the horizontal axis. A linear model is a way of formally testing whether there is really a relationship between your response and explanatory variables. You can access a linear model using the `lm()` function in R:
+
+&nbsp;
+
+<center>
+<h2><strong><span class="boxed">linear model</span> ( <span class="boxed">y</span> ~ <span class="boxed">x</span> , data = <span class="boxed">mydata</span>, ... )</strong> 
+</h2></center>
+
+&nbsp;
+
 
 # Aims and objectives
 The main aim of this practical are to show you how to use the `lm()` function, using datasets that you will already have seen on the interactive websites at 
@@ -37,56 +72,67 @@ The main aim of this practical are to show you how to use the `lm()` function, u
 
 Inherent in the idea of linear models is the idea of cause and effect, i.e. your explanatory variables cause some sort of change in your response variable. How do you know which is the response and which is the explanatory? In a "designed experiment", e.g. a laboratory experiment or field plot experiment, the response and explanatory is usually obvious, but sometimes it is less obvious. Take the following examples:
 
-| Response | Explanatory |
-|:---------:|:-----------:|
-| Plant pathogen gene regulation | Fungicide concentration (mg/l) |
-| Mean bird population size | Habitat type (Garden, Arable, Woodland, Heath) |
-| Pollinator diversity | Wildflower diversity |
+| Response | Explanatory | Explanatory type |
+|:---------:|:-----------:|:----------------:|
+| Plant pathogen gene regulation | Fungicide concentration (mg/l) | Continuous |
+| Mean bird population size | Habitat type (Garden, Arable, Woodland, Heath) | Categorical |
+| Pollinator diversity | Wildflower diversity | Continuous |
 
 All linear models have a continuous response variable. By "continuous" the response can be any number (3.4, 1.9, -3 etc., rather than Yes/No, Dead/Alive, or only whole numbers permitted). In the above 3 examples note the following:
 
 * the gene regulation has a continuous explanatory fungicide concentration
-* the average bird population at a site across all surveys has a categorical explanatory habitat type, with four 'levels'
+* the average bird population at a site across all surveys has a categorical explanatory habitat type, **with four 'levels'** for the 4 different habitats
 * Pollinator diversity and wildflower diversity are both continuous. I think it is reasonable to assume that the biodiversity of wildflowers will have a big effect on the pollinators out there, so I've listed wildflower diversity as the explanatory variable. However, some scientists have shown that if the pollinator biodiversity declines sharply, this has a negative effect on the biodiversity of some wildflowers. So in this example the response and explanatory terms are a little more ambiguous.
 
 # Linear models with continuous explanatory variables
 ## Download data and calculate simple statistics
-We will start by looking at the `caterpillars` data set that we were using in the interactive website for linear models with continuous explanatory variables. The `caterpillars.csv` data are available on Canvas and should be downloaded and saved in you BIO2020 `Data` folder. After you have downloaded the file:
+We will start by looking at the `caterpillars` data set that we were using in the interactive website for linear models with continuous explanatory variables. The `caterpillars.csv` data file is available on Canvas and should be downloaded. Remember that this will end up in your "Downloads" folder: you will need to move it from Downloads into your BIO2020 folder before you can read it into R. After you have downloaded the file:
 
 * Open up the `caterpillars.csv` file in Microsoft Excel to have a quick look at it, but ignore any requests to save it in Excel format.
-* Create a new R script, in either Notepad (RGui for Windows), TextEdit (RGui MacBook) or the RStudio script editor (Windows or Mac) and call it `Practical_2.R`. **Note**: Write a suitable comment after a `#` symbol at the top of your script to explain what it is going to do.
+* Start RStudio. Select **File -> Recent projects -> BIO2020** to open up the RStudio project you created in the first practical session.
+* Create a new R script: in RStudio select **File -> New File -> R Script**. It is good practice to save your script immediately by going to **File -> Save** and give it a sensible name, e.g. `Practical_2.R`.
+
+Now start writing the contents of your script, with a title line, explanation of what your script is doing, etc. **Note**: some of you are storing all your CSV files in a `Data` subfolder, others are storing them in the main `BIO2020` folder. It does not matter which one you choose, but adjust the `read.csv()` call below accordingly:
+
+**Note**: Write a suitable comment after a `#` symbol at the top of your script to explain what it is going to do.
 * Write the line `library(bio2020)` in the script, and run it, to activate all the necessary add-on R packages.
 
 We need to load the data into R and store it in an object so we can access it easily.
 
 ```{r}
+# Examples of linear models for continuous and categorical data
+
+# Activate the bio2020 R package
+library(bio2020)
+
+# Read in the caterpillars.csv file (omit Data/ if not using a CSV subfolder)
 caterpillar_dat <- read.csv("Data/caterpillars.csv")
 ```
 
-If RGui or RStudio does not find the file `caterpillars.csv` check that there are no spelling errors and that your session is in the right place. If you are using RGui you need to manually
+If RGui or RStudio does not find the file `caterpillars.csv` check that you correctly copied the CSV from Downloads to BIO2020, that there are no spelling errors, or whether you need to omit the `Data/` if you are not using a subfolder called `Data` within the `BIO2020` folder.
 
 Using the functions that you learned in the first practical familiarise yourself with the `caterpillars` data. 
 
 ```{r, eval= FALSE}
-# see the first 6 rows of the data frame
+# display the first 6 rows of the data frame
 head(caterpillar_dat)
 # check the dimensions of the data frame (numbers of rows and columns)
 dim(caterpillar_dat)
 ```
 
-We can see that this data set contains 2 continuous variables; growth and tannin. What is the mean, minimum, maximum value of these two variables (look back to Practical 1 if you have forgotten how to obtain these data).
+We can see that this data set contains 2 continuous variables; growth (mg/day) and tannin (mg). What is the mean, minimum, maximum value of these two variables (look back to Practical 1 if you have forgotten how to obtain these data).
 
 ## Simple visualisation of caterpillar data
-In general it is a good idea to plot your data, to gain an understanding of its characteristics, before running a linear model. As you have two fairly simple variables, a scatter plot with our explanatory variable of tannin on the x axis and growth on the y axis will do.
+In general it is a good idea to plot your data, to gain an understanding of its characteristics, before running a linear model. As you have two fairly simple variables, a scatter plot with our explanatory variable of tannin on the x axis and growth on the y axis will do. Obviously, for a report you would need to improve the axis labels etc.
 
 ```{r echo = FALSE}
 gf_point(growth~tannin, data = caterpillar_dat)
 ```
 
-From this plot can you estimate:
+From this plot answer the following questions and check with a demonstrator before continuing:
 
- + Will the intercept of the fitted line be positive or negative? Recall that the intercept is the value of the y-axis where your fitted line crosses it when the x-axis is zero.
- + Roughly what do you think the value of the intercept is?
+ + Will the fitted line have an intercept? If it does, will it be positive or negative?
+ + If there is an intercept, roughly what do you think the value of the intercept is?
  + Will the gradient of the fitted line be positive or negative?
 
 It is always worth doing this visualisation step. Sometimes you will see your scatter of points form a distinct curve, in which case your linear model might need both $x$ and $x^2$ explanatory variables to fit a curve rather than a straight line. It may seem odd that you can fit curves with linear models. The word "linear" simply refers to the fact that you add the various terms together.
@@ -96,19 +142,21 @@ Now create a linear model to see if our expectations were correct. You will reme
 
 `lm(response_variable ~ explanatory_variable, data = dataframe_name)`
 
-Create a linear model for the relationship between tannin and caterpillar growth, storing the output of the linear model in an R object called `growth_lm`. Hints:
+Using this template, it is easy to create a linear model for the relationship between tannin and caterpillar growth using the `lm()` function, storing the output of the linear model in an R object called `growth_lm`:
 
-* The function that we use in R is `lm()` 
+* we add a comment line beforehand to explain what we are doing
 * To the left of your ~ put your response variable, to the right the explanatory
 * use the `<-` symbols to assign the results of your linear model to `growth_lm`
 
-```{r, echo = FALSE}
+```{r, echo = TRUE}
+# Create a linear model to test relationship between growth and tannins
 growth_lm <- lm(growth~tannin, data = caterpillar_dat)
 ```
 
 Now that you have created your linear model, use the `summary()` function to investigate the outputs of your linear model 
 
 ```{r}
+# Check the output from the linear model
 summary(growth_lm)
 ```
 
@@ -128,7 +176,7 @@ Now some answers (please think about the above questions before reading these!!)
  + The slope is harder to guesstimate, and is `-1.217`. Notice that it is **negative** because the scatter of points **declines** from left to right on your graph
  + You may know that R-squared ($R^2$) is the proportion of variation explained by your linear model. What is a little confusing is that two $R^2$ values are given, one called `Multiple` and the other `Adujusted`. Always refer to the `Adjusted R-squared` which is `0.789` i.e. almost 79% of the variation in caterpillar growth rate can be explained by tannin
  + You can enter the `sqrt()` function directly in the Console. Again, used the adjusted $R^2$ which should give you a correlation coefficient of `0.888`. There is also a separate `cor()` function to calculate the correlation between any two variables should you need it.
- + Overall model significance is shown by the F-statistic. The higher the F-statistic (30.97), the greater the "significance" of the model, which is reflected by a **lower** p-value (here p=0.0008461). You would write something like "Overall there was a significant negative relationship between caterpillar growth and tannin ($F_{1,7}=30.97,p=0.001$)". **Note**: by convention you provide the **degrees of freedom as subscripts** when reporting F-values, and **3 decimal places** when reporting p-values.
+ + Overall model significance is shown by the F-statistic. The higher the F-statistic (30.97), the greater the "significance" of the model, which is reflected by a **lower** p-value (here p=0.0008461). You would write something like "Overall there was a significant negative relationship between caterpillar growth and tannin ($F_{1,7}=30.97,p<0.001$)". **Note**: by convention you provide the **degrees of freedom as subscripts** when reporting F-values, and **3 decimal places** when reporting p-values.
   + The p-value for tannin is given as `0.000846` so to three decimal places it is `0.001`. But what about the p-value for the intercept? This is given as `9.54e-06`. This "exponential" format is a short-hand method of referring to very small numbers, using `e-` or very big numbers, using `e+`. So here we have a very small number, with six zeros, i.e. `0.00000954`. To three decimal places, this is zero, but in reality you **never have a p-value of zero**, there will always be a positive value. So by convention, to three decimal places you would report this as `p<0.001` which can be interpreted as "p is less than 0.001". This is highly significant, because the intercept is a long way from zero with a value of almost 12.
   
 ### Interactive demonstration of SS, slopes, intercepts
@@ -136,6 +184,15 @@ You may find it useful to look at this [Interactive demonstration](https://natur
 
 ### A note on t-statistics
 You will see in the above summary table a column headed `t value`. A brief description of the rather strange t-distribution can be found on the first few pages of [this interactive website that includes t statistics](https://naturalandenvironmentalscience.shinyapps.io/Other_tests/) . The t-distribution is like a fat-tailed normal distribution, and of particular value is the one-sample t-test. This checks whether an estimated value, here your Intercept and slope, is different to zero. If the p-value is **low** then there is a **high probability** that your estimate is **not** zero.
+
+### How to write up the linear model in a report
+Unfortunately R is the same as most statistics packages, in that the way it reports data analyses is messy, and is not how you would present it in a report. The linear model you have just created is often called a **regression** because the explanatory variable (only one explanatory, `tannin` in this example) is continuous, not categorical. Which **two** of the following is the **correct** way of writing the analysis in a report and **why**? Check your answer with a demonstrator **before** continuing:
+
+a) The linear model showed a highly significant relationship between tannins (mg) and caterpillar growth (mg/day) with p < 0.05.
+b) The regression between tannins (mg) and caterpillar growth rate (mg/day) was significant (p=0.0008461) and explained 0.7893% variation in the data
+c) There was a strong negative relationship between tannins (mg) and growth rate (p<0.001)
+d) There was a negative relationship between tannin concentration (mg) and caterpillar growth rate (mg/day) (t = -1.217, p < 0.001) with 78.9% of the variation in growth rate explained by tannin concentration.
+e) The overall linear model for caterpillar growth rate (mg/day) and tannin concentration (mg) was significant and showed a negative relationship ($F_{1,7}=30.97,p<0.001$)
  
 ## Plotting the fitted line
 
