@@ -90,7 +90,7 @@ We will start by looking at the `caterpillars` data set that we were using in th
 
 * Open up the `caterpillars.csv` file in Microsoft Excel to have a quick look at it, but ignore any requests to save it in Excel format.
 * Start RStudio. Select **File -> Recent projects -> BIO2020** to open up the RStudio project you created in the first practical session.
-* Create a new R script: in RStudio select **File -> New File -> R Script**. It is good practice to save your script immediately by going to **File -> Save** and give it a sensible name, e.g. `Practical_2.R`.
+* Create a new R script: in RStudio select **File -> New File -> R Script**. It is good practice to save your script immediately by going to **File -> Save** and give it a sensible name, e.g. `Practical2.R`.
 
 Now start writing the contents of your script, with a title line, explanation of what your script is doing, etc. **Note**: some of you are storing all your CSV files in a `Data` subfolder, others are storing them in the main `BIO2020` folder. It does not matter which one you choose, but adjust the `read.csv()` call below accordingly:
 
@@ -176,7 +176,7 @@ Now some answers (please think about the above questions before reading these!!)
  + The slope is harder to guesstimate, and is `-1.217`. Notice that it is **negative** because the scatter of points **declines** from left to right on your graph
  + You may know that R-squared ($R^2$) is the proportion of variation explained by your linear model. What is a little confusing is that two $R^2$ values are given, one called `Multiple` and the other `Adujusted`. Always refer to the `Adjusted R-squared` which is `0.789` i.e. almost 79% of the variation in caterpillar growth rate can be explained by tannin
  + You can enter the `sqrt()` function directly in the Console. Again, used the adjusted $R^2$ which should give you a correlation coefficient of `0.888`. There is also a separate `cor()` function to calculate the correlation between any two variables should you need it.
- + Overall model significance is shown by the F-statistic. The higher the F-statistic (30.97), the greater the "significance" of the model, which is reflected by a **lower** p-value (here p=0.0008461). You would write something like "Overall there was a significant negative relationship between caterpillar growth and tannin ($F_{1,7}=30.97,p<0.001$)". **Note**: by convention you provide the **degrees of freedom as subscripts** when reporting F-values, and **3 decimal places** when reporting p-values.
+ + Overall model significance is shown by the F-statistic. The higher the F-statistic (30.97), the greater the "significance" of the model, which is reflected by a **lower** p-value (here p=0.0008461). You would write something like "Overall there was a significant negative relationship between caterpillar growth and tannin ($F_{1,7}$=30.97,p<0.001)". **Note**: by convention you provide the **degrees of freedom as subscripts** when reporting F-values, and **3 decimal places** when reporting p-values.
   + The p-value for tannin is given as `0.000846` so to three decimal places it is `0.001`. But what about the p-value for the intercept? This is given as `9.54e-06`. This "exponential" format is a short-hand method of referring to very small numbers, using `e-` or very big numbers, using `e+`. So here we have a very small number, with six zeros, i.e. `0.00000954`. To three decimal places, this is zero, but in reality you **never have a p-value of zero**, there will always be a positive value. So by convention, to three decimal places you would report this as `p<0.001` which can be interpreted as "p is less than 0.001". This is highly significant, because the intercept is a long way from zero with a value of almost 12.
   
 ### Interactive demonstration of SS, slopes, intercepts
@@ -192,20 +192,18 @@ a) The linear model showed a highly significant relationship between tannins (mg
 b) The regression between tannins (mg) and caterpillar growth rate (mg/day) was significant (p=0.0008461) and explained 0.7893% variation in the data
 c) There was a strong negative relationship between tannins (mg) and growth rate (p<0.001)
 d) There was a negative relationship between tannin concentration (mg) and caterpillar growth rate (mg/day) (t = -1.217, p < 0.001) with 78.9% of the variation in growth rate explained by tannin concentration.
-e) The overall linear model for caterpillar growth rate (mg/day) and tannin concentration (mg) was significant and showed a negative relationship ($F_{1,7}=30.97,p<0.001$)
+e) The overall linear model for caterpillar growth rate (mg/day) and tannin concentration (mg) was significant and showed a negative relationship ($F_{1,7}$=30.97,p<0.001)
  
 ## Plotting the fitted line
 
-Add the fitted line from the linear model to your scatterplot using the `gf_lm()` function
-
-Remember that when adding a layer to your plot you will need to use the pipe ` %>% ` which can be created using the keyboard shortcut *Ctrl* + *shift* + *m* (*cmd* + *shift* + *m* on mac)
+You can add the fitted line from the linear model to your scatterplot using the `gf_lm()` function. Remember that when adding an extra feature layer to your plot you will need to use the pipe ` %>% ` which can be created using the keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>m</kbd> in the `practical2.R` script window.
 
 Using the lessons learned in the last practical can you improve the plot. First, add one extra lines using the `%>%` symbol to add the fitted line. Then a second to change the axis labels. Then a third to get rid of the grey background. Finally tweak the second line to change the colour of the fitted line. Re-run the lines of commands each time to watch your graph gradually improve in quality.
 
 1. Add a fitted line using `gf_lm()`
 2. Change the axis labels to "Tannin concentration" and "Caterpillar growth". Hint: `gf_labs()`
-3. Removing the grey plot background. Hint: `gf_theme()` with `theme_minimal()`
-4. Changing the colour of the fitted line to green. Hint: add a `colour=` option to `gf_lm()`
+3. Remove the grey plot background. Hint: `gf_theme()` with `theme_classic()`
+4. Change the colour of the fitted line to green. Hint: add a `colour=` option to `gf_lm()`
 
 Refer back to your script from the previous practical if you need a reminder of how to do this. To do the first of the four steps listed above you can add the fitted line with `gf_lm()`:
 
@@ -214,16 +212,16 @@ gf_point(growth~tannin, data = caterpillar_dat) %>%
         gf_lm()
 ```
 
-Now make edit the graph to modify the axis labels, replotting your graph, the modify the background etc. Replot your graph every time you tweak your code. You should end up with a graph similar to this:
+Edit the R code to modify the axis labels, replot your graph, then the modify the background etc. Replot your graph every time you tweak your code and it is easier to spot errors. You should end up with a graph similar to this:
 
 ```{r echo = FALSE}
 gf_point(growth~tannin, data = caterpillar_dat) %>% 
         gf_lm(colour = "green") %>% 
-        gf_labs(x = "Tannin concentration", y = "Caterpillar growth") %>% 
-        gf_theme(theme_minimal())
+        gf_labs(x = "Tannin concentration (mg)", y = "Caterpillar growth (mg/day)") %>% 
+        gf_theme(theme_classic())
 ```
 
-I also quite like the "classic" rather than "minimal" theme. Once you have your R commands working, try changing `theme_minimal()` to `theme_classic()` to see the difference.
+If you have any problems producing the above plot then speak to a demonstrator. Also try the "minimal" theme. Once you have your R commands working, try changing `theme_classic()` to `theme_minimal()` to see the difference.
 
 
 ## Calculate predicted values of growth for new values of tannin 
@@ -232,22 +230,22 @@ You will remember from the online website tutorial that the fitted or "predicted
 
 You can calculate predicted growth values for **any** tannin concentration by using the information about the intercept and slope. Using the model that you have created calculate the fitted value for a caterpillar with a tannin level of **3.5**
 
-Remember that you can use the **R Console** as a calculator to work out the predicted growth value when tannin is 3.5 using the formula:
+Use the **R Console** as a calculator to work out the predicted growth value when tannin is 3.5 using the formula:
 
 `intercept + (gradient * new value)`
 
-or if you prefer
+or given that you have a negative slope in your plot, that declines from left to right, you can think of it as:
 
 `intercept - (gradient * new value)`
 
-since the gradient is negative. What value do you get, and does it look sensible based on the line on your graph? 
+since the gradient is negative. You will need to go back to the output from `summary(growth_lm)` earlier to see the values for intercept and slope (re-run `summary(growth_lm)` if needed). The intercept and slope are shown under the `Estimate` column, on the rows headed `(Intercept)` and `tannin`. What value do you get for predicted growth rate with a tannin concentration of 3.5? Does it look sensible based on the line on your graph? 
 
 Having to enter the values for intercept and slopes manually into the R Console is a bit clunky, and it is easy to make errors, especially with more complex linear models that might have multiple explanatory variables. You will be relieved that we can automate the procedure using  the `makeFun()` function  to create our own special function which we will call `predictor`. The argument to `makeFun()` is simply the name of your linear model. Then you can put `3.5` into your new `predictor()` :
 
 ```{r}
 growth_lm <- lm(growth~tannin, data = caterpillar_dat) 
 predictor <- makeFun(growth_lm)            # Make your own special predictor function
-predictor(3.5)                             # Predict the growth at 3.5
+predictor(3.5)                             # Predict the growth rate at tannin 3.5 mg
 ```
 
 Are the values that you obtained from your `predictor` function the same as when you calculated it manually in the R Console? If the values are not exactly the same can you think why that might be? <!--rouding outputs from summary of model--> Hopefully you can see that the ability to create your own functions to predict values from any linear model is straightforward, and powerful.
@@ -282,7 +280,7 @@ growth_resids <- residuals(growth_lm)
 gf_histogram(~growth_resids)
 ```
 
-The main problem here is that you only have 9 observations, not 100! So it is very difficult just looking at a frequency histogram the residuals on their own to determine if they are normally distributed (bell-shaped curve). A more robust method of checking the distribution of the residuals is to use a QQ plot (quantile-quantile plot). This ranks your residuals from lowest to highest, and compares them with what would have been expected if your residuals are from a normal distribution.
+The main problem here is that you only have 9 observations, not 100, so it is very difficult just looking at a frequency histogram of the residuals to determine if they are normally distributed (bell-shaped curve). A more robust method of checking the distribution of the residuals is to use a QQ plot (quantile-quantile plot). This ranks your residuals from lowest to highest, and compares them with what would have been expected if your residuals are from a normal distribution.
 
 We can use the `gf_qq()` function to plot the sorted residuals and we can add a straight line showing the theoretical expectation using `gf_qqline()` function. The closer the points are to the straight line the more robust is your linear model.
 
