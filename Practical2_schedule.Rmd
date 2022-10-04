@@ -486,13 +486,13 @@ gf_qq(~soil_resid) %>%
 
 As you can see, nearly all of the observed residuals fall nicely along the expected pattern of the residuals (centred around zero), suggesting that a key assumption of a linear model, that the residuals are roughly normally distributed, has been met.
 
-# A new data set for you to explore if you have time or want more practice
-Download the `penguins.csv` data set from Canvas and save it to your BIO2020 `Data` folder. If you want, open it in Microsoft Excel to see what it contains. It is a **huge** dataset with 343 observations about different species of penguins in Antartica. If you have not already done so, please look at [Interactive website on how to visualise data](https://naturalandenvironmentalscience.shinyapps.io/Summary_vis/) which uses this dataset as an example.
+# A new data set for you to explore (Optional - but recommended)
+You may not have time to do these extra analyses in the 2-hour in-person practical, but I strongly recommend you try some of these out in your own time so you build up your confidence. You can post questions into the relevant Section 2 Channel on Microsoft Teams. Download the `penguins.csv` data set from Canvas and copy it to your `BIO2020` or `BIO2020/Data` folder. If you want, open it in Microsoft Excel to see what it contains. It is a **huge** dataset with 343 observations about different species of penguins in Antartica. If you have not already done so, please look at [Interactive website on how to visualise data](https://naturalandenvironmentalscience.shinyapps.io/Summary_vis/) which uses this dataset as an example.
 
 Read in the dataset in the usual way:
 
 ```{r, echo = TRUE}
-
+# Read in the CSV file. If not using a Data subfolder, then remove Data/
 penguins <- read.csv("Data/penguins.csv")
 
 ```
@@ -522,7 +522,7 @@ Run a linear model and check your results:
 
 ```{r, echo = FALSE}
 penguin_lm <- lm(body_mass_g~species, data = penguins)
-anova(penguin_lm)
+print(anova(penguin_lm))
 ```
 
 This is a large dataset, so produce a frequency histogram of the residuals from your model, and a qqplot. If you have successfully installed the `bio2020` package you can store your two plots in separate R objects, and plot them side-by-side using the `multi_plot()` function. Type `?multi_plot` to see help.
