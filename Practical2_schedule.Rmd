@@ -2,10 +2,10 @@
 title: 'Practical 2: Linear models and ANOVA'
 author: "BIO2020"
 output:
-  word_document:
-    number_sections: true
   html_document:
     df_print: paged
+    number_sections: true
+  word_document:
     number_sections: true
 ---
 
@@ -51,7 +51,7 @@ In this practical you will be introduced to **linear models** which provide a wa
 
 &nbsp;
 
-So farm your goals have been simple summary statistics (mean, median, standard deviation), or different types of plots (boxplot, scatterplot etc.). In both cases the response variable is **y**, typically placed on the vertical axis in a graph, and **x** is the explanatory variable(s) on the horizontal axis. A linear model is a way of formally testing whether there is really a relationship between your response and explanatory variables. You can access a linear model using the `lm()` function in R:
+So far your goals have been simple summary statistics (mean, median, standard deviation), or different types of plots (boxplot, scatterplot etc.). In both cases the response variable is **y**, typically placed on the vertical axis in a graph, and **x** is the explanatory variable(s) on the horizontal axis. A linear model is a way of formally testing whether there is really a relationship between your response and explanatory variables. You can access a linear model using the `lm()` function in R:
 
 &nbsp;
 
