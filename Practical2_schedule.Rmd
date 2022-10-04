@@ -296,24 +296,30 @@ Imagine you had done this caterpillar experiment as part of your final-year rese
 
 # Linear models with categorical explanatory variable
 ## Download and check the data
-We have just run through a model where the explanatory variable was continuous, however there are often cases where we want to investigate categorical variables.
+Download `crop_growth.csv` from Canvas and open it in Excel to have a quick look at its contents (don't edit it - ignore any requests to save it in Excel format). Remember that you have to use File Explorer to copy it from your Downloads folder to your BIO2020. Depending on whether you are saving your CSV files in a `Data` subfolder, or keep them in your BIO2020 folder, adjust the following code. This imports the data, and allows you to look at its structure. Remember to **add comment lines** as shown below to help you when you look at your script when revising for your assessment in January. Execute each line sequentially as usual by hitting the <kbd>Ctrl</kbd>+<kbd>Enter</kbd> key combination. This may be shown as <kbd>Ctrl</kbd>+<kbd>  &#8629;  </kbd> on some keyboards:
 
-Now let's look at the `crop growth` data set. This data is also available to download from Canvas and you should store it in your `Data` folder. You may wish to look at it in Microsoft Excel before you import it into R/RStudio (ignore warnings about not saving it in Excel format). Load it in the same way as the `caterpillars` data set and investigate its variables and structure. 
+```{r, eval=FALSE}
+# Example linear model with categorical explanatory data; crop growth on
+# three different soil types.
 
-```{r}
-
+# Read the CSV file; omit Data/ if not using a subfolder
 crop_growth <- read.csv("Data/crop_growth.csv")
 
-head(crop_growth) # Shows the first few lines
-
-dim(crop_growth)  # Numbers of rows and columns
-
+# Gain an understanding of the dataset
+head(crop_growth)    # Shows the first few lines
+dim(crop_growth)     # Numbers of rows and columns
 summary(crop_growth) # Basic information
 ```
+
+```{r, echo=FALSE}
+crop_growth <- read.csv("Data/crop_growth.csv")
+```
+
 
 The `summary()` function give minimum, maximum, mean, median values for the column of `yield` but the information on `soil` is simply listed as "character". This is a text variable. It is often easier when working with linear models to formally define this type of variable as a "factor" and it will then automatically show the individual "levels". This is not essential, but makes the output from `summary()` easier to interpret. As we only want to define `as.factor()` for the `soil` column, we make use of the `$` symbol to access just that column in the `crop_growth` table of data.
 
 ```{r}
+# Convert the soil column from a character to a factor
 crop_growth$soil <- as.factor(crop_growth$soil)
 summary(crop_growth)
 ```
@@ -323,74 +329,96 @@ This is easier to understand. You can see that we have three soil types, `clay`,
 We have one continuous response variable `yield`, and one categorical explanatory variable `soil`, the latter with three "levels" for the different soil types.
 
 ## Explore the data
-
-Let's start by calculating some summary statistics for each type of soil, remember that the easiest way to do this is to use functions from the `mosaic` package. 
-To do this you will need to "load" the package using `library(mosaic)` function. If you successfully managed to install my `bio2020` package then the line `library(bio2020)` will install all the other packages you need.
+Let's start by calculating some summary statistics for each type of soil. 
 
 Remember that we can use a consistent syntax when working with summary statistics, of 
 
-$$\text{simple statistic(variable ~ group, data=dataset, ...)}$$
+&nbsp;
+
+<center>
+<h2><strong><span class="boxed">simple statistic</span> ( <span class="boxed">y</span> ~ <span class="boxed">x</span> , data = <span class="boxed">mydata</span>, ... )</strong> 
+</h2></center>
+
+&nbsp;
+
+where
+
+* y = response variable = crop yield
+* x = explanatory variable = soil type with 3 different levels, each 10 replicates
+* data = the `crop_growth` table (data frame) you have just imported into R
+
 Thus, to calculate the mean crop yield for each of the three different soil types, simply issue the command:
 
 ```{r}
 mean(yield ~ soil, data = crop_growth)
 ```
 
-Using the same idea, calculate:
- + Calculate the minimum, maximum and standard deviation of the yield for each soil type
- + The standard error of the yield for each soil type. **Hint**: look back at practical schedule 1 and [Standard Error website](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-how-to-measure-accuracy-and-precision) to remind yourself how to calculate this. Conveniently, the number of replicates $n$ is the same for each soil type at 10.
+Using the same idea, calculate the:
+
+ + minimum, maximum and standard deviation of the yield for each soil type;
+ + standard error of the yield for each soil type. **Hint**: look back at practical schedule 1 and [Standard Error website](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-how-to-measure-accuracy-and-precision) to remind yourself how to calculate this. Conveniently, the number of replicates $n$ is the same for each soil type at 10.
  
 ## Visualise your data
 When you are working with a categorical explanatory variable, a good starting point is a boxplot:
 
 ```{r}
+# Visualise the crop yield data via a boxplot
 gf_boxplot(yield ~ soil, data = crop_growth)
 ```
 
-This shows you that the yield data are reasonably well-spread around the median for all three soil types, although there are a couple of outlier observations for clay and sand. Try adding a couple of extra lines to the `gf_boxplot()` function to get a graph similar to:
+This shows you that the yield data are reasonably well-spread around the median for all three soil types, although there are a couple of outlier observations for clay and sand. Try adding a couple of extra lines to the `gf_boxplot()` function to get a graph similar to the following:
 
 **Hints**:
-+ Add `colour = ~soil` to the `gf_boxplot()` function to get default colours
-+ Use `gf_labs()` to modify x and y labels
-+ 
+
++ Use `gf_labs()` to modify x and y labels. **Always add units to axes if possible**
++ Use `gf_theme()` to modify the default grey background 
 
 ```{r, echo=FALSE}
-gf_boxplot(yield ~ soil, data = crop_growth, colour= ~soil) %>% 
-  gf_labs(x = "Broad soil type", y = "Final crop yield") %>% 
+gf_boxplot(yield ~ soil, data = crop_growth) %>% 
+  gf_labs(x = "Broad soil type", y = "Final crop yield (kg)") %>% 
   gf_theme(theme_classic())
 ```
 
 
-If you are feeling brave, try and create a violin plot like the following. **Hints**
+If you are feeling brave, try and create a violin plot like the following. **Hints**:
 
 + Change `gf_boxplot()` to `gf_violin()`
-+ Use `gf_sina()` to add the "jittered" observations, with `colour= ~soil` if you want them the same colour as the violins
-+ add `draw_quantiles = 0.5` to the `gf_violin()` function to draw a horizontal line to show the median (which is the 50% quantile). By using several numbers in the form of `c(0.25, 0.5, 0.75)` you can show the interquartile range which is the main box on a boxplot.
++ Use `gf_sina()` to add the "jittered" observations
++ add `draw_quantiles = 0.5` to the `gf_violin()` function to draw a horizontal line to show the median (which is the 50% quantile).
+
+Remember to build up your extras one at a time, replotting after each change, so that it is easier to spot errors. Please speak to a demonstrator if you have problems.
  
 ```{r, echo = FALSE}
-gf_violin(yield~soil, data = crop_growth, colour = ~soil, draw_quantiles = 0.5) %>% 
-  gf_sina(colour = ~soil) %>% 
-  gf_labs(x = "Broad soil type", y = "Final crop yield") %>% 
+gf_violin(yield~soil, data = crop_growth, draw_quantiles = 0.5) %>% 
+  gf_sina() %>% 
+  gf_labs(x = "Broad soil type", y = "Final crop yield (kg)") %>% 
   gf_theme(theme_classic())
 ```
  
 ## Analyse and interpret the linear model 
 The format of the `lm()` function is identical syntax as with a continuous variable. We will save our results from the `lm()` function in an R objected called `soil_lm` and then use the `anova()` function which is conventional way of displaying the results of linear models with this type of structure:
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, eval=FALSE}
 # Create linear model and store the results in soil_lm
 soil_lm <- lm(yield ~ soil, data = crop_growth)
 # Display the output of the linear model as an ANOVA table
 anova(soil_lm)
 ```
+```{r, echo=FALSE, eval=TRUE}
+# Create linear model and store the results in soil_lm
+soil_lm <- lm(yield ~ soil, data = crop_growth)
+# Display the output of the linear model as an ANOVA table
+print(anova(soil_lm))
+```
+
 
 ANOVA stands for "analysis of variance" and you might be wondering how we can test the effect of an explanatory variable using variances. Indeed, where are the variances in the above table (**Hint** There is a column that contains the variance for the soil effect, but it is not labelled 'variance'). If you want a better understanding of how this works, and to play with an interactive that allows you to adjust the number of replicates and how noisy your data are, go to this [Interactive demo of crop yield data](https://naturalandenvironmentalscience.shinyapps.io/how_anova_works/#section-variances-with-categorical-explanatory-variables)
-You can see that the F-value is 4.2447 and the p-value is 0.02495. Which of these do you think best describes the results of the linear model?
+You can see that the F-value is 4.2447 and the p-value is 0.02495. Which of the following best describes the results of the linear model? 
 
-* The p-value is significant ($p<0.05$). This conclusively proves that soil type affects yield ($F=4.2447$)
-* With a p-value of $0.02495$ and F of $4.245$ there was a significant difference in yield with soil type.
-* There was a highly significant effect of soil type on yield ($F=4.245, p=0.025$)
-* Soil type appeared to have a significant effect on yield ($F_{2,27}=4.245,p=0.025$)
+a) The p-value is significant (p<0.05). This proves that soil type affects yield ($F$=4.2447)
+b) With a p-value of 0.02495 and $F$ of 4.245 there was a significant difference in yield with soil type.
+c) There was a highly significant effect of soil type on yield ($F$=4.245, p=0.025)
+d) There was a significant difference in crop yield in response to soil type ($F_{2,27}$=4.245, p=0.025)
 
 Which of the four is the best description of the results and why? Discuss your thoughts with demonstrators and other students on the Microsoft Teams channel for this practical (Section 2).
 
@@ -426,19 +454,24 @@ What we need therefore is a way of easily doing multiple comparisons between eac
 
 
 ```{r}
+# Compare each soil type in turn with the others via pairwise tests
 TukeyHSD(soil_lm)
-plot(TukeyHSD(soil_lm))
 ```
 
 You have two sets of output here, one a table and the other a plot, but they both show the same information. First the table:
 
 * The column headed `diff` shows the difference in the mean crop yield for each comparison of soil types
 * The columns headed `lwr` and `upr` give the lower and upper 95% confidence intervals of this difference. See [Confidence Intervals](https://naturalandenvironmentalscience.shinyapps.io/variation/#section-confidence-intervals) on the Canvas website if you need a refresher
-* The column headed `p adju` gives the adjusted p-value for this mean, such that:
-+ if p is less than 0.05 then we assume that the difference between the two soil types being compared is statistically significant
-+ it is an "adjusted" p-value to automatically correct for the multiple tests (3 in this example) that are being done.
+* The column headed `p adj` gives the adjusted p-value for this mean, such that:
+    + if p is less than 0.05 then we assume that the difference between the two soil types being compared is statistically significant
+    + it is an "adjusted" p-value to automatically correct for the multiple tests (3 in this example) that are being done.
 
-The plot of the Tukey HSD test shows the same information as a graph. In both cases you can see that the only significant pairwise difference is that between sand and loam, where the yield on sand is significantly lower than that on loam. The sand vs loam comparison is the only one where the **95% confidence intervals around the difference between the means does NOT overlap zero**.
+```{r}
+# Plot the Tukey pairwise tests
+plot(TukeyHSD(soil_lm))
+```
+
+The plot of the Tukey HSD test shows the same information as the earlier table, but is easier to understand. The horizontal x-axis shows the differences in yield on each soil type +/- the 95% confidence intervals. If the line representing the 95% CI crosses zero then there isn't a difference in the mean yield. In both the Tukey table and plot you can see that the only significant pairwise difference is that between sand and loam, where the yield on sand is significantly lower than that on loam. The sand vs loam comparison is the only one where the **95% confidence intervals around the difference between the means does NOT overlap zero**. Look at your boxplot and/or violin plot earlier to help you understand this.
 
 ## Check the assumptions of your linear model
 Just as you did with the earlier example for the caterpillar growth and the continuous explanatory variable, so you should check model assumptions by examining the residuals (errors) from your expectations. See if you can produce a QQ plot (quantile-quantile plot) of your residuals similar to the following:
