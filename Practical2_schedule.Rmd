@@ -2,10 +2,10 @@
 title: 'Practical 2: Linear models and ANOVA'
 author: "BIO2020"
 output:
+  word_document:
+    number_sections: true
   html_document:
     df_print: paged
-    number_sections: true
-  word_document:
     number_sections: true
 ---
 
@@ -366,10 +366,11 @@ When you are working with a categorical explanatory variable, a good starting po
 gf_boxplot(yield ~ soil, data = crop_growth)
 ```
 
-This shows you that the yield data are reasonably well-spread around the median for all three soil types, although there are a couple of outlier observations for clay and sand. Try adding a couple of extra lines to the `gf_boxplot()` function to get a graph similar to the following:
+This shows you that the yield data are reasonably well-spread around the median for all three soil types, although there are a couple of outlier observations for clay and sand. Now add two extra lines to the `gf_boxplot()` function to get a graph similar to the following:
 
 **Hints**:
 
++ Use `%>%` (the "pipe" or "then" command)
 + Use `gf_labs()` to modify x and y labels. **Always add units to axes if possible**
 + Use `gf_theme()` to modify the default grey background 
 
@@ -380,10 +381,10 @@ gf_boxplot(yield ~ soil, data = crop_growth) %>%
 ```
 
 
-If you are feeling brave, try and create a violin plot like the following. **Hints**:
+Now modify your plot to create a violin plot like the following. **Hints**:
 
 + Change `gf_boxplot()` to `gf_violin()`
-+ Use `gf_sina()` to add the "jittered" observations
++ add a new line `gf_sina()` to display the "jittered" observations
 + add `draw_quantiles = 0.5` to the `gf_violin()` function to draw a horizontal line to show the median (which is the 50% quantile).
 
 Remember to build up your extras one at a time, replotting after each change, so that it is easier to spot errors. Please speak to a demonstrator if you have problems.
@@ -420,7 +421,7 @@ b) With a p-value of 0.02495 and $F$ of 4.245 there was a significant difference
 c) There was a highly significant effect of soil type on yield ($F$=4.245, p=0.025)
 d) There was a significant difference in crop yield in response to soil type ($F_{2,27}$=4.245, p=0.025)
 
-Which of the four is the best description of the results and why? Discuss your thoughts with demonstrators and other students on the Microsoft Teams channel for this practical (Section 2).
+Which of the four is the best description of the results and why? Discuss your thoughts **with demonstrators and other students on the Microsoft Teams** channel for this practical (Section 2).
 
 You might be wondering why we used the `anova()` function rather than `summary()`. The latter can be a little confusing at first sight:
 
@@ -486,10 +487,10 @@ gf_qq(~soil_resid) %>%
 
 As you can see, nearly all of the observed residuals fall nicely along the expected pattern of the residuals (centred around zero), suggesting that a key assumption of a linear model, that the residuals are roughly normally distributed, has been met.
 
-# A new data set for you to explore (Optional - but recommended)
-You may not have time to do these extra analyses in the 2-hour in-person practical, but I strongly recommend you try some of these out in your own time so you build up your confidence. You can post questions into the relevant Section 2 Channel on Microsoft Teams. Download the `penguins.csv` data set from Canvas and copy it to your `BIO2020` or `BIO2020/Data` folder. If you want, open it in Microsoft Excel to see what it contains. It is a **huge** dataset with 343 observations about different species of penguins in Antartica. If you have not already done so, please look at [Interactive website on how to visualise data](https://naturalandenvironmentalscience.shinyapps.io/Summary_vis/) which uses this dataset as an example.
+# Penguins dataset
+Now we are going to improve your skills further by visualising and analysing a huge dataset about three species of Antartica penguins. Here the aim is to understand the morphological differences in the three species. Download the `penguins.csv` data set from Canvas and copy it to your `BIO2020` or `BIO2020/Data` folder. If you want, open it in Microsoft Excel to see what it contains. If you have not already done so, please look at [Interactive website on how to visualise data](https://naturalandenvironmentalscience.shinyapps.io/Summary_vis/) which uses this dataset as an example.
 
-Read in the dataset in the usual way:
+Read in the dataset in the usual way via the `read.csv()` function, storing it in a table (data frame) called `penguins`.
 
 ```{r, echo = TRUE}
 # Read in the CSV file. If not using a Data subfolder, then remove Data/
@@ -510,22 +511,37 @@ See, for example, if you can produce a graph similar to this (Hint: start with s
 
 ```{r, echo = FALSE}
 
-gf_violin(body_mass_g~species, data = penguins) %>% 
+gf_violin(body_mass_g ~ species, data = penguins) %>% 
   gf_sina(colour = ~species, alpha = 0.3) %>%
   gf_labs(x = "Species of penguin", y = "Body mass (g)") %>% 
-  gf_refine(scale_color_manual(values = c("darkorange", "purple", "cyan4"))) %>%
+  # gf_refine(scale_color_manual(values = c("darkorange", "purple", "cyan4"))) %>%
   gf_theme(theme_classic())
 
 ```
 
-Run a linear model and check your results:
+Run a linear model and check your results. **Hints**:
+
+* Use `lm()` function to create your linear model with the data stored in `penguins`. Think about which variable is your response, and which is your explanatory.
+* Store the results of your `lm()` function in `penguin_lm` by using the `<-` symbol
+* Display the analysis of variance of `penguin_lm` using the `anova()` function
 
 ```{r, echo = FALSE}
 penguin_lm <- lm(body_mass_g~species, data = penguins)
 print(anova(penguin_lm))
 ```
 
-This is a large dataset, so produce a frequency histogram of the residuals from your model, and a qqplot. If you have successfully installed the `bio2020` package you can store your two plots in separate R objects, and plot them side-by-side using the `multi_plot()` function. Type `?multi_plot` to see help.
+This is a large dataset, so produce a frequency histogram of the residuals from your model, and a qqplot. Notice that in the frequency histogram graph, we've changed the horizontal x-axis label. (Ask a demonstrator if you want to put the two plots side-by-side on one window, but this is options.) **Hints**:
+
+For the histogram plot:
+
+* Use the `residuals()` function to extract the errors (unknown variation) from your fitted `penguin_lm`
+* Use `gf_histogram()` to display a frequency histogram of these residuals
+* After a `%>%` symbol, "then" add a line after `gf_histogram()` to modify the x-axis label using `gf_labs()`
+
+For the QQ plot
+
+* use `gf_qq()` function with the residuals to display the QQ scatterplot of expected and predicted residuals
+* add a line after a `%>%` symbol with `gf_qqline()` to add the predictions. The closer the scatter of points to this line, the better the model assumptions have been met.
 
 ```{r, echo=FALSE}
 p1 <- gf_histogram(~residuals(penguin_lm)) %>% 
@@ -538,12 +554,12 @@ multi_plot(p1, p2, cols=2)
 
 ```
 
-Do a multiple comparison test to see which species differ from which:
+Do a multiple comparison test to see which species differ from which. **Hint**: use the `TukeyHSD()` function with your `penguin_lm` model:
 
 ```{r, echo = FALSE}
 TukeyHSD(penguin_lm)
 plot(TukeyHSD(penguin_lm))
 ```
 
-Again, think carefully about how you would include an explanation 
+Again, think carefully about how you would include an explanation. Which species are different from each other when you do pairwise comparisons?
 
