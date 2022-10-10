@@ -2,10 +2,10 @@
 title: 'Practical 1: Data import Summary and display'
 author: "BIO2020"
 output:
-  word_document:
-    number_sections: true
   html_document:
     df_print: paged
+    number_sections: true
+  word_document:
     number_sections: true
 ---
 
@@ -568,8 +568,8 @@ R has its own built in help for functions. These are difficult to understand at 
 ?ordi_identify
 ```
 
-# Optional extra - bivalves data
-Are you really enjoying R (don't scream...)? If so, do you want to learn how to create a graph like this?
+# Bivalves data
+You have already learnt a lot of key skills. We're now going to learn how to create a barchart based on the `bivalves_dat` dataset you imported earlier. This shows the mean numbers of bivalves (+/- standard error bars) at each site, colour-coded for each treatment:
 
 ```{r, echo = FALSE}
 bivalves_mean <- mean(abundance ~ site + transect, data=bivalves_dat)
@@ -590,13 +590,18 @@ gf_col(bv_mean ~ site, fill= ~transect,
 
 ```
 
-This hows the mean numbers of bivalves (+/- standard error bars) at each site, colour-coded for each treatment. To be honest, boxplots are generally my preferred method of displaying data as they show skew better, but as this type of bar-plot is so common, you may need to know how to create it, especially if requested on other modules etc. To create a boxplot is very straightforward: simply set abundance as your response, site as your explanatory, and colour of boxes to be transect, and you know how to edit axis labels, plot themes etc. if needed:
+Boxplots are much easier to create than barcharts, but you need to know how to make both types. Begin by creating a boxplot as shown below. **Hints**:
 
-```{r}
+* Your dataset is called `bivalves_dat`
+* The `gf_boxplot()` function can create a boxplot
+* Remember to set the `colour` option correctly
+* You only need one line of code; no need to "pipe"
+
+```{r, echo=FALSE}
 gf_boxplot(abundance ~ site, colour= ~transect, data=bivalves_dat)
 ```
 
-Creating the bar chart is more complicated. You need to make a table (data frame) of 8 rows, one for each bar, that contains the mean abundance, the standard error, the transect, and the site code:
+Creating the bar chart is more complicated, therefore I'll talk you through the steps. You need to make a table (data frame) of 8 rows, one for each bar, that contains the mean abundance, the standard error, the transect, and the site code:
 
 ```{r, echo=FALSE}
 tmp <- bivalves_stats
@@ -609,6 +614,14 @@ Here the columns headed `bv_mean` and `bv_se` are the mean and standard error of
 ```{r}
 bivalves_mean <- mean(abundance ~ site + transect, data=bivalves_dat)
 bivalves_sd   <-   sd(abundance ~ site + transect, data=bivalves_dat)
+```
+
+Next, using your existing skills:
+
+* use the `favstats()` function with both `site` and `transect` as explanatories to create a table called `bivalves_fav` that contains columns of summary statistics, including a column called `n` which stores the numbers of observations at each site and transect
+* calculate `bivalves_se` by dividing `bivalves_sd` by the square root of the number of observations. **Hint** use the `sqrt()` function and `bivalves_fav$n` to access the column `n`
+
+```{r echo=FALSE}
 bivalves_fav  <- favstats(abundance ~ site + transect, data=bivalves_dat)
 bivalves_se   <- bivalves_sd / sqrt(bivalves_fav$n)
 ```
@@ -628,7 +641,7 @@ bivalves_stats <- data.frame(bv_mean = bivalves_mean,
                              site = c("A", "B", "C", "D", "A", "B", "C", "D"))
 ```
 
-Check the contents of your `bivalves_stats` table to make sure it matches what is displayed above. We will use a stepwise approach to building your bar chart. First, a simple barplot:
+Check the contents of your `bivalves_stats` table to make sure it matches what is displayed above (either double-click on it in your RStudio Environment window at the top-right, or print it to the Console). We will use a stepwise approach to building your bar chart. First, a simple barplot:
 
 ```{r}
 gf_col(bv_mean ~ site, data = bivalves_stats)
