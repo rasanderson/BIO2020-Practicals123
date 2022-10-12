@@ -2,11 +2,12 @@
 title: 'Practical 2: Linear models and ANOVA'
 author: "BIO2020"
 output:
-  word_document:
-    number_sections: true
+  pdf_document: default
   html_document:
     df_print: paged
-    number_sections: true
+    number_sections: yes
+  word_document:
+    number_sections: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -61,14 +62,19 @@ So far your goals have been simple summary statistics (mean, median, standard de
 
 &nbsp;
 
+**Important**
+Commonly used names for linear models like this differ depending on the explanatory variable:
+
+* **Regression** - when you have one or more continuous explanatory variables
+* **Analysis of Variance (ANOVA)** - when you have one or more categorical explanatory variables
 
 # Aims and objectives
-The main aim of this practical are to show you how to use the `lm()` function, using datasets that you will already have seen on the interactive websites at 
+The overall aim of this practical are to show you how to use the `lm()` function, using datasets that you should already have seen on the interactive websites at 
 [linear models with continuous explanatories](https://naturalandenvironmentalscience.shinyapps.io/linear_explan/) and  [linear models with categorical explanatories](https://naturalandenvironmentalscience.shinyapps.io/categorical_explan/). Please work through these websites **before** attempting this practical. You will also have the opportunity to gain confidence using linear models with a new dataset. **Specific objectives** are to:
 
 1. understand how to interpret results from linear models with **continuous explanatory variables**
 2. learn the use of linear models with **categorical explanatory variables**, and explore multiple comparison tests, to compare different treatment levels
-3. explore these ideas with a **new dataset**.
+3. apply these ideas with a **large biological dataset**.
 
 Inherent in the idea of linear models is the idea of cause and effect, i.e. your explanatory variables cause some sort of change in your response variable. How do you know which is the response and which is the explanatory? In a "designed experiment", e.g. a laboratory experiment or field plot experiment, the response and explanatory is usually obvious, but sometimes it is less obvious. Take the following examples:
 
@@ -84,7 +90,9 @@ All linear models have a continuous response variable. By "continuous" the respo
 * the average bird population at a site across all surveys has a categorical explanatory habitat type, **with four 'levels'** for the 4 different habitats
 * Pollinator diversity and wildflower diversity are both continuous. I think it is reasonable to assume that the biodiversity of wildflowers will have a big effect on the pollinators out there, so I've listed wildflower diversity as the explanatory variable. However, some scientists have shown that if the pollinator biodiversity declines sharply, this has a negative effect on the biodiversity of some wildflowers. So in this example the response and explanatory terms are a little more ambiguous.
 
-# Linear models with continuous explanatory variables
+# **Regression**: Linear models with continuous explanatory variables
+Linear models with continuous explanatory variables are often called "regression analyses". If you have two or more continuous explanatory variables you may see them called "multiple regression".
+
 ## Download data and calculate simple statistics
 We will start by looking at the `caterpillars` data set that we were using in the interactive website for linear models with continuous explanatory variables. The `caterpillars.csv` data file is available on Canvas and should be downloaded. Remember that this will end up in your "Downloads" folder: you will need to move it from Downloads into your BIO2020 folder before you can read it into R. After you have downloaded the file:
 
@@ -137,10 +145,20 @@ From this plot answer the following questions and check with a demonstrator befo
 
 It is always worth doing this visualisation step. Sometimes you will see your scatter of points form a distinct curve, in which case your linear model might need both $x$ and $x^2$ explanatory variables to fit a curve rather than a straight line. It may seem odd that you can fit curves with linear models. The word "linear" simply refers to the fact that you add the various terms together.
 
-## Linear model of caterpillar growth data
-Now create a linear model to see if our expectations were correct. You will remember from the tutorial that the standard syntax for a linear model is 
+## Linear model (regression) of caterpillar growth data
+Now create a linear model (regression) to see if our expectations were correct. We can adapt the standard syntax for a linear model to indicate that it is using continuous explanatory variable (tannin)
 
-`lm(response_variable ~ explanatory_variable, data = dataframe_name)`
+&nbsp;
+
+<center>
+<h2><strong><span class="boxed">regression</span> ( <span class="boxed">y</span> ~ <span class="boxed">continuous x</span> , data = <span class="boxed">mydata</span>, ... )</strong> 
+</h2></center>
+
+&nbsp;
+
+The syntax with the `lm()` function is the same:
+
+`lm(response_variable ~ continuous_explanatory_variable, data = dataframe_name)`
 
 Using this template, it is easy to create a linear model for the relationship between tannin and caterpillar growth using the `lm()` function, storing the output of the linear model in an R object called `growth_lm`:
 
@@ -150,7 +168,7 @@ Using this template, it is easy to create a linear model for the relationship be
 
 ```{r, echo = TRUE}
 # Create a linear model to test relationship between growth and tannins
-growth_lm <- lm(growth~tannin, data = caterpillar_dat)
+growth_lm <- lm(growth ~ tannin, data = caterpillar_dat)
 ```
 
 Now that you have created your linear model, use the `summary()` function to investigate the outputs of your linear model 
@@ -244,11 +262,11 @@ Having to enter the values for intercept and slopes manually into the R Console 
 
 ```{r}
 growth_lm <- lm(growth~tannin, data = caterpillar_dat) 
-predictor <- makeFun(growth_lm)            # Make your own special predictor function
-predictor(3.5)                             # Predict the growth rate at tannin 3.5 mg
+predictor <- makeFun(growth_lm)   # Make your own special predictor function
+predictor(3.5)                    # Predict the growth rate at tannin 3.5 mg
 ```
 
-Are the values that you obtained from your `predictor` function the same as when you calculated it manually in the R Console? If the values are not exactly the same can you think why that might be? <!--rouding outputs from summary of model--> Hopefully you can see that the ability to create your own functions to predict values from any linear model is straightforward, and powerful.
+Is the value that you obtained from your `predictor` function the same as when you calculated it manually in the R Console? If the values are not exactly the same can you think why that might be? <!--rouding outputs from summary of model--> Hopefully you can see that the ability to create your own functions to predict values from any linear model is straightforward, and powerful.
 
 ## Checking the assumptions of the linear model
 ### Revision: what are linear model residuals and why do they matter?
@@ -294,7 +312,9 @@ Now you can see that even though we only have 9 data points, they fall very clos
 ## Reporting data analyses and results
 Imagine you had done this caterpillar experiment as part of your final-year research project or on another module. How would you write up the "Data Analysis" part of your Methods? How would you write up your Results? Do a rough draft of what you might include and discuss it with a demonstrator.
 
-# Linear models with categorical explanatory variable
+# **ANOVA**: Linear models with categorical explanatory variable
+When your linear model has categorical explanatory variables it is often called "Analysis of Variance" or ANOVA. If you have only one categorical explanatory, it might be called "One-Way ANOVA", with two categorical explanatory variables "Two-Way ANOVA" etc. Today you just have one explanatory.
+
 ## Download and check the data
 Download `crop_growth.csv` from Canvas and open it in Excel to have a quick look at its contents (don't edit it - ignore any requests to save it in Excel format). Remember that you have to use File Explorer to copy it from your Downloads folder to your BIO2020. Depending on whether you are saving your CSV files in a `Data` subfolder, or keep them in your BIO2020 folder, adjust the following code. This imports the data, and allows you to look at its structure. Remember to **add comment lines** as shown below to help you when you look at your script when revising for your assessment in January. Execute each line sequentially as usual by hitting the <kbd>Ctrl</kbd>+<kbd>Enter</kbd> key combination. This may be shown as <kbd>Ctrl</kbd>+<kbd>  &#8629;  </kbd> on some keyboards:
 
@@ -381,27 +401,42 @@ gf_boxplot(yield ~ soil, data = crop_growth) %>%
 ```
 
 
-Now modify your plot to create a violin plot like the following. **Hints**:
+<!-- Now modify your plot to create a violin plot like the following. **Hints**: -->
 
-+ Change `gf_boxplot()` to `gf_violin()`
-+ add a new line `gf_sina()` to display the "jittered" observations
-+ add `draw_quantiles = 0.5` to the `gf_violin()` function to draw a horizontal line to show the median (which is the 50% quantile).
+<!-- + Change `gf_boxplot()` to `gf_violin()` -->
+<!-- + add a new line `gf_sina()` to display the "jittered" observations -->
+<!-- + add `draw_quantiles = 0.5` to the `gf_violin()` function to draw a horizontal line to show the median (which is the 50% quantile). -->
 
-Remember to build up your extras one at a time, replotting after each change, so that it is easier to spot errors. Please speak to a demonstrator if you have problems.
- 
-```{r, echo = FALSE}
-gf_violin(yield~soil, data = crop_growth, draw_quantiles = 0.5) %>% 
-  gf_sina() %>% 
-  gf_labs(x = "Broad soil type", y = "Final crop yield (kg)") %>% 
-  gf_theme(theme_classic())
-```
+<!-- Remember to build up your extras one at a time, replotting after each change, so that it is easier to spot errors. Please speak to a demonstrator if you have problems. -->
+
+<!-- ```{r, echo = FALSE} -->
+<!-- gf_violin(yield~soil, data = crop_growth, draw_quantiles = 0.5) %>%  -->
+<!--   gf_sina() %>%  -->
+<!--   gf_labs(x = "Broad soil type", y = "Final crop yield (kg)") %>%  -->
+<!--   gf_theme(theme_classic()) -->
+<!-- ``` -->
  
 ## Analyse and interpret the linear model 
-The format of the `lm()` function is identical syntax as with a continuous variable. We will save our results from the `lm()` function in an R objected called `soil_lm` and then use the `anova()` function which is conventional way of displaying the results of linear models with this type of structure:
+The format of the `lm()` function is identical syntax as with a continuous variable. We stick to our same basic template:
+
+&nbsp;
+
+<center>
+<h2><strong><span class="boxed">ANOVA</span> ( <span class="boxed">y</span> ~ <span class="boxed">categorical x</span> , data = <span class="boxed">mydata</span>, ... )</strong> 
+</h2></center>
+
+&nbsp;
+
+The syntax with the `lm()` function is the same:
+
+`lm(response_variable ~ categorical_explanatory_variable, data = dataframe_name)`
+
+We will save our results from the `lm()` function in an R objected called `soil_lm` and then use the `anova()` function which is conventional way of displaying the results of linear models with this type of structure:
 
 ```{r, echo=TRUE, eval=FALSE}
 # Create linear model and store the results in soil_lm
 soil_lm <- lm(yield ~ soil, data = crop_growth)
+
 # Display the output of the linear model as an ANOVA table
 anova(soil_lm)
 ```
@@ -413,7 +448,7 @@ print(anova(soil_lm))
 ```
 
 
-ANOVA stands for "analysis of variance" and you might be wondering how we can test the effect of an explanatory variable using variances. Indeed, where are the variances in the above table (**Hint** There is a column that contains the variance for the soil effect, but it is not labelled 'variance'). If you want a better understanding of how this works, and to play with an interactive that allows you to adjust the number of replicates and how noisy your data are, go to this [Interactive demo of crop yield data](https://naturalandenvironmentalscience.shinyapps.io/how_anova_works/#section-variances-with-categorical-explanatory-variables)
+You might be wondering how we can test the effect of an explanatory variable using variances. Where are the variances in the above table!! (**Hint** If you looked at my Ten-Minute Video, you should know that a variance is a mean sums-of-squares). If you want a better understanding of how this works, and to play with an interactive that allows you to adjust the number of replicates and how noisy your data are, go to this [Interactive demo of crop yield data](https://naturalandenvironmentalscience.shinyapps.io/how_anova_works/#section-variances-with-categorical-explanatory-variables)
 You can see that the F-value is 4.2447 and the p-value is 0.02495. Which of the following best describes the results of the linear model? 
 
 a) The p-value is significant (p<0.05). This proves that soil type affects yield ($F$=4.2447)
@@ -487,8 +522,16 @@ gf_qq(~soil_resid) %>%
 
 As you can see, nearly all of the observed residuals fall nicely along the expected pattern of the residuals (centred around zero), suggesting that a key assumption of a linear model, that the residuals are roughly normally distributed, has been met.
 
-# Penguins dataset
-Now we are going to improve your skills further by visualising and analysing a huge dataset about three species of Antartica penguins. Here the aim is to understand the morphological differences in the three species. Download the `penguins.csv` data set from Canvas and copy it to your `BIO2020` or `BIO2020/Data` folder. If you want, open it in Microsoft Excel to see what it contains. If you have not already done so, please look at [Interactive website on how to visualise data](https://naturalandenvironmentalscience.shinyapps.io/Summary_vis/) which uses this dataset as an example.
+# Working with large biological datasets
+Modern biology and zoology generates big datasets that at first glance can be challenging to understand. Luckily, you can use the skills you've just learnt to summarise, visualise and analyse them. We will now do this with a dataset of over 300 observations!
+
+The data are morphological measures of three species of Antartica penguins, although we will initially focus on their body mass. Key things for you to answer:
+
+* What are typical body mass means for each species?
+* Is body mass explained by the species of penguin?
+* Are there differences in body mass between each pairwise comparison of species?
+
+Download the `penguins.csv` data set from Canvas and copy it to your `BIO2020` or `BIO2020/Data` folder. If you want, open it in Microsoft Excel to see what it contains. If you have not already done so, please look at [Interactive website on how to visualise data](https://naturalandenvironmentalscience.shinyapps.io/Summary_vis/) which uses this dataset as an example.
 
 Read in the dataset in the usual way via the `read.csv()` function, storing it in a table (data frame) called `penguins`.
 
@@ -498,47 +541,51 @@ penguins <- read.csv("Data/penguins.csv")
 
 ```
 
-Using the methods described above, investigate the relationship between `body mass` and `species`, where species is the explanatory variable and body mass is the response variable. 
+Using the methods described above, investigate the relationship between `body mass` and `species`, where species is the explanatory variable and body mass is the response variable. I'm not giving you the R code for this, but you have sufficient skills to do it!
 
-You need to:
+There are 5 things you must do:
 
-+ Produce a box plot or violin plot
-+ Create a linear model and summarise it
-+ Complete a Tukey Honest Significant Difference to look at the differences in body mass between species and plot it
-+ Interpret your results
+1. Produce a box plot to show the variation in body mass in the 3 species of penguin
+2. Create a linear model and summarise it. Is there a significant effect of species on body mass?
+3. Check the assumptions of your linear model
+4. If there is a significant difference, complete a Tukey Honest Significant Difference to look at the differences in body mass between each pair of species and plot it
+5. Interpret your results
 
-See, for example, if you can produce a graph similar to this (Hint: start with something simple like a boxplot, then gradually add extra lines to improve the plot or modify it):
+## Create the boxplot
+Use your skills to create the following boxplot:
 
 ```{r, echo = FALSE}
-
-gf_violin(body_mass_g ~ species, data = penguins) %>% 
-  gf_sina(colour = ~species, alpha = 0.3) %>%
+gf_boxplot(body_mass_g ~ species, data = penguins) %>% 
   gf_labs(x = "Species of penguin", y = "Body mass (g)") %>% 
-  # gf_refine(scale_color_manual(values = c("darkorange", "purple", "cyan4"))) %>%
   gf_theme(theme_classic())
-
 ```
 
-Run a linear model and check your results. **Hints**:
+## Linear model (ANOVA)
+This linear model will be an "ANOVA" since species is a categorical explanatory variable. Use it to see if species has a significant effect on body mass. **Hints**:
 
 * Use `lm()` function to create your linear model with the data stored in `penguins`. Think about which variable is your response, and which is your explanatory.
 * Store the results of your `lm()` function in `penguin_lm` by using the `<-` symbol
 * Display the analysis of variance of `penguin_lm` using the `anova()` function
+* Does species have a significant effect on body mass? How would you write the F and p-values in a written report **Hint**: not quite the same as shown in the table.
+
+The results of your linear model should be displayed as below:
 
 ```{r, echo = FALSE}
 penguin_lm <- lm(body_mass_g~species, data = penguins)
 print(anova(penguin_lm))
 ```
 
-This is a large dataset, so produce a frequency histogram of the residuals from your model, and a qqplot. Notice that in the frequency histogram graph, we've changed the horizontal x-axis label. (Ask a demonstrator if you want to put the two plots side-by-side on one window, but this is options.) **Hints**:
 
-For the histogram plot:
+## Check the assumptions of your analysis
+The "errors" or "residuals" which is the "unknown variation" from your analysis are assumed to come from a normal, or bell-shaped, distribution. You can check this by plotting them on a frequency histogram, and also a QQ plot.
+
+### Histogram plot hints
 
 * Use the `residuals()` function to extract the errors (unknown variation) from your fitted `penguin_lm`
 * Use `gf_histogram()` to display a frequency histogram of these residuals
 * After a `%>%` symbol, "then" add a line after `gf_histogram()` to modify the x-axis label using `gf_labs()`
 
-For the QQ plot
+### QQ plot hints
 
 * use `gf_qq()` function with the residuals to display the QQ scatterplot of expected and predicted residuals
 * add a line after a `%>%` symbol with `gf_qqline()` to add the predictions. The closer the scatter of points to this line, the better the model assumptions have been met.
@@ -554,12 +601,13 @@ multi_plot(p1, p2, cols=2)
 
 ```
 
-Do a multiple comparison test to see which species differ from which. **Hint**: use the `TukeyHSD()` function with your `penguin_lm` model:
+## How do species body mass differ between pairs?
+You have three species of penguin, and your ANOVA merely indicates that species type has an effect on body mass. It doesn't tell you if all three are different from each other, or if two of them are the same. Do a multiple comparison test to do pairwise comparisons in body mass between two species at a time. Which species are the same, and which differ? **Hint**: use the `TukeyHSD()` function with your `penguin_lm` model:
 
 ```{r, echo = FALSE}
 TukeyHSD(penguin_lm)
 plot(TukeyHSD(penguin_lm))
 ```
 
-Again, think carefully about how you would include an explanation. Which species are different from each other when you do pairwise comparisons?
-
+## Interpretation
+How might you write up these results in a report? Compare your ANOVA and Tukey results to your boxplot. Also look at the BIO2020 Handbook and the last section on report-writing.
