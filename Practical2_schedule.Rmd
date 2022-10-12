@@ -2,11 +2,11 @@
 title: 'Practical 2: Linear models and ANOVA'
 author: "BIO2020"
 output:
+  word_document:
+    number_sections: yes
   pdf_document: default
   html_document:
     df_print: paged
-    number_sections: yes
-  word_document:
     number_sections: yes
 ---
 
@@ -209,7 +209,7 @@ Unfortunately R is the same as most statistics packages, in that the way it repo
 a) The linear model showed a highly significant relationship between tannins (mg) and caterpillar growth (mg/day) with p < 0.05.
 b) The regression between tannins (mg) and caterpillar growth rate (mg/day) was significant (p=0.0008461) and explained 0.7893% variation in the data
 c) There was a strong negative relationship between tannins (mg) and growth rate (p<0.001)
-d) There was a negative relationship between tannin concentration (mg) and caterpillar growth rate (mg/day) (t = -1.217, p < 0.001) with 78.9% of the variation in growth rate explained by tannin concentration.
+d) There was a negative relationship between tannin concentration (mg) and caterpillar growth rate (mg/day) (t = -5.565, p < 0.001) with 78.9% of the variation in growth rate explained by tannin concentration.
 e) The overall linear model for caterpillar growth rate (mg/day) and tannin concentration (mg) was significant and showed a negative relationship ($F_{1,7}$=30.97,p<0.001)
  
 ## Plotting the fitted line
